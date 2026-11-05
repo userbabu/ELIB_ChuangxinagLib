@@ -1,0 +1,124 @@
+﻿.版本 2
+
+.数据类型 curl_httppost, 公开
+    .成员 next, 整数型, , , curl_httppost, next entry in the list
+    .成员 name, 文本型, 传址
+    .成员 namelength, 整数型
+    .成员 contents, 文本型, 传址
+    .成员 contentslength, 整数型
+    .成员 buffer, 文本型, 传址
+    .成员 bufferlength, 整数型
+    .成员 contenttype, 文本型, 传址
+    .成员 contentheader, curl_slist, 传址
+    .成员 more, 整数型, , , curl_httppost
+    .成员 flags, 整数型, , , HTTPPOST_ 开头的常量
+    .成员 showfilename, 文本型, 传址
+    .成员 userp, 整数型
+
+.数据类型 xferinfo, 公开
+    .成员 lastruntime, 整数型
+    .成员 curl, 整数型
+
+.数据类型 curl_slist, 公开
+    .成员 data, 文本型, 传址
+    .成员 next, 整数型, , , curl_slist
+
+.数据类型 _iobuf, 公开
+    .成员 _ptr, 文本型, 传址
+    .成员 _cnt, 整数型
+    .成员 _base, 文本型, 传址
+    .成员 _flag, 整数型
+    .成员 _file, 整数型
+    .成员 _charbuf, 整数型
+    .成员 _bufsiz, 整数型
+    .成员 _tmpfname, 文本型, 传址
+
+.数据类型 fd_set, 公开
+    .成员 fd_count, 整数型
+    .成员 fd_array, 整数型, , "64"
+
+.数据类型 CURLMsg, 公开
+    .成员 msg, 整数型
+    .成员 easy_handle, 整数型
+    .成员 whatever, 整数型
+    .成员 result, 整数型, , , CURLE_ 开头的常量
+
+.数据类型 curl_version_info_data, 公开
+    .成员 age, 整数型, , , CURLVERSION_ 开头的常量
+    .成员 version, 文本型, 传址
+    .成员 version_num, 整数型
+    .成员 host, 文本型, 传址
+    .成员 features, 整数型
+    .成员 ssl_version, 文本型, 传址
+    .成员 ssl_version_num, 整数型
+    .成员 libz_version, 文本型, 传址
+    .成员 protocols, 文本型, 传址
+    .成员 ares, 文本型, 传址, , The fields below this were added in CURLVERSION_SECOND
+    .成员 ares_num, 整数型
+    .成员 libidn, 文本型, 传址, , This field was added in CURLVERSION_THIRD
+    .成员 iconv_ver_num, 整数型, , , These field were added in CURLVERSION_FOURTH
+    .成员 libssh_version, 文本型, 传址, , human readable string
+
+.数据类型 WINHTTP_AUTOPROXY_OPTIONS, 公开, WINHTTP_AUTOPROXY_OPTIONS, *LPWINHTTP_AUTOPROXY_OPTIONS; 6 * 4
+    .成员 dwFlags, 整数型, , , DWORD   dwFlags
+    .成员 dwAutoDetectFlags, 整数型, , , DWORD   dwAutoDetectFlags
+    .成员 lpszAutoConfigUrl, 整数型, , , LPCWSTR lpszAutoConfigUrl
+    .成员 lpvReserved, 整数型, , , LPVOID  lpvReserved
+    .成员 dwReserved, 整数型, , , DWORD   dwReserved
+    .成员 fAutoLogonIfChallenged, 逻辑型, , , BOOL    fAutoLogonIfChallenged
+
+.数据类型 URL_COMPONENTSA, 公开, URL_COMPONENTSA, *LPURL_COMPONENTSA; 15 * 4
+    .成员 dwStructSize, 整数型, , , DWORD         dwStructSize;
+    .成员 lpszScheme, 文本型, , , LPWSTR        lpszScheme;
+    .成员 dwSchemeLength, 整数型, , , DWORD         dwSchemeLength;
+    .成员 nScheme, 整数型, , , int           nScheme;
+    .成员 lpszHostName, 文本型, , , LPWSTR        lpszHostName;
+    .成员 dwHostNameLength, 整数型, , , DWORD         dwHostNameLength;
+    .成员 nPort, 整数型, , , INTERNET_PORT nPort;
+    .成员 lpszUserName, 文本型, , , LPWSTR        lpszUserName;
+    .成员 dwUserNameLength, 整数型, , , DWORD         dwUserNameLength;
+    .成员 lpszPassword, 文本型, , , LPWSTR        lpszPassword;
+    .成员 dwPasswordLength, 整数型, , , DWORD         dwPasswordLength;
+    .成员 lpszUrlPath, 文本型, , , LPWSTR        lpszUrlPath;
+    .成员 dwUrlPathLength, 整数型, , , DWORD         dwUrlPathLength;
+    .成员 lpszExtraInfo, 文本型, , , LPWSTR        lpszExtraInfo;
+    .成员 dwExtraInfoLength, 整数型, , , DWORD         dwExtraInfoLength;
+
+.数据类型 SYSTEMTIME, 公开, SYSTEMTIME, *PSYSTEMTIME 8 * 2
+    .成员 wYear, 短整数型, , , WORD wYear
+    .成员 wMonth, 短整数型, , , WORD wMonth
+    .成员 wDayOfWeek, 短整数型, , , WORD wDayOfWeek
+    .成员 wDay, 短整数型, , , WORD wDay
+    .成员 wHour, 短整数型, , , WORD wHour
+    .成员 wMinute, 短整数型, , , WORD wMinute
+    .成员 wSecond, 短整数型, , , WORD wSecond
+    .成员 wMilliseconds, 短整数型, , , WORD wMilliseconds
+
+.数据类型 INTERNET_PROXY_INFO, 公开, 代理服务器信息
+    .成员 dwAccessType, 整数型
+    .成员 lpszProxy, 文本型
+    .成员 lpszProxyBypass, 文本型
+
+.数据类型 URL_COMPONENTS, 公开
+    .成员 dwStructSize, 整数型, , , 本结构长度，注：60
+    .成员 lpszScheme, 整数型, , , 协议类型
+    .成员 dwSchemeLength, 整数型, , , 协议类型缓冲区长度
+    .成员 nScheme, 整数型, , , 链接类型，1=http，2=https。（INTERNET_SCHEME_HTTP=1，INTERNET_SCHEME_HTTPS=2）
+    .成员 lpszHostName, 整数型, , , 主机域名(Host)
+    .成员 dwHostNameLength, 整数型, , , 主机域名缓冲区长度
+    .成员 nPort, 整数型, , , 端口
+    .成员 lpszUserName, 整数型, , , 帐号
+    .成员 dwUserNameLength, 整数型, , , 帐号缓冲区长度
+    .成员 lpszPassword, 整数型, , , 密码
+    .成员 dwPasswordLength, 整数型, , , 密码缓冲区长度
+    .成员 lpszUrlPath, 整数型, , , 路径(页面地址)
+    .成员 dwUrlPathLength, 整数型, , , 路径缓冲区长度
+    .成员 lpszExtraInfo, 整数型, , , 额外信息，比如“?”或“#”之后的参数字符串。
+    .成员 dwExtraInfoLength, 整数型, , , 额外信息长度
+
+.数据类型 formData, 公开, 表单数据
+    .成员 文件名, 文本型, , , filename 有文件名就是上传文件
+    .成员 提交数据, 字节集
+    .成员 文件格式, 文本型, , , 如果filename为空则无需填写 Content-Type   如 image/png  如果写了文件名此项留空,则自动获取常见文件类型
+    .成员 表单名称, 文本型, , , name
+

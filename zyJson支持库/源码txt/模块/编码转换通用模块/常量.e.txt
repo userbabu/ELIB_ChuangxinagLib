@@ -1,0 +1,7 @@
+﻿.版本 2
+
+.常量 CP_gb2312, "936", , ANSI/OEM Simplified Chinese (PRC, Singapore); Chinese Simplified (GB2312)
+.常量 CP_UTF8, "65001", , Unicode (UTF-8)
+.常量 CP_BIG5, "950", , 繁体中文（Big5）
+.常量 CP_ACP, "0"
+.常量 LMEM_ZEROINIT, "64"

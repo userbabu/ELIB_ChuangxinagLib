@@ -1,0 +1,94 @@
+﻿.版本 2
+
+.程序集 程序集_Object
+.子程序 zyNewObject, 整数型, , 成功返回对象指针
+    .参数 hHeap, 整数型
+    .参数 Class, 整数型
+    .参数 size, 整数型
+    .参数 object, 对象, 参考 可空
+    .局部变量 this, 整数型
+    .局部变量 refCount, 整数型
+
+    this ＝ _Alloc (size, hHeap)
+    RtlMoveMemory (this, Class, size)
+    .如果 (是否为空 (object))
+        返回 (this)
+    .否则
+        RtlMoveMemory_int (_取指针对象地址 (object), _取变量地址 (this), 4)
+        返回 (this)
+    .如果结束
+    
+
+.子程序 zyNewObjectEmpty, 整数型, , 成功返回对象指针
+    .参数 hHeap, 整数型
+    .参数 size, 整数型
+    .参数 object, 对象, 参考 可空
+    .局部变量 this, 整数型
+    .局部变量 refCount, 整数型
+
+    this ＝ _Alloc (size, hHeap)
+    .如果 (是否为空 (object))
+        返回 (this)
+    .否则
+        RtlMoveMemory_int (_取指针对象地址 (object), _取变量地址 (this), 4)
+        返回 (this)
+    .如果结束
+    
+
+.子程序 zyDeleteObject, , , 销毁对象
+    .参数 this, 整数型
+    .局部变量 hHeap, 整数型
+    .局部变量 pFunctions, 整数型
+
+    .如果真 (this ＝ 0)
+        返回 ()
+    .如果真结束
+    hHeap ＝ _Get (this, #zyobj_hHeap)
+    pFunctions ＝ _Get (this, #zyobj_pFunctions)
+    _Free (pFunctions, hHeap)
+    _Free (this, hHeap)
+    
+
+.子程序 zyOverride, , , 覆盖父类方法
+    .参数 this, 整数型
+    .参数 index, 整数型
+    .参数 newFunction, 整数型
+    .局部变量 pFunc, 整数型
+
+    .如果真 (this ＝ 0)
+        返回 ()
+    .如果真结束
+    pFunc ＝ _指针到整数 (this)
+    RtlMoveMemory_int (pFunc ＋ index × 4, _取变量地址 (newFunction), 4)
+    
+
+.子程序 zyObject_QueryInterface, 整数型
+    .参数 this, 整数型
+    .参数 iid, 整数型
+    .参数 ppvObject, 整数型, 参考
+
+    返回 (1)
+
+.子程序 zyObject_AddRef, 整数型
+    .参数 this, 整数型
+    .局部变量 cRef, 整数型
+
+    cRef ＝ InterlockedIncrement (this ＋ 4)
+    返回 (cRef)
+
+.子程序 zyObject_Release, 整数型
+    .参数 this, 整数型
+    .局部变量 cRef, 整数型
+
+    cRef ＝ InterlockedDecrement (this ＋ 4)
+    .如果真 (cRef ＝ 0)
+        zyThisCall (this, #zy_Destory)
+        zyDeleteObject (this)
+    .如果真结束
+    返回 (cRef)
+
+.子程序 zyObject_Destory
+    .参数 this, 整数型
+
+    
+

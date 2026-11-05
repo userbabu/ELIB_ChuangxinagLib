@@ -1,0 +1,11 @@
+// 由 gen_join_table.mjs 生成，勿手改。
+    _T("CxJoinConstruct"),
+    _T("CxJoinCopy"),
+    _T("CxJoinDestruct"),
+    _T("CxJoin_Create"),
+    _T("CxJoin_Wait"),
+    _T("CxJoin_Cancel"),
+    _T("CxJoin_Destroy"),
+    _T("CxJoin_Arrived"),
+    _T("CxJoin_IsComplete"),
+    _T("CxJoin_IsCancelled"),

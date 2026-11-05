@@ -1,0 +1,279 @@
+﻿.版本 2
+
+.DLL命令 HeapCreate, 整数型, "kernel32.dll", "HeapCreate"
+    .参数 flOptions, 整数型
+    .参数 dwInitialSize, 整数型
+    .参数 dwMaximumSize, 整数型
+
+.DLL命令 HeapDestroy, 整数型, "kernel32.dll", "HeapDestroy"
+    .参数 hHeap, 整数型
+
+.DLL命令 HeapFree, 整数型, "kernel32.dll", "HeapFree"
+    .参数 hHeap, 整数型
+    .参数 dwFlags, 整数型
+    .参数 lpMem, 整数型
+
+.DLL命令 HeapAlloc, 整数型, "kernel32.dll", "HeapAlloc"
+    .参数 hHeap, 整数型
+    .参数 dwFlags, 整数型
+    .参数 dwBytes, 整数型
+
+.DLL命令 GetProcessHeap, 整数型, "kernel32.dll", "GetProcessHeap"
+
+.DLL命令 RtlMoveMemory, , "kernel32.dll", "RtlMoveMemory"
+    .参数 Destination, 通用型
+    .参数 Source, 通用型
+    .参数 Length, 整数型
+
+.DLL命令 RtlMoveMemory_int, , "kernel32.dll", "RtlMoveMemory"
+    .参数 Destination, 整数型
+    .参数 Source, 整数型
+    .参数 Length, 整数型
+
+.DLL命令 MultiByteToWideChar, 整数型, "kernel32.dll", "MultiByteToWideChar"
+    .参数 CodePage, 整数型
+    .参数 dwFlags, 整数型
+    .参数 lpMultiByteStr, 文本型
+    .参数 cchMultiByte, 整数型
+    .参数 lpWideCharStr, 字节集
+    .参数 cchWideChar, 整数型
+
+.DLL命令 WideCharToMultiByte, 整数型, "kernel32.dll", "WideCharToMultiByte"
+    .参数 CodePage, 整数型
+    .参数 dwFlags, 整数型
+    .参数 lpWideCharStr, 字节集
+    .参数 cchWideChar, 整数型
+    .参数 lpMultiByteStr, 文本型
+    .参数 cchMultiByte, 整数型
+    .参数 lpDefaultChar, 整数型
+    .参数 lpUsedDefaultChar, 整数型
+
+.DLL命令 WideCharToMultiByte_ptr, 整数型, "kernel32.dll", "WideCharToMultiByte"
+    .参数 CodePage, 整数型
+    .参数 dwFlags, 整数型
+    .参数 lpWideCharStr, 整数型
+    .参数 cchWideChar, 整数型
+    .参数 lpMultiByteStr, 文本型
+    .参数 cchMultiByte, 整数型
+    .参数 lpDefaultChar, 整数型
+    .参数 lpUsedDefaultChar, 整数型
+
+.DLL命令 MultiByteToWideChar_ptr, 整数型, "kernel32.dll", "MultiByteToWideChar"
+    .参数 CodePage, 整数型
+    .参数 dwFlags, 整数型
+    .参数 lpMultiByteStr, 整数型
+    .参数 cchMultiByte, 整数型
+    .参数 lpWideCharStr, 字节集
+    .参数 cchWideChar, 整数型
+
+.DLL命令 lstrlenW, 整数型, "kernel32.dll", "lstrlenW"
+    .参数 dqcs, 字节集
+
+.DLL命令 lstrlenW_Ptr, 整数型, "kernel32.dll", "lstrlenW"
+    .参数 dqcs, 整数型
+
+.DLL命令 LocalSize, 整数型, "kernel32.dll", "LocalSize"
+    .参数 Source, 通用型
+
+.DLL命令 lstrlenA, 整数型, "kernel32.dll", "lstrlenA"
+    .参数 lpString2, 通用型
+
+.DLL命令 lstrcmpA, 整数型, "kernel32.dll", "lstrcmpA"
+    .参数 lpString1, 通用型
+    .参数 lpString2, 通用型
+
+.DLL命令 lstrcmpiA, 整数型, "kernel32.dll", "lstrcmpiA"
+    .参数 lpString1, 整数型
+    .参数 lpString2, 整数型
+
+.DLL命令 lstrcmpW, 整数型, "kernel32.dll", "lstrcmpW"
+    .参数 lpString1, 整数型
+    .参数 lpString2, 整数型
+
+.DLL命令 lstrcmpiW, 整数型, "kernel32.dll", "lstrcmpiW"
+    .参数 lpString1, 整数型
+    .参数 lpString2, 整数型
+
+.DLL命令 ZeroMemory, , "kernel32.dll", "RtlZeroMemory"
+    .参数 Destination, 整数型
+    .参数 Length, 整数型
+
+.DLL命令 InterlockedIncrement, 整数型, "kernel32.dll", "InterlockedIncrement"
+    .参数 lpAddend, 整数型
+
+.DLL命令 InterlockedDecrement, 整数型, "kernel32.dll", "InterlockedDecrement"
+    .参数 lpAddend, 整数型
+
+.DLL命令 StrStrIW, 整数型, "shell32.dll", "StrStrIW"
+    .参数 lpFirst, 整数型
+    .参数 lpSrch, 整数型
+
+.DLL命令 StrStrW, 整数型, "shell32.dll", "StrStrW"
+    .参数 lpFirst, 整数型
+    .参数 lpSrch, 整数型
+
+.DLL命令 StrStrA, 整数型, "shell32.dll", "StrStrA"
+    .参数 lpFirst, 整数型
+    .参数 lpSrch, 文本型
+
+.DLL命令 StrStrW_bin2, 整数型, "shell32.dll", "StrStrW"
+    .参数 lpFirst, 整数型
+    .参数 lpSrch, 字节集
+
+.DLL命令 StrTrim, 整数型, "shlwapi.dll", "StrTrimW"
+    .参数 psz, 整数型
+    .参数 pszTrimChars, 字节集
+
+.DLL命令 CreateFile, 整数型, "kernel32.dll", "CreateFileW"
+    .参数 lpFileName, 字节集
+    .参数 dwDesiredAccess, 整数型
+    .参数 dwShareMode, 整数型
+    .参数 lpSecurityAttributes, 整数型
+    .参数 dwCreationDisposition, 整数型
+    .参数 dwFlagsAndAttributes, 整数型
+    .参数 hTemplateFile, 整数型
+
+.DLL命令 ReadFile, 整数型, "kernel32.dll", "ReadFile"
+    .参数 hFile, 整数型
+    .参数 lpBuffer, 整数型
+    .参数 nNumberOfBytesToRead, 整数型
+    .参数 lpNumberOfBytesRead, 整数型, 传址
+    .参数 lpOverlapped, 整数型
+
+.DLL命令 GetFileSize, 整数型, "kernel32.dll", "GetFileSize"
+    .参数 hFile, 整数型
+    .参数 lpFileSizeHigh, 整数型
+
+.DLL命令 CloseHandle, 整数型, "kernel32.dll", "CloseHandle"
+    .参数 hObject, 整数型
+
+.DLL命令 lstrcmpiW_ptr, 整数型, "kernel32.dll", "lstrcmpiW"
+    .参数 lpString1, 整数型
+    .参数 lpString2, 整数型
+
+.DLL命令 CharUpper_ptr, 整数型, "user32.dll", "CharUpperW"
+    .参数 lpsz, 整数型
+
+.DLL命令 CharLower_ptr, 整数型, "user32.dll", "CharLowerW"
+    .参数 lpsz, 整数型
+
+.DLL命令 LCMapStringEx, 整数型, "Kernel32.dll", "LCMapStringEx"
+    .参数 lpLocaleName, 字节集
+    .参数 dwMapFlags, 整数型
+    .参数 lpSrcStr, 字节集
+    .参数 cchSrc, 整数型
+    .参数 lpDestStr, 字节集
+    .参数 cchDest, 整数型
+    .参数 lpVersionInformation, 整数型
+    .参数 lpReserved, 整数型
+    .参数 sortHandle, 整数型
+
+.DLL命令 LCMapStringEx_ptr, 整数型, "Kernel32.dll", "LCMapStringEx"
+    .参数 lpLocaleName, 字节集
+    .参数 dwMapFlags, 整数型
+    .参数 lpSrcStr, 整数型
+    .参数 cchSrc, 整数型
+    .参数 lpDestStr, 整数型
+    .参数 cchDest, 整数型
+    .参数 lpVersionInformation, 整数型
+    .参数 lpReserved, 整数型
+    .参数 sortHandle, 整数型
+
+.DLL命令 StrRStrI, 整数型, "shell32.dll", "StrRStrIW"
+    .参数 lpSource, 整数型
+    .参数 lpLast, 整数型
+    .参数 lpSrch, 整数型
+
+.DLL命令 StrRStr, 整数型, "shell32.dll", "StrRStrW"
+    .参数 lpSource, 整数型
+    .参数 lpLast, 整数型
+    .参数 lpSrch, 整数型
+
+.DLL命令 StrTrim_ptr, 整数型, "shlwapi.dll", "StrTrimW"
+    .参数 psz, 整数型
+    .参数 pszTrimChars, 整数型
+
+.DLL命令 StrToIntEx_ptr, 整数型, "shlwapi.dll", "StrToIntExW"
+    .参数 pszString, 整数型
+    .参数 dwFlags, 整数型
+    .参数 piRet, 整数型, 传址
+
+.DLL命令 StrToIntExW, 整数型, "shlwapi.dll", "StrToIntExW"
+    .参数 pszString, 字节集
+    .参数 dwFlags, 整数型
+    .参数 piRet, 整数型, 传址
+
+.DLL命令 WriteFile, 整数型, "kernel32.dll", "WriteFile"
+    .参数 hFile, 整数型
+    .参数 lpBuffer, 整数型
+    .参数 nNumberOfBytesToWrite, 整数型
+    .参数 lpNumberOfBytesWritten, 整数型, 传址
+    .参数 lpOverlapped, 整数型
+
+.DLL命令 StrToInt, 整数型, "shlwapi.dll", "StrToIntW"
+    .参数 lpSrc, 整数型
+
+.DLL命令 CreateMutex, 整数型, "kernel32.dll", "CreateMutexW"
+    .参数 lpMutexAttributes, 整数型
+    .参数 bInitialOwner, 整数型
+    .参数 lpName, 整数型
+
+.DLL命令 WaitForSingleObject, 整数型, "kernel32.dll", "WaitForSingleObject"
+    .参数 hHandle, 整数型
+    .参数 dwMilliseconds, 整数型
+
+.DLL命令 ReleaseMutex, 整数型, "kernel32.dll", "ReleaseMutex"
+    .参数 hMutex, 整数型
+
+.DLL命令 InitializeCriticalSection, , "kernel32", "InitializeCriticalSection", , 初始化临界段对象
+    .参数 lpCriticalSection, 整数型
+
+.DLL命令 DeleteCriticalSection, , "kernel32", "DeleteCriticalSection", , 删除临界部分
+    .参数 lpCriticalSection, 整数型, , 整数型
+
+.DLL命令 EnterCriticalSection, , "kernel32", "EnterCriticalSection", , 加入临界部分
+    .参数 lpCriticalSection, 整数型
+
+.DLL命令 LeaveCriticalSection, , "kernel32", "LeaveCriticalSection", , 保留前一个输入临界段
+    .参数 lpCriticalSection, 整数型
+
+.DLL命令 NetApiBufferAllocate, 整数型, "NETAPI32.DLL", "NetApiBufferAllocate"
+    .参数 ByteCount, 整数型
+    .参数 Buffer, 整数型, 传址
+
+.DLL命令 NetApiBufferFree, 整数型, "NETAPI32.DLL", "NetApiBufferFree", , 释放缓冲区指针
+    .参数 Buffer, 整数型
+
+.DLL命令 wsprintfA, 整数型, "user32.dll", "@wsprintfA", , 　
+    .参数 lpstr, 整数型, , 取空白文本
+    .参数 lpcstr, 文本型
+    .参数 arg1, 整数型
+    .参数 arg2, 整数型
+
+.DLL命令 _wtoi64, 长整数型, "ntdll.dll", "@_wtoi64"
+    .参数 lpcwstr, 字节集
+
+.DLL命令 _wtoi64_ptr, 长整数型, "ntdll.dll", "@_wtoi64"
+    .参数 lpcwstr, 整数型
+
+.DLL命令 _wtoi_ptr, 整数型, "ntdll.dll", "@_wtoi"
+    .参数 lpcwstr, 整数型
+
+.DLL命令 _Utf8转Unicode, 整数型, "kernel32.dll", "MultiByteToWideChar", , _Utf8转Unicode
+    .参数 CodePage, 整数型
+    .参数 dwFlags, 整数型
+    .参数 lpMultiByteStr, 字节集
+    .参数 cchMultiByte, 整数型
+    .参数 lpWideCharStr, 字节集
+    .参数 cchWideChar, 整数型
+
+.DLL命令 WideCharToMultiByte2, 整数型, "kernel32.dll", "WideCharToMultiByte"
+    .参数 CodePage, 整数型
+    .参数 dwFlags, 整数型
+    .参数 lpWideCharStr, 字节集
+    .参数 cchWideChar, 整数型
+    .参数 lpMultiByteStr, 字节集
+    .参数 cchMultiByte, 整数型
+    .参数 lpDefaultChar, 整数型
+    .参数 lpUsedDefaultChar, 整数型
+

@@ -1,0 +1,127 @@
+﻿.版本 2
+
+.常量 JV类型_未定义, "-1", 公开, JVTYPE_UNDEFINED
+.常量 JV类型_空, "0", 公开, JVTYPE_NULL
+.常量 JV类型_双精度型, "1", 公开, JVTYPE_DOUBLE
+.常量 JV类型_长整数型, "2", 公开, JVTYPE_LONG
+.常量 JV类型_逻辑型, "3", 公开, JVTYPE_BOOL
+.常量 JV类型_文本型, "4", 公开, JVTYPE_STRING
+.常量 JV类型_数组, "5", 公开, JVTYPE_ARRAY
+.常量 JV类型_对象, "6", 公开, JVTYPE_OBJECT
+
+.常量 jvp_needName, "1"
+.常量 jvp_needValue, "2"
+.常量 jvp_isEnded, "3"
+
+.常量 zyStackValue_Size, "8"
+
+.常量 zyStack_cbSize, "20"
+.常量 zyStack_hHeap, "0"
+.常量 zyStack_table, "4"
+.常量 zyStack_tableLength, "8"
+.常量 zyStack_isNewHeap, "12"
+.常量 zyStack_top, "16"
+
+
+.常量 CP_UTF8, "65001"
+.常量 CP_936, "936"
+.常量 CP_ACP, "0"
+
+.常量 指针型, "20"
+.常量 宽文本型, "21"
+
+.常量 zy_QueryInterface, "0"
+.常量 zy_AddRef, "1"
+.常量 zy_Release, "2"
+.常量 zy_Destory, "3"
+
+.常量 zyobj_pFunctions, "0", , zyObjectStruct
+.常量 zyobj_refCount, "4"
+.常量 zyobj_pParentThis, "8"
+.常量 zyobj_hHeap, "12"
+
+.常量 ht_cbSize, "28", , HashTableStruct
+.常量 ht_hHeap, "0"
+.常量 ht_table, "4"
+.常量 ht_tableLenth, "8"
+.常量 ht_count, "12"
+.常量 ht_threshold, "16"
+.常量 ht_loadFactor, "20"
+.常量 ht_isNewHeap, "24"
+
+.常量 htEx_cbSize, "32"
+.常量 htEx_eArray, "28"
+
+.常量 ll_cbSize, "24", , LinkListStruct
+.常量 ll_hHeap, "0"
+.常量 ll_count, "4"
+.常量 ll_valType, "8"
+.常量 ll_current, "12"
+.常量 ll_header, "16"
+.常量 ll_isNewHeap, "20"
+
+.常量 nd_cbSize, "8", , NoteStruct
+.常量 nd_value, "0"
+.常量 nd_next, "4"
+
+.常量 arr_cbSize, "20", , ArrayStruct
+.常量 arr_hHeap, "0"
+.常量 arr_count, "4"
+.常量 arr_table, "8"
+.常量 arr_tableLength, "12"
+.常量 arr_isNewHeap, "16"
+
+.常量 zystr_cbSize, "28"
+.常量 zystr_pStr, "16"
+.常量 zystr_bufferLen, "20"
+.常量 zystr_strLen, "24"
+
+
+.常量 JVTYPE_UNDEFINED, "-1"
+.常量 JVTYPE_NULL, "0"
+.常量 JVTYPE_DOUBLE, "1"
+.常量 JVTYPE_LONG, "2"
+.常量 JVTYPE_BOOL, "3"
+.常量 JVTYPE_STRING, "4"
+.常量 JVTYPE_ARRAY, "5"
+.常量 JVTYPE_OBJECT, "6"
+
+.常量 JSON_OK, "0", 公开, 成功
+.常量 JSON_ERROR, "-1", 公开, 未知错误
+.常量 JSON_INVALIDARG, "-2", 公开, 参数错误
+.常量 JSON_MEMORY, "-3", 公开, 内存错误
+.常量 JSON_INVALIDNAME, "-4", 公开, 无效的属性名
+.常量 JSON_OBJECTPARENT, "-5", 公开, 错误的父
+.常量 JSON_INVALIDVALUE, "-6", 公开, 错误的值
+
+.常量 jv_cbSize, "48"
+.常量 jv_hashCode, "16"
+.常量 jv_key, "20"
+.常量 jv_value, "24", , 8字节
+.常量 jv_next, "32"
+.常量 jv_type, "36"
+.常量 jv_parent, "40"
+.常量 jv_raw, "44", , 元数据
+
+.常量 JVPS_NAME, "1"
+.常量 JVPS_INDEX, "2"
+
+.常量 jvstep_cbSize, "12"
+.常量 jvstep_flags, "0"
+.常量 jvstep_name, "4"
+.常量 jvstep_index, "8"
+
+.常量 HEAP_ZERO_MEMORY, "8"
+.常量 GENERIC_READ, "-2147483648"
+.常量 GENERIC_WRITE, "1073741824"
+.常量 OPEN_EXISTING, "3"
+.常量 OPEN_ALWAYS, "4"
+.常量 FILE_ATTRIBUTE_NORMAL, "128"
+.常量 LCMAP_FULLWIDTH, "8388608"
+.常量 LCMAP_HALFWIDTH, "4194304"
+.常量 STIF_DEFAULT, "0"
+.常量 STIF_SUPPORT_HEX, "1"
+.常量 CREATE_ALWAYS, "2"
+.常量 INFINITE, "-1"
+
+

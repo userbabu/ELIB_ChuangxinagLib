@@ -1,0 +1,28 @@
+﻿.版本 2
+
+.数据类型 JsonValuePathStep
+    .成员 flags, 整数型, , , JVPS_
+    .成员 name, 整数型
+    .成员 index, 整数型
+
+.数据类型 LinkListStruct
+    .成员 hHeap, 整数型
+    .成员 count, 整数型
+    .成员 valType, 整数型
+    .成员 current, 整数型
+    .成员 header, 整数型
+    .成员 isNewHeap, 整数型
+
+.数据类型 NoteStruct
+    .成员 value, 整数型
+    .成员 next, 整数型
+
+.数据类型 StringBuilderStruct
+    .成员 pFunctions, 整数型
+    .成员 refCount, 整数型
+    .成员 pParentThis, 整数型
+    .成员 hHeap, 整数型
+    .成员 pStr, 整数型
+    .成员 bufferLen, 整数型
+    .成员 strLen, 整数型
+

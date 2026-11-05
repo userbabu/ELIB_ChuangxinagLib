@@ -1,0 +1,568 @@
+﻿.版本 2
+
+.程序集 程序集_Array
+.子程序 Array_Create, 整数型
+    .参数 hHeap, 整数型, 可空
+    .参数 initCount, 整数型, 可空, 默认为：0
+    .参数 initCapacity, 整数型, 可空, 初始缓存容量 默认为：8
+    .局部变量 hArray, 整数型
+    .局部变量 isNewHeap, 整数型
+    .局部变量 table, 整数型
+
+    .如果真 (是否为空 (initCapacity))
+        initCapacity ＝ 8
+    .如果真结束
+    
+    .如果真 (initCount ＜ 0 或 initCapacity ＜ 0)
+        返回 (0)
+    .如果真结束
+    
+    .如果真 (hHeap ＝ 0)
+        hHeap ＝ HeapCreate (0, 0, 0)
+        isNewHeap ＝ 1
+    .如果真结束
+    .如果真 (hHeap ＝ 0)
+        返回 (0)
+    .如果真结束
+    hArray ＝ HeapAlloc (hHeap, #HEAP_ZERO_MEMORY, #arr_cbSize)
+    _Set (hArray, #arr_isNewHeap, isNewHeap)
+    _Set (hArray, #arr_hHeap, hHeap)
+    _Set (hArray, #arr_count, initCount)
+    _Set (hArray, #arr_tableLength, initCapacity)
+    table ＝ HeapAlloc (hHeap, #HEAP_ZERO_MEMORY, initCapacity × 4)
+    _Set (hArray, #arr_table, table)
+    返回 (hArray)
+    
+
+.子程序 Array_Destroy, 逻辑型
+    .参数 hArray, 整数型
+    .局部变量 i, 整数型
+    .局部变量 val, 整数型
+    .局部变量 hHeap, 整数型
+    .局部变量 count, 整数型
+    .局部变量 table, 整数型
+
+    .如果真 (hArray ＝ 0)
+        返回 (假)
+    .如果真结束
+    hHeap ＝ _Get (hArray, #arr_hHeap)
+    .如果 (_Get (hArray, #arr_isNewHeap) ≠ 0)
+        HeapDestroy (hHeap)
+    .否则
+        table ＝ _Get (hArray, #arr_table)
+        HeapFree (hHeap, 0, table)
+        HeapFree (hHeap, 0, hArray)
+    .如果结束
+    返回 (真)
+
+.子程序 Array_GetHeap, 整数型
+    .参数 hArray, 整数型
+
+    .如果真 (hArray ＝ 0)
+        返回 (0)
+    .如果真结束
+    返回 (_Get (hArray, #arr_hHeap))
+    
+
+.子程序 Array_Alloc, 整数型
+    .参数 hArray, 整数型
+    .参数 size, 整数型
+    .局部变量 p, 整数型
+    .局部变量 hHeap, 整数型
+
+    .如果真 (hArray ＝ 0)
+        返回 (0)
+    .如果真结束
+    hHeap ＝ _Get (hArray, #arr_hHeap)
+    .如果真 (hHeap ＝ 0)
+        返回 (0)
+    .如果真结束
+    p ＝ HeapAlloc (hHeap, #HEAP_ZERO_MEMORY, size)
+    返回 (p)
+    
+
+.子程序 Array_Free
+    .参数 hArray, 整数型
+    .参数 ptr, 整数型
+    .局部变量 hHeap, 整数型
+
+    .如果真 (hArray ＝ 0)
+        返回 ()
+    .如果真结束
+    hHeap ＝ _Get (hArray, #arr_hHeap)
+    HeapFree (hHeap, 0, ptr)
+    
+
+.子程序 Array_ReDim, 逻辑型, , 重定义数组
+    .参数 hArray, 整数型
+    .参数 newCount, 整数型
+    .参数 keepOldData, 逻辑型, 可空, 保留之前的数据， 默认为：假
+    .局部变量 oldCapacity, 整数型
+    .局部变量 oldCount, 整数型
+    .局部变量 oldTable, 整数型
+    .局部变量 newCapacity, 整数型
+    .局部变量 newTable, 整数型
+    .局部变量 length, 整数型
+    .局部变量 i, 整数型
+    .局部变量 val, 整数型
+    .局部变量 hHeap, 整数型
+    .局部变量 subCount, 整数型
+
+    .如果真 (hArray ＝ 0)
+        返回 (假)
+    .如果真结束
+    hHeap ＝ _Get (hArray, #arr_hHeap)
+    oldTable ＝ _Get (hArray, #arr_table)
+    oldCapacity ＝ _Get (hArray, #arr_tableLength)
+    oldCount ＝ _Get (hArray, #arr_count)
+    oldTable ＝ _Get (hArray, #arr_table)
+    newCapacity ＝ newCount × 2
+    newTable ＝ HeapAlloc (hHeap, #HEAP_ZERO_MEMORY, newCapacity × 4)
+    .如果真 (keepOldData)
+        .如果 (oldCount ＞ newCount)
+            length ＝ newCount
+        .否则
+            length ＝ oldCount
+        .如果结束
+        RtlMoveMemory (newTable, oldTable, length × 4)
+    .如果真结束
+    
+    _Set (hArray, #arr_table, newTable)
+    _Set (hArray, #arr_tableLength, newCapacity)
+    _Set (hArray, #arr_count, newCount)
+    HeapFree (hHeap, 0, oldTable)
+    返回 (真)
+
+.子程序 _Array_ReArray, , , 动态增加成员
+    .参数 hArray, 整数型
+    .参数 count, 整数型, , 指定数量，不小于这个数量
+    .局部变量 oldCapacity, 整数型
+    .局部变量 oldTable, 整数型
+    .局部变量 newCapacity, 整数型
+    .局部变量 newTable, 整数型
+    .局部变量 hHeap, 整数型
+
+    .如果真 (hArray ＝ 0)
+        返回 ()
+    .如果真结束
+    hHeap ＝ _Get (hArray, #arr_hHeap)
+    oldCapacity ＝ _Get (hArray, #arr_tableLength)
+    oldTable ＝ _Get (hArray, #arr_table)
+    
+    newCapacity ＝ oldCapacity × 2 ＋ count ＋ 1
+    newTable ＝ HeapAlloc (hHeap, #HEAP_ZERO_MEMORY, newCapacity × 4)
+    RtlMoveMemory (newTable, oldTable, oldCapacity × 4)
+    _Set (hArray, #arr_table, newTable)
+    _Set (hArray, #arr_tableLength, newCapacity)
+    HeapFree (hHeap, 0, oldTable)
+
+.子程序 Array_Add, 整数型, , 成功返回索引，失败返回-1
+    .参数 hArray, 整数型
+    .参数 value, 整数型
+    .局部变量 pVal, 整数型
+    .局部变量 hHeap, 整数型
+    .局部变量 count, 整数型
+
+    .如果真 (hArray ＝ 0)
+        返回 (-1)
+    .如果真结束
+    hHeap ＝ _Get (hArray, #arr_hHeap)
+    
+    .如果真 (_Get (hArray, #arr_count) ≥ _Get (hArray, #arr_tableLength))
+        _Array_ReArray (hArray, 0)
+    .如果真结束
+    count ＝ _Get (hArray, #arr_count)
+    _SetTableItem (_Get (hArray, #arr_table), count, value)
+    _incPtr (hArray, #arr_count)
+    返回 (count)
+    
+
+.子程序 Array_AddArray, 逻辑型
+    .参数 hArray, 整数型
+    .参数 values, 整数型, 数组
+    .局部变量 pVal, 整数型
+    .局部变量 v, 整数型
+    .局部变量 count, 整数型
+    .局部变量 i, 整数型
+    .局部变量 valType, 整数型
+    .局部变量 hHeap, 整数型
+    .局部变量 table, 整数型
+    .局部变量 asCount, 整数型
+
+    .如果真 (hArray ＝ 0)
+        返回 (假)
+    .如果真结束
+    count ＝ 取数组成员数 (values)
+    .如果真 (count ＝ 0)
+        返回 (真)
+    .如果真结束
+    hHeap ＝ _Get (hArray, #arr_hHeap)
+    asCount ＝ _Get (hArray, #arr_count)
+    .如果真 (asCount ＋ count ≥ _Get (hArray, #arr_tableLength))
+        _Array_ReArray (hArray, count)
+    .如果真结束
+    table ＝ _Get (hArray, #arr_table)
+    pVal ＝ _取指针数组 (values)
+    RtlMoveMemory_int (table ＋ asCount × 4, pVal, count × 4)
+    asCount ＝ asCount ＋ count
+    _Set (hArray, #arr_count, asCount)
+    返回 (真)
+    
+
+.子程序 Array_InsertArray, 逻辑型
+    .参数 hArray, 整数型
+    .参数 index, 整数型
+    .参数 values, 整数型, 数组
+    .局部变量 pVal, 整数型
+    .局部变量 v, 整数型
+    .局部变量 count, 整数型
+    .局部变量 i, 整数型
+    .局部变量 len, 整数型
+    .局部变量 hHeap, 整数型
+    .局部变量 table, 整数型
+    .局部变量 asCount, 整数型
+
+    .如果真 (hArray ＝ 0)
+        返回 (假)
+    .如果真结束
+    count ＝ 取数组成员数 (values)
+    .如果真 (count ＝ 0)
+        返回 (真)
+    .如果真结束
+    asCount ＝ _Get (hArray, #arr_count)
+    hHeap ＝ _Get (hArray, #arr_hHeap)
+    .如果真 (asCount ＋ count ≥ _Get (hArray, #arr_tableLength))
+        _Array_ReArray (hArray, count)
+    .如果真结束
+    table ＝ _Get (hArray, #arr_table)
+    pVal ＝ _取指针数组 (values)
+    .如果真 (index ＜ asCount)
+        len ＝ (asCount － index) × 4
+        RtlMoveMemory_int (table ＋ (index ＋ count) × 4, table ＋ index × 4, len)
+    .如果真结束
+    
+    RtlMoveMemory_int (table ＋ index × 4, pVal, count × 4)
+    asCount ＝ asCount ＋ count
+    _Set (hArray, #arr_count, asCount)
+    返回 (真)
+
+.子程序 Array_Insert, 整数型
+    .参数 hArray, 整数型
+    .参数 index, 整数型
+    .参数 value, 整数型
+    .局部变量 pVal, 整数型
+    .局部变量 v, 整数型
+    .局部变量 len, 整数型
+    .局部变量 asCount, 整数型
+    .局部变量 table, 整数型
+    .局部变量 hHeap, 整数型
+
+    .如果真 (hArray ＝ 0)
+        返回 (-1)
+    .如果真结束
+    asCount ＝ _Get (hArray, #arr_count)
+    .如果真 (index ＜ 0 或 index ＞ asCount)
+        返回 (-1)
+    .如果真结束
+    
+    .如果真 (asCount ≥ _Get (hArray, #arr_tableLength))
+        _Array_ReArray (hArray, 0)
+    .如果真结束
+    hHeap ＝ _Get (hArray, #arr_hHeap)
+    table ＝ _Get (hArray, #arr_table)
+    .如果真 (index ＜ asCount)
+        len ＝ (asCount － index) × 4
+        RtlMoveMemory_int (table ＋ (index ＋ 1) × 4, table ＋ index × 4, len)
+    .如果真结束
+    _SetTableItem (table, index, value)
+    _incPtr (hArray, #arr_count)
+    返回 (index)
+    
+
+.子程序 Array_Get, 整数型, , 获取值
+    .参数 hArray, 整数型
+    .参数 index, 整数型
+    .局部变量 Array_count, 整数型
+    .局部变量 Array_valType, 整数型
+    .局部变量 Array_table, 整数型
+    .局部变量 val, 整数型
+
+    .如果真 (hArray ＝ 0)
+        返回 (0)
+    .如果真结束
+    Array_count ＝ _Get (hArray, #arr_count)
+    Array_table ＝ _Get (hArray, #arr_table)
+    .如果真 (index ＜ 0 或 index ≥ Array_count)
+        返回 (0)
+    .如果真结束
+    val ＝ _GetTableItem (Array_table, index)
+    返回 (val)
+    
+
+.子程序 Array_Set, 逻辑型
+    .参数 hArray, 整数型
+    .参数 index, 整数型
+    .参数 value, 整数型
+    .局部变量 pVal, 整数型
+    .局部变量 len, 整数型
+    .局部变量 asCount, 整数型
+    .局部变量 table, 整数型
+    .局部变量 hHeap, 整数型
+
+    .如果真 (hArray ＝ 0)
+        返回 (假)
+    .如果真结束
+    asCount ＝ _Get (hArray, #arr_count)
+    .如果真 (index ＜ 0 或 index ≥ asCount)
+        返回 (假)
+    .如果真结束
+    table ＝ _Get (hArray, #arr_table)
+    hHeap ＝ _Get (hArray, #arr_hHeap)
+    _SetTableItem (table, index, value)
+    返回 (真)
+
+.子程序 Array_ReplaceValue, 逻辑型
+    .参数 hArray, 整数型
+    .参数 oldValue, 整数型
+    .参数 value, 整数型
+    .局部变量 pVal, 整数型
+    .局部变量 len, 整数型
+    .局部变量 asCount, 整数型
+    .局部变量 table, 整数型
+    .局部变量 hHeap, 整数型
+    .局部变量 i, 整数型
+
+    .如果真 (hArray ＝ 0)
+        返回 (假)
+    .如果真结束
+    asCount ＝ _Get (hArray, #arr_count)
+    table ＝ _Get (hArray, #arr_table)
+    .计次循环首 (asCount, i)
+        .如果真 (_GetTableItem (table, i － 1) ＝ oldValue)
+            _SetTableItem (table, i － 1, value)
+            返回 (真)
+        .如果真结束
+        
+    .计次循环尾 ()
+    返回 (假)
+
+.子程序 Array_GetCount, 整数型
+    .参数 hArray, 整数型
+
+    .如果真 (hArray ＝ 0)
+        返回 (0)
+    .如果真结束
+    返回 (_Get (hArray, #arr_count))
+    
+
+.子程序 Array_Clear, 逻辑型
+    .参数 hArray, 整数型
+    .局部变量 table, 整数型
+
+    .如果真 (hArray ＝ 0)
+        返回 (假)
+    .如果真结束
+    table ＝ _Get (hArray, #arr_table)
+    ZeroMemory (table, _Get (hArray, #arr_tableLength) × 4)
+    _Set (hArray, #arr_count, 0)
+    返回 (真)
+    
+
+.子程序 Array_Remove, 逻辑型
+    .参数 hArray, 整数型
+    .参数 index, 整数型
+    .局部变量 table, 整数型
+    .局部变量 asCount, 整数型
+
+    .如果真 (hArray ＝ 0)
+        返回 (假)
+    .如果真结束
+    asCount ＝ _Get (hArray, #arr_count)
+    .如果真 (index ＜ 0 或 index ≥ asCount)
+        返回 (假)
+    .如果真结束
+    table ＝ _Get (hArray, #arr_table)
+    .如果真 (index ＜ asCount － 1)
+        RtlMoveMemory_int (table ＋ index × 4, table ＋ (index ＋ 1) × 4, (asCount － index － 1) × 4)
+    .如果真结束
+    ZeroMemory (table ＋ (asCount － 1) × 4, 4)
+    _decPtr (hArray, #arr_count)
+    返回 (真)
+
+.子程序 Array_RemoveFromValue, 逻辑型
+    .参数 hArray, 整数型
+    .参数 value, 整数型
+    .局部变量 pVal, 整数型
+    .局部变量 asCount, 整数型
+    .局部变量 table, 整数型
+    .局部变量 i, 整数型
+    .局部变量 hHeap, 整数型
+
+    .如果真 (hArray ＝ 0)
+        返回 (假)
+    .如果真结束
+    asCount ＝ _Get (hArray, #arr_count)
+    table ＝ _Get (hArray, #arr_table)
+    .计次循环首 (asCount, i)
+        .如果真 (_GetTableItem (table, i － 1) ＝ value)
+            .如果真 (i ＜ asCount)
+                RtlMoveMemory_int (table ＋ (i － 1) × 4, table ＋ i × 4, (asCount － i) × 4)
+            .如果真结束
+            ZeroMemory (table ＋ (asCount － 1) × 4, 4)
+            _decPtr (hArray, #arr_count)
+            返回 (真)
+        .如果真结束
+        
+    .计次循环尾 ()
+    返回 (假)
+
+.子程序 Array_GetValues, 整数型
+    .参数 hArray, 整数型
+    .参数 values, 整数型, 参考 数组
+    .局部变量 pValues, 整数型
+    .局部变量 value, 整数型
+    .局部变量 i, 整数型
+    .局部变量 asCount, 整数型
+    .局部变量 table, 整数型
+
+    .如果真 (hArray ＝ 0)
+        返回 (0)
+    .如果真结束
+    asCount ＝ _Get (hArray, #arr_count)
+    重定义数组 (values, 假, asCount)
+    pValues ＝ _取指针数组 (values)
+    table ＝ _Get (hArray, #arr_table)
+    RtlMoveMemory_int (pValues, table, asCount × 4)
+    返回 (asCount)
+    
+
+.子程序 Array_Sort, , , 数组排序
+    .参数 hArray, 整数型
+    .参数 compareFunction, 子程序指针, , 返回值：整数型 （整数型 value1，整数型 value2，整数型 lParam） 备注：如果非整数型，则value是一个指针
+    .参数 lParam, 整数型
+    .参数 algorithm, 整数型, , 0、快速排序；1、希尔排序
+    .局部变量 asCount, 整数型
+    .局部变量 table, 整数型
+
+    .如果真 (hArray ＝ 0)
+        返回 ()
+    .如果真结束
+    asCount ＝ _Get (hArray, #arr_count)
+    table ＝ _Get (hArray, #arr_table)
+    .判断开始 (algorithm ＝ 0)
+        _Array_FastSort (table, asCount, compareFunction, lParam, 0, asCount － 1)
+    .默认
+        _Array_ShellSort (table, asCount, compareFunction, lParam)
+    .判断结束
+    
+    
+
+.子程序 _Array_FastSort
+    .参数 table, 整数型
+    .参数 count, 整数型
+    .参数 compareFunction, 子程序指针, , 返回值：整数型 （整数型 value1，整数型 value2，整数型 lParam） 备注：如果非整数型，则value是一个指针
+    .参数 lParam, 整数型
+    .参数 left, 整数型
+    .参数 right, 整数型
+    .局部变量 局部_基准点, 整数型
+    .局部变量 局部_基准值, 整数型
+    .局部变量 i, 整数型
+    .局部变量 j, 整数型
+    .局部变量 tempVal, 整数型
+    .局部变量 proc, 整数型
+    .局部变量 m, 整数型
+
+    .如果真 (left ≥ right)
+        返回 ()
+    .如果真结束
+    proc ＝ _子程序指针到整数 (compareFunction)
+    m ＝ left ＋ (right － left) ÷ 2
+    .如果真 (zyCall3 (proc, _GetTableItem (table, left), _GetTableItem (table, right), lParam) ＞ 0)
+        _Xchg (table ＋ left × 4, table ＋ right × 4)
+    .如果真结束
+    .如果真 (zyCall3 (proc, _GetTableItem (table, m), _GetTableItem (table, right), lParam) ＞ 0)
+        _Xchg (table ＋ right × 4, table ＋ m × 4)
+    .如果真结束
+    .如果真 (zyCall3 (proc, _GetTableItem (table, m), _GetTableItem (table, left), lParam) ＞ 0)
+        _Xchg (table ＋ m × 4, table ＋ left × 4)
+    .如果真结束
+    
+    i ＝ left
+    j ＝ right
+    局部_基准值 ＝ _指针到整数 (table ＋ left × 4)
+    .判断循环首 (i ＜ j) ' 循环直至左右指针相遇
+        .判断循环首 (i ＜ j 且 zyCall3 (proc, _GetTableItem (table, j), 局部_基准值, lParam) ≥ 0) ' 向左侧寻找小于基准值的元素
+            j ＝ j － 1
+        .判断循环尾 ()
+        .如果真 (i ＜ j)
+            RtlMoveMemory_int (table ＋ i × 4, table ＋ j × 4, 4) ' 交换i和j的值
+            i ＝ i ＋ 1
+        .如果真结束
+        
+        .判断循环首 (i ＜ j 且 zyCall3 (proc, _GetTableItem (table, i), 局部_基准值, lParam) ≤ 0) ' 向右侧寻找大于基准值的元素
+            i ＝ i ＋ 1
+        .判断循环尾 ()
+        .如果真 (i ＜ j)
+            RtlMoveMemory_int (table ＋ j × 4, table ＋ i × 4, 4) ' 交换i和j的值
+            j ＝ j － 1
+        .如果真结束
+        
+    .判断循环尾 ()
+    RtlMoveMemory_int (table ＋ i × 4, _取变量地址 (局部_基准值), 4)
+    _Array_FastSort (table, count, compareFunction, lParam, left, i － 1)
+    _Array_FastSort (table, count, compareFunction, lParam, i ＋ 1, right)
+    
+
+.子程序 _Array_ShellSort
+    .参数 table, 整数型
+    .参数 count, 整数型
+    .参数 compareFunction, 子程序指针, , 返回值：整数型 （整数型 value1，整数型 value2，整数型 lParam） 备注：如果非整数型，则value是一个指针
+    .参数 lParam, 整数型
+    .局部变量 gap, 整数型
+    .局部变量 i, 整数型
+    .局部变量 j, 整数型
+    .局部变量 value, 整数型
+    .局部变量 proc, 整数型
+    .局部变量 swap, 整数型
+
+    proc ＝ _子程序指针到整数 (compareFunction)
+    
+    .判断循环首 (gap ＜ count)
+        gap ＝ gap × 3 ＋ 1
+    .判断循环尾 ()
+    
+    .判断循环首 (gap ＞ 0)
+        i ＝ gap
+        .判断循环首 (i ＜ count)
+            j ＝ i － gap
+            value ＝ _GetTableItem (table, i)
+            .判断循环首 (j ≥ 0 且 zyCall3 (proc, value, _GetTableItem (table, j), lParam) ＜ 0)
+                _Xchg (table ＋ (j ＋ gap) × 4, table ＋ j × 4)
+                j ＝ j － gap
+            .判断循环尾 ()
+            RtlMoveMemory_int (table ＋ (j ＋ gap) × 4, _取变量地址 (value), 4)
+            i ＝ i ＋ 1
+        .判断循环尾 ()
+        gap ＝ (gap － 1) ÷ 3
+    .判断循环尾 ()
+    
+    ' gap ＝ count ÷ 2
+    ' .判断循环首 (1 ≤ gap)
+        ' i ＝ gap
+        ' .判断循环首 (i ＜ count)
+            ' temp ＝ _指针到整数 (table ＋ i × 4)
+            ' value ＝ Data_GetValuePoint (valType, temp)
+            ' j ＝ i － gap
+            ' .判断循环首 (j ≥ 0 且 zyCall3 (proc, value, Data_GetValuePoint (valType, _指针到整数 (table ＋ j × 4)), lParam) ＜ 0)
+                ' zyAsmXchg (table ＋ (j ＋ gap) × 4, table ＋ j × 4)
+                ' j ＝ j － gap
+            ' .判断循环尾 ()
+            ' RtlMoveMemory_int (table ＋ (j ＋ gap) × 4, _取变量地址 (temp), 4)
+            
+            ' i ＝ i ＋ 1
+        ' .判断循环尾 ()
+        ' gap ＝ gap ÷ 2
+    ' .判断循环尾 ()
+    
+    
+

@@ -1,0 +1,17 @@
+﻿.版本 2
+
+.常量 JV类型_未定义, "-1", , JVTYPE_UNDEFINED
+.常量 JV类型_空, "0", , JVTYPE_NULL
+.常量 JV类型_双精度型, "1", , JVTYPE_DOUBLE
+.常量 JV类型_长整数型, "2", , JVTYPE_LONG
+.常量 JV类型_逻辑型, "3", , JVTYPE_BOOL
+.常量 JV类型_文本型, "4", , JVTYPE_STRING
+.常量 JV类型_数组, "5", , JVTYPE_ARRAY
+.常量 JV类型_对象, "6", , JVTYPE_OBJECT
+.常量 JSON_OK, "0", , 成功
+.常量 JSON_ERROR, "-1", , 未知错误
+.常量 JSON_INVALIDARG, "-2", , 参数错误
+.常量 JSON_MEMORY, "-3", , 内存错误
+.常量 JSON_INVALIDNAME, "-4", , 无效的属性名
+.常量 JSON_OBJECTPARENT, "-5", , 错误的父
+.常量 JSON_INVALIDVALUE, "-6", , 错误的值

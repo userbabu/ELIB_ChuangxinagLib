@@ -1,0 +1,2905 @@
+{
+  "_说明": "从 ecode\\模块\\zyCurl\\代码\\*.class.e.txt 与 ecode\\代码\\cURL类\\URL参数类.class.e.txt 逐字抄录；type: int/long/text/bin/double/bool/subptr/text[]/text[]?/text[]ref/int_ref/easy_ref/msg_ref/cert_ref。impl=函数名后缀，op=共享的操作码（缺省为本类独有），对象=_kind（0 easy 1 http 2 smtp 3 multi 4 urlparam），序号=数据类型在 m_pDataType 的位置。",
+  "类别": "HTTP访问",
+  "_行基址": 395,
+  "数据类型": [
+    {
+      "名": "CURL_证书信息",
+      "序号": 10,
+      "成员": [
+        [
+          "数量",
+          "int"
+        ],
+        [
+          "链表数组",
+          "int[]"
+        ]
+      ]
+    },
+    {
+      "名": "CURL_消息",
+      "序号": 20,
+      "成员": [
+        [
+          "msg",
+          "int"
+        ],
+        [
+          "easy_handle",
+          "int"
+        ],
+        [
+          "result",
+          "int"
+        ]
+      ]
+    }
+  ],
+  "类": [
+    {
+      "名": "curl_easy",
+      "英文": "CurlEasy",
+      "说明": "简单接口，手动调用 curl_easy.销毁（）",
+      "对象": 0,
+      "类型宏": "CX_TYPE_CURL_EASY",
+      "序号": 11,
+      "命令": [
+        {
+          "名": "创建",
+          "返": "bool",
+          "参": [],
+          "impl": "Create",
+          "释": "curl_easy_init 如果在调用此方法之前，还没有调用 CURL_全局初始化() 则会自动调用，但不建议这么做。"
+        },
+        {
+          "名": "销毁",
+          "返": "null",
+          "参": [],
+          "impl": "Destroy",
+          "释": "curl_easy_cleanup"
+        },
+        {
+          "名": "取句柄",
+          "返": "int",
+          "参": [],
+          "impl": "GetHandle",
+          "释": "返回当前内部句柄数值，0 表示尚未创建。"
+        },
+        {
+          "名": "置句柄",
+          "返": "null",
+          "参": [
+            [
+              "参数_CURL句柄",
+              "int",
+              "外部的 curl_easy 句柄数值；传 0 表示解绑。"
+            ]
+          ],
+          "impl": "SetHandle",
+          "释": "将“参数_CURL句柄”赋值给成员变量"
+        },
+        {
+          "名": "克隆",
+          "返": "int",
+          "参": [],
+          "impl": "DupHandle",
+          "释": "curl_easy_duphandle，返回克隆的 curl句柄"
+        },
+        {
+          "名": "置选项",
+          "返": "int",
+          "参": [
+            [
+              "参数_选项",
+              "int",
+              "“CURLOPT_” 开头常量"
+            ],
+            [
+              "参数_值",
+              "int",
+              "根据不同的选项提供值"
+            ]
+          ],
+          "impl": "SetoptInt",
+          "释": "curl_easy_setopt 返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "置选项长整数",
+          "返": "int",
+          "参": [
+            [
+              "参数_选项",
+              "int",
+              "“CURLOPT_” 开头常量"
+            ],
+            [
+              "参数_值",
+              "long",
+              "根据不同的选项提供值"
+            ]
+          ],
+          "impl": "SetoptLong",
+          "释": "curl_easy_setopt 返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "置选项文本",
+          "返": "int",
+          "参": [
+            [
+              "参数_选项",
+              "int",
+              "“CURLOPT_” 开头常量"
+            ],
+            [
+              "参数_值",
+              "text",
+              "根据不同的选项提供值"
+            ]
+          ],
+          "impl": "SetoptText",
+          "释": "curl_easy_setopt 返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "置选项字节集",
+          "返": "int",
+          "参": [
+            [
+              "参数_选项",
+              "int",
+              "“CURLOPT_” 开头常量"
+            ],
+            [
+              "参数_值",
+              "bin",
+              "根据不同的选项提供值"
+            ]
+          ],
+          "impl": "SetoptBin",
+          "释": "curl_easy_setopt 返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "执行",
+          "返": "int",
+          "参": [],
+          "impl": "Perform",
+          "释": "curl_easy_perform 返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "取信息",
+          "返": "int",
+          "参": [
+            [
+              "参数_信息类型",
+              "int",
+              "“CURLINFO_”开头常量"
+            ]
+          ],
+          "impl": "GetinfoInt",
+          "释": "curl_easy_getinfo"
+        },
+        {
+          "名": "取信息双精度",
+          "返": "double",
+          "参": [
+            [
+              "参数_信息类型",
+              "int",
+              "“CURLINFO_”开头常量"
+            ]
+          ],
+          "impl": "GetinfoDouble",
+          "释": "curl_easy_getinfo"
+        },
+        {
+          "名": "取信息文本",
+          "返": "text",
+          "参": [
+            [
+              "参数_信息类型",
+              "int",
+              "“CURLINFO_”开头常量"
+            ]
+          ],
+          "impl": "GetinfoText",
+          "释": "curl_easy_getinfo"
+        },
+        {
+          "名": "取信息文本数组",
+          "返": "int",
+          "参": [
+            [
+              "参数_信息类型",
+              "int",
+              "要取的信息码，取 #CURLINFO_ 开头的常量。"
+            ],
+            [
+              "参数_文本数组",
+              "text[]ref",
+              "输出参数：按行收到结果数组。"
+            ]
+          ],
+          "impl": "GetinfoTextAry",
+          "释": "返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "取信息证书信息",
+          "返": "int",
+          "参": [
+            [
+              "参数_信息类型",
+              "int",
+              "“CURLINFO_”开头常量"
+            ],
+            [
+              "参数_证书信息",
+              "cert_ref",
+              "输出参数：收到证书链对象（数量 + 链表数组）。"
+            ]
+          ],
+          "impl": "GetinfoCert",
+          "释": "curl_easy_getinfo"
+        },
+        {
+          "名": "重置",
+          "返": "null",
+          "参": [],
+          "impl": "Reset",
+          "释": "curl_easy_reset"
+        },
+        {
+          "名": "URL编码",
+          "返": "text",
+          "参": [
+            [
+              "参数_编码文本",
+              "text",
+              "要作百分号编码的文本。"
+            ]
+          ],
+          "impl": "Escape",
+          "释": "按 libcurl 的百分号编码规则转义文本。"
+        },
+        {
+          "名": "URL解码",
+          "返": "text",
+          "参": [
+            [
+              "参数_URL",
+              "text",
+              "要还原的百分号编码文本。"
+            ]
+          ],
+          "impl": "Unescape",
+          "释": "还原百分号编码。"
+        }
+      ]
+    },
+    {
+      "名": "curl_http",
+      "英文": "CurlHttp",
+      "说明": "封装用于访问HTTP或HTTPS",
+      "_备注": "在 curl_easy 之上：自带写/头回调收集响应，故有 取响应数据/取响应头 等；创建后自动挂回调。",
+      "对象": 1,
+      "类型宏": "CX_TYPE_CURL_HTTP",
+      "序号": 12,
+      "命令": [
+        {
+          "名": "创建",
+          "返": "bool",
+          "参": [],
+          "impl": "Create",
+          "op": "CurlEasy_Create",
+          "释": "创建底层句柄；已创建时直接复用，返回真表示可用。"
+        },
+        {
+          "名": "销毁",
+          "返": "null",
+          "参": [],
+          "impl": "Destroy",
+          "op": "CurlEasy_Destroy",
+          "释": "释放句柄与内部缓冲；之后再调用其它命令会报错。"
+        },
+        {
+          "名": "取句柄",
+          "返": "int",
+          "参": [],
+          "impl": "GetHandle",
+          "op": "CurlEasy_GetHandle",
+          "释": "返回当前内部句柄数值，0 表示尚未创建。"
+        },
+        {
+          "名": "置句柄",
+          "返": "null",
+          "参": [
+            [
+              "参数_CURL句柄",
+              "int",
+              "外部的 curl_easy 句柄数值；传 0 表示解绑。"
+            ]
+          ],
+          "impl": "SetHandle",
+          "op": "CurlEasy_SetHandle",
+          "释": "将“参数_CURL句柄”赋值给成员变量"
+        },
+        {
+          "名": "克隆",
+          "返": "int",
+          "参": [],
+          "impl": "DupHandle",
+          "op": "CurlEasy_DupHandle",
+          "释": "curl_easy_duphandle，返回克隆的 curl句柄"
+        },
+        {
+          "名": "置选项",
+          "返": "int",
+          "参": [
+            [
+              "参数_选项",
+              "int",
+              "“CURLOPT_” 开头常量"
+            ],
+            [
+              "参数_值",
+              "int",
+              "根据不同的选项提供值"
+            ]
+          ],
+          "impl": "SetoptInt",
+          "op": "CurlEasy_SetoptInt",
+          "释": "curl_easy_setopt 返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "置选项长整数",
+          "返": "int",
+          "参": [
+            [
+              "参数_选项",
+              "int",
+              "“CURLOPT_” 开头常量"
+            ],
+            [
+              "参数_值",
+              "long",
+              "根据不同的选项提供值"
+            ]
+          ],
+          "impl": "SetoptLong",
+          "op": "CurlEasy_SetoptLong",
+          "释": "curl_easy_setopt 返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "置选项文本",
+          "返": "int",
+          "参": [
+            [
+              "参数_选项",
+              "int",
+              "“CURLOPT_” 开头常量"
+            ],
+            [
+              "参数_值",
+              "text",
+              "根据不同的选项提供值"
+            ]
+          ],
+          "impl": "SetoptText",
+          "op": "CurlEasy_SetoptText",
+          "释": "curl_easy_setopt 返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "置选项字节集",
+          "返": "int",
+          "参": [
+            [
+              "参数_选项",
+              "int",
+              "“CURLOPT_” 开头常量"
+            ],
+            [
+              "参数_值",
+              "bin",
+              "根据不同的选项提供值"
+            ]
+          ],
+          "impl": "SetoptBin",
+          "op": "CurlEasy_SetoptBin",
+          "释": "curl_easy_setopt 返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "执行",
+          "返": "int",
+          "参": [],
+          "impl": "Perform",
+          "op": "CurlEasy_Perform",
+          "释": "curl_easy_perform 返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "取信息",
+          "返": "int",
+          "参": [
+            [
+              "参数_信息类型",
+              "int",
+              "“CURLINFO_”开头常量"
+            ]
+          ],
+          "impl": "GetinfoInt",
+          "op": "CurlEasy_GetinfoInt",
+          "释": "curl_easy_getinfo"
+        },
+        {
+          "名": "取信息双精度",
+          "返": "double",
+          "参": [
+            [
+              "参数_信息类型",
+              "int",
+              "“CURLINFO_”开头常量"
+            ]
+          ],
+          "impl": "GetinfoDouble",
+          "op": "CurlEasy_GetinfoDouble",
+          "释": "curl_easy_getinfo"
+        },
+        {
+          "名": "取信息文本",
+          "返": "text",
+          "参": [
+            [
+              "参数_信息类型",
+              "int",
+              "“CURLINFO_”开头常量"
+            ]
+          ],
+          "impl": "GetinfoText",
+          "op": "CurlEasy_GetinfoText",
+          "释": "curl_easy_getinfo"
+        },
+        {
+          "名": "取信息文本数组",
+          "返": "int",
+          "参": [
+            [
+              "参数_信息类型",
+              "int",
+              "要取的信息码，取 #CURLINFO_ 开头的常量。"
+            ],
+            [
+              "参数_文本数组",
+              "text[]ref",
+              "输出参数：按行收到结果数组。"
+            ]
+          ],
+          "impl": "GetinfoTextAry",
+          "op": "CurlEasy_GetinfoTextAry",
+          "释": "返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "取信息证书信息",
+          "返": "int",
+          "参": [
+            [
+              "参数_信息类型",
+              "int",
+              "“CURLINFO_”开头常量"
+            ],
+            [
+              "参数_证书信息",
+              "cert_ref",
+              "输出参数：收到证书链对象（数量 + 链表数组）。"
+            ]
+          ],
+          "impl": "GetinfoCert",
+          "op": "CurlEasy_GetinfoCert",
+          "释": "curl_easy_getinfo"
+        },
+        {
+          "名": "重置",
+          "返": "null",
+          "参": [],
+          "impl": "Reset",
+          "op": "CurlEasy_Reset",
+          "释": "curl_easy_reset"
+        },
+        {
+          "名": "URL编码",
+          "返": "text",
+          "参": [
+            [
+              "参数_编码文本",
+              "text",
+              "要作百分号编码的文本。"
+            ]
+          ],
+          "impl": "Escape",
+          "op": "CurlEasy_Escape",
+          "释": "按 libcurl 的百分号编码规则转义文本。"
+        },
+        {
+          "名": "URL解码",
+          "返": "text",
+          "参": [
+            [
+              "参数_URL",
+              "text",
+              "要还原的百分号编码文本。"
+            ]
+          ],
+          "impl": "Unescape",
+          "op": "CurlEasy_Unescape",
+          "释": "还原百分号编码。"
+        },
+        {
+          "名": "置进度回调",
+          "返": "int",
+          "参": [
+            [
+              "参数_回调函数",
+              "subptr",
+              "返回值：整数型【1停止，0继续】（整数型 用户数据，长整数型 总下载，长整数型 当前下载，长整数型 总上传，长整数型 当前上传）"
+            ],
+            [
+              "参数_用户数据",
+              "int?",
+              "原样回传给回调的第一个参数（clientp），可省略。"
+            ]
+          ],
+          "impl": "SetXferinfo",
+          "释": "设置传输过程的回调函数，返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "置进度回调2",
+          "返": "int",
+          "参": [
+            [
+              "参数_回调函数",
+              "int",
+              "返回值：整数型【1停止，0继续】（整数型 用户数据，长整数型 总下载，长整数型 当前下载，长整数型 总上传，长整数型 当前上传）"
+            ],
+            [
+              "参数_用户数据",
+              "int?",
+              "原样回传给回调的第一个参数（clientp），可省略。"
+            ]
+          ],
+          "impl": "SetXferinfoAddr",
+          "释": "设置传输过程的回调函数，返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "置URL",
+          "返": "int",
+          "参": [
+            [
+              "参数_url",
+              "text",
+              "完整网址，UTF-8 文本。"
+            ]
+          ],
+          "impl": "SetUrl",
+          "释": "设置要访问的URL，返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "置代理",
+          "返": "int",
+          "参": [
+            [
+              "参数_代理",
+              "text",
+              "格式： 代理类型://代理服务器:端口  代理类型有 Http, Socks4, Socks4a, Socks5, Socks5h"
+            ],
+            [
+              "用户名",
+              "text",
+              "账号，留空表示不带。"
+            ],
+            [
+              "密码",
+              "text",
+              "对应密码，留空表示不带。"
+            ]
+          ],
+          "impl": "SetProxy",
+          "释": "设置代理，返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "模仿",
+          "返": "int",
+          "参": [
+            [
+              "target",
+              "text",
+              "浏览器指纹型号，如 chrome107；取值见 取指纹型号列表。"
+            ],
+            [
+              "default_headers",
+              "bool?",
+              "{“chrome99”,“chrome100”,“chrome101”,“chrome104”,“chrome107”,“chrome99_android”,“edge99”,“edge101”,“safari15_3”,“safari15_5”}"
+            ]
+          ],
+          "impl": "Impersonate",
+          "释": "curl_easy_impersonate 返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "置登录用户名",
+          "返": "int",
+          "参": [
+            [
+              "用户名",
+              "text",
+              "账号，留空表示不带。"
+            ],
+            [
+              "密码",
+              "text",
+              "对应密码，留空表示不带。"
+            ]
+          ],
+          "impl": "SetUserPwd",
+          "释": "设置代理，返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "置COOKIE导入文件",
+          "返": "int",
+          "参": [
+            [
+              "参数_文件名",
+              "text",
+              "磁盘文件全路径。"
+            ]
+          ],
+          "impl": "SetCookieFile",
+          "释": "当请求网页时，会读取此文件的cookie信息一起去访问"
+        },
+        {
+          "名": "置COOKIE导出文件",
+          "返": "int",
+          "参": [
+            [
+              "参数_文件名",
+              "text",
+              "磁盘文件全路径。"
+            ]
+          ],
+          "impl": "SetCookieList",
+          "释": "当响应网页时，返回的cookie信息会保存到此文件"
+        },
+        {
+          "名": "置COOKIE列表",
+          "返": "int",
+          "参": [
+            [
+              "参数_Cookies",
+              "text",
+              "可以是Netscape / Mozilla格式的一行，也可以是 Set-Cookie：...格式。同样启动COOKIE引擎"
+            ]
+          ],
+          "impl": "SetCookieText",
+          "释": "当请求网页时，会带上此cookie信息一起去访问网页，且不会因为 对象.置COOKIE导入文件（） 被覆盖"
+        },
+        {
+          "名": "置超时毫秒",
+          "返": "int",
+          "参": [
+            [
+              "参数_连接超时",
+              "int?",
+              "单位：毫秒"
+            ],
+            [
+              "参数_请求超时",
+              "int?",
+              "单位：毫秒"
+            ]
+          ],
+          "impl": "SetTimeoutMs",
+          "释": "设置超时时间，返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "置超时",
+          "返": "int",
+          "参": [
+            [
+              "参数_连接超时",
+              "int?",
+              "单位：秒"
+            ],
+            [
+              "参数_请求超时",
+              "int?",
+              "单位：秒"
+            ]
+          ],
+          "impl": "SetTimeout",
+          "释": "设置超时时间，返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "置POST",
+          "返": "int",
+          "参": [
+            [
+              "参数_POST",
+              "bool",
+              "真：POST； 假：GET"
+            ]
+          ],
+          "impl": "SetPost",
+          "释": "返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "置POST数据字节集",
+          "返": "int",
+          "参": [
+            [
+              "参数_POST数据",
+              "bin",
+              "应用程序必须保持这个数据"
+            ]
+          ],
+          "impl": "SetPostBin",
+          "释": "设置了POST数据则代表已经设置为POST提交，返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "置POST数据",
+          "返": "int",
+          "参": [
+            [
+              "参数_POST数据",
+              "text",
+              "应用程序必须保持这个数据"
+            ]
+          ],
+          "impl": "SetPostText",
+          "释": "设置了POST数据则代表已经设置为POST提交，返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "置重定向",
+          "返": "int",
+          "参": [
+            [
+              "参数_重定向",
+              "bool",
+              "真跟随 3xx 跳转。"
+            ],
+            [
+              "参数_最大次数",
+              "int?",
+              "默认为5"
+            ]
+          ],
+          "impl": "SetFollow",
+          "释": "返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "置TCP长连接",
+          "返": "int",
+          "参": [
+            [
+              "是否开启",
+              "bool",
+              "真开启 TCP 长连接。"
+            ],
+            [
+              "超时时长",
+              "int?",
+              "单位 秒  默认为60"
+            ]
+          ],
+          "impl": "SetKeepAlive",
+          "释": "返回“CURLE_”开头常量，成功返回“CURLE_OK"
+        },
+        {
+          "名": "置传输编码",
+          "返": "int",
+          "参": [
+            [
+              "编码类型",
+              "text?",
+              "留空不开启  否则为编码类型 如gzip"
+            ]
+          ],
+          "impl": "SetEncoding",
+          "释": "返回“CURLE_”开头常量，成功返回“CURLE_OK"
+        },
+        {
+          "名": "置请求头",
+          "返": "int",
+          "参": [
+            [
+              "参数_请求头",
+              "text[]",
+              "每一个成员代表一个字段"
+            ]
+          ],
+          "impl": "SetHeaders",
+          "释": "返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "置缓冲区大小",
+          "返": "int",
+          "参": [
+            [
+              "缓冲区大小",
+              "int",
+              "单次收数据的字节数，0 用默认 512。"
+            ]
+          ],
+          "impl": "SetBufSize",
+          "释": "返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "置引用页",
+          "返": "int",
+          "参": [
+            [
+              "参数_引用页",
+              "text",
+              "Referer 头的值。"
+            ]
+          ],
+          "impl": "SetReferer",
+          "释": "返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "置协议版本",
+          "返": "int",
+          "参": [
+            [
+              "版本",
+              "int",
+              "#CURL_HTTP_VERSION_"
+            ]
+          ],
+          "impl": "SetHttpVersion",
+          "释": "指定使用的 HTTP 协议版本，取值见 #CURL_HTTP_VERSION_ 常量。"
+        },
+        {
+          "名": "置UserAgent",
+          "返": "int",
+          "参": [
+            [
+              "参数_UserAgent",
+              "text",
+              "文本型参数：参数_UserAgent。"
+            ]
+          ],
+          "impl": "SetUserAgent",
+          "释": "设置 User-Agent: 头"
+        },
+        {
+          "名": "置证书文件",
+          "返": "int",
+          "参": [
+            [
+              "参数_证书文件名",
+              "text",
+              "如“/etc/certs/cabundle.pem”"
+            ]
+          ],
+          "impl": "SetCaInfo",
+          "释": "返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "置验证SSL证书",
+          "返": "int",
+          "参": [
+            [
+              "参数_验证SSL证书",
+              "bool",
+              "真校验服务端证书，假不校验（调试用）。"
+            ],
+            [
+              "参数_验证SSL证书服务器",
+              "bool?",
+              "是否额外校验证书里的域名，可省略。"
+            ]
+          ],
+          "impl": "SetVerify",
+          "释": "设置是否验证SSL证书，返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "取响应数据",
+          "返": "bin",
+          "参": [],
+          "impl": "RespBody",
+          "释": "返回上次收到的响应正文字节集。"
+        },
+        {
+          "名": "取响应头",
+          "返": "text",
+          "参": [],
+          "impl": "RespHead",
+          "释": "返回上次收到的响应头文本。"
+        },
+        {
+          "名": "取响应头字节集",
+          "返": "bin",
+          "参": [],
+          "impl": "RespHeadBin",
+          "释": "以字节集形式返回响应头（保留原始换行）。"
+        },
+        {
+          "名": "取响应代码",
+          "返": "int",
+          "参": [],
+          "impl": "RespCode",
+          "释": "返回 HTTP 状态码，如 200。"
+        },
+        {
+          "名": "取总耗时",
+          "返": "double",
+          "参": [],
+          "impl": "RespTime",
+          "释": "返回上次请求的总耗时（秒）。"
+        },
+        {
+          "名": "取URL",
+          "返": "text",
+          "参": [],
+          "impl": "RespUrl",
+          "释": "返回实际生效的最终网址（跟跳转后的地址）。"
+        },
+        {
+          "名": "取重定向URL",
+          "返": "text",
+          "参": [],
+          "impl": "RespRedirectUrl",
+          "释": "返回跳转目标地址（未开启自动跟随时用）。"
+        },
+        {
+          "名": "取远程地址",
+          "返": "text",
+          "参": [],
+          "impl": "RespRemoteIp",
+          "释": "返回对端 IP。"
+        },
+        {
+          "名": "取远程端口",
+          "返": "int",
+          "参": [],
+          "impl": "RespRemotePort",
+          "释": "返回对端端口。"
+        },
+        {
+          "名": "取本地地址",
+          "返": "text",
+          "参": [],
+          "impl": "RespLocalIp",
+          "释": "返回本机出口 IP。"
+        },
+        {
+          "名": "取本地端口",
+          "返": "int",
+          "参": [],
+          "impl": "RespLocalPort",
+          "释": "返回本机出口端口。"
+        },
+        {
+          "名": "取Cookies",
+          "返": "int",
+          "参": [
+            [
+              "参数_Cookies",
+              "text[]ref",
+              "输出参数：逐条收到当前保存的 Cookie。"
+            ]
+          ],
+          "impl": "RespCookies",
+          "释": "取出当前保存的 Cookie，逐条写入文本型数组。"
+        }
+      ]
+    },
+    {
+      "名": "curl_smtp",
+      "英文": "CurlSmtp",
+      "说明": "封装用于发送邮件，继承自 curl_easy",
+      "_备注": "18 条 easy 共享命令直接复用 curl_easy 的操作码；进度/证书/SSL 复用 curl_http 的实现。",
+      "对象": 2,
+      "类型宏": "CX_TYPE_CURL_SMTP",
+      "序号": 13,
+      "命令": [
+        {
+          "名": "创建",
+          "返": "bool",
+          "参": [],
+          "impl": "Create",
+          "op": "CurlEasy_Create",
+          "释": "创建底层句柄；已创建时直接复用，返回真表示可用。"
+        },
+        {
+          "名": "销毁",
+          "返": "null",
+          "参": [],
+          "impl": "Destroy",
+          "op": "CurlEasy_Destroy",
+          "释": "释放句柄与内部缓冲；之后再调用其它命令会报错。"
+        },
+        {
+          "名": "取句柄",
+          "返": "int",
+          "参": [],
+          "impl": "GetHandle",
+          "op": "CurlEasy_GetHandle",
+          "释": "返回当前内部句柄数值，0 表示尚未创建。"
+        },
+        {
+          "名": "置句柄",
+          "返": "null",
+          "参": [
+            [
+              "参数_CURL句柄",
+              "int",
+              "外部的 curl_easy 句柄数值；传 0 表示解绑。"
+            ]
+          ],
+          "impl": "SetHandle",
+          "op": "CurlEasy_SetHandle",
+          "释": "将“参数_CURL句柄”赋值给成员变量，会销毁之前的句柄"
+        },
+        {
+          "名": "克隆",
+          "返": "int",
+          "参": [],
+          "impl": "DupHandle",
+          "op": "CurlEasy_DupHandle",
+          "释": "curl_easy_duphandle，返回克隆的 curl句柄"
+        },
+        {
+          "名": "置选项",
+          "返": "int",
+          "参": [
+            [
+              "参数_选项",
+              "int",
+              "“CURLOPT_” 开头常量"
+            ],
+            [
+              "参数_值",
+              "int",
+              "根据不同的选项提供值"
+            ]
+          ],
+          "impl": "SetoptInt",
+          "op": "CurlEasy_SetoptInt",
+          "释": "curl_easy_setopt 返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "置选项长整数",
+          "返": "int",
+          "参": [
+            [
+              "参数_选项",
+              "int",
+              "“CURLOPT_” 开头常量"
+            ],
+            [
+              "参数_值",
+              "long",
+              "根据不同的选项提供值"
+            ]
+          ],
+          "impl": "SetoptLong",
+          "op": "CurlEasy_SetoptLong",
+          "释": "curl_easy_setopt 返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "置选项文本",
+          "返": "int",
+          "参": [
+            [
+              "参数_选项",
+              "int",
+              "“CURLOPT_” 开头常量"
+            ],
+            [
+              "参数_值",
+              "text",
+              "根据不同的选项提供值"
+            ]
+          ],
+          "impl": "SetoptText",
+          "op": "CurlEasy_SetoptText",
+          "释": "curl_easy_setopt 返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "置选项字节集",
+          "返": "int",
+          "参": [
+            [
+              "参数_选项",
+              "int",
+              "“CURLOPT_” 开头常量"
+            ],
+            [
+              "参数_值",
+              "bin",
+              "根据不同的选项提供值"
+            ]
+          ],
+          "impl": "SetoptBin",
+          "op": "CurlEasy_SetoptBin",
+          "释": "curl_easy_setopt 返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "执行",
+          "返": "int",
+          "参": [],
+          "impl": "Perform",
+          "op": "CurlEasy_Perform",
+          "释": "curl_easy_perform 返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "取信息",
+          "返": "int",
+          "参": [
+            [
+              "参数_信息类型",
+              "int",
+              "“CURLINFO_”开头常量"
+            ]
+          ],
+          "impl": "GetinfoInt",
+          "op": "CurlEasy_GetinfoInt",
+          "释": "curl_easy_getinfo"
+        },
+        {
+          "名": "取信息双精度",
+          "返": "double",
+          "参": [
+            [
+              "参数_信息类型",
+              "int",
+              "“CURLINFO_”开头常量"
+            ]
+          ],
+          "impl": "GetinfoDouble",
+          "op": "CurlEasy_GetinfoDouble",
+          "释": "curl_easy_getinfo"
+        },
+        {
+          "名": "取信息文本",
+          "返": "text",
+          "参": [
+            [
+              "参数_信息类型",
+              "int",
+              "“CURLINFO_”开头常量"
+            ]
+          ],
+          "impl": "GetinfoText",
+          "op": "CurlEasy_GetinfoText",
+          "释": "curl_easy_getinfo"
+        },
+        {
+          "名": "取信息文本数组",
+          "返": "int",
+          "参": [
+            [
+              "参数_信息类型",
+              "int",
+              "要取的信息码，取 #CURLINFO_ 开头的常量。"
+            ],
+            [
+              "参数_文本数组",
+              "text[]ref",
+              "输出参数：按行收到结果数组。"
+            ]
+          ],
+          "impl": "GetinfoTextAry",
+          "op": "CurlEasy_GetinfoTextAry",
+          "释": "返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "取信息证书信息",
+          "返": "int",
+          "参": [
+            [
+              "参数_信息类型",
+              "int",
+              "“CURLINFO_”开头常量"
+            ],
+            [
+              "参数_证书信息",
+              "cert_ref",
+              "输出参数：收到证书链对象（数量 + 链表数组）。"
+            ]
+          ],
+          "impl": "GetinfoCert",
+          "op": "CurlEasy_GetinfoCert",
+          "释": "curl_easy_getinfo"
+        },
+        {
+          "名": "重置",
+          "返": "null",
+          "参": [],
+          "impl": "Reset",
+          "op": "CurlEasy_Reset",
+          "释": "curl_easy_reset"
+        },
+        {
+          "名": "URL编码",
+          "返": "text",
+          "参": [
+            [
+              "参数_编码文本",
+              "text",
+              "要作百分号编码的文本。"
+            ]
+          ],
+          "impl": "Escape",
+          "op": "CurlEasy_Escape",
+          "释": "按 libcurl 的百分号编码规则转义文本。"
+        },
+        {
+          "名": "URL解码",
+          "返": "text",
+          "参": [
+            [
+              "参数_URL",
+              "text",
+              "要还原的百分号编码文本。"
+            ]
+          ],
+          "impl": "Unescape",
+          "op": "CurlEasy_Unescape",
+          "释": "还原百分号编码。"
+        },
+        {
+          "名": "置进度回调",
+          "返": "int",
+          "参": [
+            [
+              "参数_回调函数",
+              "subptr",
+              "返回值：整数型【1停止，0继续】（整数型 用户数据，长整数型 总下载，长整数型 当前下载，长整数型 总上传，长整数型 当前上传）"
+            ],
+            [
+              "参数_用户数据",
+              "int?",
+              "原样回传给回调的第一个参数（clientp），可省略。"
+            ]
+          ],
+          "impl": "SetXferinfo",
+          "op": "CurlHttp_SetXferinfo",
+          "释": "设置传输过程的回调函数，返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "置进度回调2",
+          "返": "int",
+          "参": [
+            [
+              "参数_回调函数",
+              "int",
+              "返回值：整数型【1停止，0继续】（整数型 用户数据，长整数型 总下载，长整数型 当前下载，长整数型 总上传，长整数型 当前上传）"
+            ],
+            [
+              "参数_用户数据",
+              "int?",
+              "原样回传给回调的第一个参数（clientp），可省略。"
+            ]
+          ],
+          "impl": "SetXferinfoAddr",
+          "op": "CurlHttp_SetXferinfoAddr",
+          "释": "设置传输过程的回调函数，返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "置服务器",
+          "返": "int",
+          "参": [
+            [
+              "参数_服务器",
+              "text",
+              "如：“smtp.qq.com”"
+            ],
+            [
+              "参数_端口",
+              "int",
+              "默认：25"
+            ],
+            [
+              "参数_用户名",
+              "text",
+              "文本型参数：参数_用户名。"
+            ],
+            [
+              "参数_密码",
+              "text",
+              "文本型参数：参数_密码。"
+            ]
+          ],
+          "impl": "SetServer",
+          "释": "设置登陆 服务器地址 用户名 密码 端口，返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "置证书文件",
+          "返": "int",
+          "参": [
+            [
+              "参数_证书文件名",
+              "text",
+              "如“/etc/certs/cabundle.pem”"
+            ]
+          ],
+          "impl": "SetCaInfo",
+          "op": "CurlHttp_SetCaInfo",
+          "释": "返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "置验证SSL证书",
+          "返": "int",
+          "参": [
+            [
+              "参数_验证SSL证书",
+              "bool",
+              "真校验服务端证书，假不校验（调试用）。"
+            ],
+            [
+              "参数_验证SSL证书服务器",
+              "bool?",
+              "是否额外校验证书里的域名，可省略。"
+            ]
+          ],
+          "impl": "SetVerify",
+          "op": "CurlHttp_SetVerify",
+          "释": "设置是否验证SSL证书，返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        },
+        {
+          "名": "置邮件内容",
+          "返": "int",
+          "参": [
+            [
+              "参数_主题",
+              "text",
+              "邮件的主题"
+            ],
+            [
+              "参数_正文",
+              "text",
+              "支持html"
+            ],
+            [
+              "参数_发件人",
+              "text",
+              "邮件地址，如：“kyozy@xx.com” 或 “酷宝贝<kyozy@xx.com>”"
+            ],
+            [
+              "参数_收件人列表",
+              "text[]",
+              "收件地址数组，信封与头部的 To 都由此生成。"
+            ],
+            [
+              "参数_附件列表",
+              "text[]?",
+              "附件文件全路径数组；省略或空数组则发纯文本邮件。"
+            ],
+            [
+              "参数_编码",
+              "text?",
+              "默认：“gb2312”"
+            ]
+          ],
+          "impl": "SetMail",
+          "释": "设置邮件内容，返回“CURLE_”开头常量，成功返回“CURLE_OK”"
+        }
+      ]
+    },
+    {
+      "名": "curl_multi",
+      "英文": "CurlMulti",
+      "说明": "多接口栈：把若干 curl_easy 对象放进同一轮循环并发执行",
+      "对象": 3,
+      "类型宏": "CX_TYPE_CURL_MULTI",
+      "序号": 14,
+      "命令": [
+        {
+          "名": "创建",
+          "返": "bool",
+          "参": [],
+          "impl": "Create",
+          "释": "curl_multi_init"
+        },
+        {
+          "名": "销毁",
+          "返": "null",
+          "参": [],
+          "impl": "Destroy",
+          "释": "curl_multi_cleanup"
+        },
+        {
+          "名": "取句柄",
+          "返": "int",
+          "参": [],
+          "impl": "GetHandle",
+          "释": "返回当前内部句柄数值，0 表示尚未创建。"
+        },
+        {
+          "名": "置句柄",
+          "返": "null",
+          "参": [
+            [
+              "参数_CURL_MULTI句柄",
+              "int",
+              "外部的 curl_multi 句柄数值；传 0 表示解绑。"
+            ]
+          ],
+          "impl": "SetHandle",
+          "释": "将“参数_CURL_MULTI句柄”赋值给成员变量"
+        },
+        {
+          "名": "添加处理",
+          "返": "int",
+          "参": [
+            [
+              "参数_curl",
+              "easy_ref",
+              "要加入或移出的 curl_easy 对象，其句柄必须已创建。"
+            ]
+          ],
+          "impl": "AddHandle",
+          "释": "curl_multi_add_handle，添加一个 curl_easy 对象到多接口栈，进行同时操作"
+        },
+        {
+          "名": "移除处理",
+          "返": "int",
+          "参": [
+            [
+              "参数_curl",
+              "easy_ref",
+              "要加入或移出的 curl_easy 对象，其句柄必须已创建。"
+            ]
+          ],
+          "impl": "RemoveHandle",
+          "释": "curl_multi_remove_handle，将 curl_easy 对象 从多接口栈移除"
+        },
+        {
+          "名": "执行",
+          "返": "int",
+          "参": [
+            [
+              "参数_仍在运行数",
+              "int_ref",
+              "这个参数返回，还在处理中的数量"
+            ]
+          ],
+          "impl": "Perform",
+          "释": "curl_multi_perform 返回“CURLM_”开头常量，成功返回“CURLM_OK”，此方法需要循环调用，直到“参数_仍在运行数 = 0”"
+        },
+        {
+          "名": "等待",
+          "返": "int",
+          "参": [
+            [
+              "参数_超时时间",
+              "int",
+              "单位：毫秒"
+            ],
+            [
+              "参数_文件描述符数",
+              "int_ref",
+              "numfds"
+            ]
+          ],
+          "impl": "Wait",
+          "释": "curl_multi_wait 返回“CURLM_”开头常量，成功返回“CURLM_OK”，紧跟着 执行() 之后调用，当“参数_文件描述符数 = 0”表示超时 或 没有文件描述符，首次为0时可等待100毫秒再次尝试。"
+        },
+        {
+          "名": "取信息",
+          "返": "bool",
+          "参": [
+            [
+              "参数_剩余消息数",
+              "int_ref",
+              "输出参数：队列里还剩多少条消息未读。"
+            ],
+            [
+              "参数_消息",
+              "msg_ref",
+              "输出参数：收到这条完成消息（msg / easy_handle / result）。"
+            ]
+          ],
+          "impl": "InfoRead",
+          "释": "curl_multi_info_read， 返回假：表示"
+        },
+        {
+          "名": "置选项",
+          "返": "int",
+          "参": [
+            [
+              "参数_选项",
+              "int",
+              "“CURLMOPT_”开头常量"
+            ],
+            [
+              "参数_值",
+              "int",
+              "按选项要求的类型取值：整数型、长整数型、文本型或字节集。"
+            ]
+          ],
+          "impl": "Setopt",
+          "释": "curl_multi_setopt 返回“CURLM_”开头常量，成功返回“CURLM_OK”"
+        }
+      ]
+    },
+    {
+      "名": "URL参数类",
+      "英文": "UrlParam",
+      "说明": "网址查询参数的增删改查（原模块同名类，逐字一致）",
+      "对象": 4,
+      "类型宏": "CX_TYPE_URL_PARAM",
+      "序号": 15,
+      "命令": [
+        {
+          "名": "初始化设置网址",
+          "返": "null",
+          "参": [
+            [
+              "网址",
+              "text",
+              "完整网址。"
+            ]
+          ],
+          "impl": "InitUrl",
+          "释": "初始化设置参数"
+        },
+        {
+          "名": "添加修改参数",
+          "返": "null",
+          "参": [
+            [
+              "参数名称",
+              "text",
+              "查询参数名；内含 & 会被剔除。"
+            ],
+            [
+              "参数值",
+              "text",
+              "参数内容；中文按 UTF-8 百分号编码。"
+            ],
+            [
+              "参数值是否URL编码",
+              "bool?",
+              "默认为真"
+            ],
+            [
+              "参数值是否自动转换UTF8",
+              "bool?",
+              "默认为真"
+            ],
+            [
+              "参数值是否不编码数字",
+              "bool?",
+              "保留字母数字与 - . 不编码；省略按真。"
+            ],
+            [
+              "参数值为空则不进行任何操作",
+              "bool?",
+              "真则值为空时直接跳过；省略按假（会写入空值）。"
+            ]
+          ],
+          "impl": "AddOrModify",
+          "释": "若存在参数则修改 若不存在则增加"
+        },
+        {
+          "名": "取网址",
+          "返": "text",
+          "参": [],
+          "impl": "GetUrl",
+          "释": "返回内部维护的完整网址。"
+        },
+        {
+          "名": "修改参数值",
+          "返": "bool",
+          "参": [
+            [
+              "参数名称",
+              "text",
+              "查询参数名；内含 & 会被剔除。"
+            ],
+            [
+              "修改值",
+              "text",
+              "要换成的新值。"
+            ],
+            [
+              "参数值是否URL编码",
+              "bool?",
+              "默认为真"
+            ],
+            [
+              "参数值是否自动转换UTF8",
+              "bool?",
+              "默认为真"
+            ],
+            [
+              "参数值是否不编码数字",
+              "bool?",
+              "保留字母数字与 - . 不编码；省略按真。"
+            ],
+            [
+              "参数值为空则不进行任何操作",
+              "bool?",
+              "真则值为空时直接跳过；省略按假（会写入空值）。"
+            ]
+          ],
+          "impl": "ModifyValue",
+          "释": "把已存在参数的值换成新值，成功返回真。"
+        },
+        {
+          "名": "修改参数名",
+          "返": "bool",
+          "参": [
+            [
+              "参数名称",
+              "text",
+              "查询参数名；内含 & 会被剔除。"
+            ],
+            [
+              "修改的参数名",
+              "text",
+              "新的参数名。"
+            ]
+          ],
+          "impl": "ModifyName",
+          "释": "改参数名并保持其值，成功返回真。"
+        },
+        {
+          "名": "删除参数",
+          "返": "bool",
+          "参": [
+            [
+              "参数名称",
+              "text",
+              "查询参数名；内含 & 会被剔除。"
+            ]
+          ],
+          "impl": "RemoveParam",
+          "释": "删除指定参数，成功返回真。"
+        },
+        {
+          "名": "添加参数",
+          "返": "null",
+          "参": [
+            [
+              "参数名称",
+              "text",
+              "查询参数名；内含 & 会被剔除。"
+            ],
+            [
+              "参数值",
+              "text",
+              "参数内容；中文按 UTF-8 百分号编码。"
+            ],
+            [
+              "参数值是否URL编码",
+              "bool?",
+              "默认为真"
+            ],
+            [
+              "参数值是否自动转换UTF8",
+              "bool?",
+              "默认为真"
+            ],
+            [
+              "参数值是否不编码数字",
+              "bool?",
+              "默认为假"
+            ],
+            [
+              "参数值为空则不进行任何操作",
+              "bool?",
+              "真则值为空时直接跳过；省略按假（会写入空值）。"
+            ]
+          ],
+          "impl": "AddParam",
+          "释": "追加一个参数，按末尾字符自动补 ? 或 &。"
+        },
+        {
+          "名": "判断参数是否存在",
+          "返": "text",
+          "参": [
+            [
+              "网址",
+              "text",
+              "完整网址。"
+            ],
+            [
+              "参数名称",
+              "text",
+              "查询参数名；内含 & 会被剔除。"
+            ]
+          ],
+          "impl": "FindParam",
+          "释": "返回命中的「参数名=值」这段文本，未找到返回空文本。"
+        }
+      ]
+    },
+    {
+      "名": "HTTP访问_Curl访问类",
+      "英文": "AccessCurl",
+      "说明": "原模块同名类：libcurl-impersonate 路线的一次性网页访问。",
+      "对象": 5,
+      "类型宏": "CX_TYPE_ACC_CURL",
+      "序号": 16,
+      "命令": [
+        {
+          "名": "设置每次接收长度",
+          "返": "null",
+          "参": [
+            [
+              "接收长度",
+              "int",
+              "默认为512字节"
+            ]
+          ],
+          "impl": "SetRecvChunk",
+          "释": "字节"
+        },
+        {
+          "名": "设置COOKIE",
+          "返": "null",
+          "参": [
+            [
+              "COOKIE",
+              "text?",
+              "设置的COOKIE 若设置 是否使用默认COOKIE 本项无效"
+            ],
+            [
+              "是否使用默认COOKIE",
+              "bool?",
+              "默认为假 使用默认后，设置COOKIE参数 将失效，自动使用IE默认COOKIE进行提交"
+            ],
+            [
+              "是否自动更新COOKIE_参数",
+              "bool?",
+              "默认为真 开启后 后续将自动将服务器返回的COOKIE合并到下次提交的COOKIE中"
+            ]
+          ],
+          "impl": "SetCookie",
+          "释": "访问之前设置有效"
+        },
+        {
+          "名": "设置DNS服务器",
+          "返": "null",
+          "参": [
+            [
+              "服务器1",
+              "text?",
+              "首选 DNS 服务器，逗号分隔可多台；留空不设置。"
+            ],
+            [
+              "服务器2",
+              "text?",
+              "备用 DNS 服务器；留空不设置。"
+            ]
+          ],
+          "impl": "SetDns",
+          "释": "设置默认的DNS服务器"
+        },
+        {
+          "名": "获取当前提交的COOKIE",
+          "返": "text",
+          "参": [],
+          "impl": "GetSubmitCookie",
+          "释": "访问之前设置有效"
+        },
+        {
+          "名": "获取当前返回的COOKIE",
+          "返": "text",
+          "参": [],
+          "impl": "GetRetCookie",
+          "释": "取得上次访问服务端返回的的COOKIE"
+        },
+        {
+          "名": "设置CURL句柄",
+          "返": "null",
+          "参": [
+            [
+              "CURL2",
+              "int",
+              "要使用的 curl_easy 句柄数值。"
+            ]
+          ],
+          "impl": "SetCurlHandle",
+          "释": "设置CURL使用的CURL对象句柄"
+        },
+        {
+          "名": "设置共享的DNS缓存",
+          "返": "null",
+          "参": [
+            [
+              "SHARE句柄",
+              "int?",
+              "curl share 句柄；留空取消共享。"
+            ]
+          ],
+          "impl": "SetShareDns",
+          "释": "设置CURL使用的CURL对象句柄"
+        },
+        {
+          "名": "SetOption",
+          "返": "int",
+          "参": [
+            [
+              "Option",
+              "int",
+              "属性类型"
+            ],
+            [
+              "Value",
+              "common",
+              "属性数值"
+            ]
+          ],
+          "impl": "SetOption",
+          "释": "设置LibCurl属性"
+        },
+        {
+          "名": "SetOption_int",
+          "返": "int",
+          "参": [
+            [
+              "Option",
+              "int",
+              "属性类型"
+            ],
+            [
+              "Value",
+              "int",
+              "属性数值"
+            ]
+          ],
+          "impl": "SetOptionInt",
+          "释": "直接传递，不转换为指针"
+        },
+        {
+          "名": "模仿",
+          "返": "int",
+          "参": [
+            [
+              "脚本名称",
+              "text",
+              "{“chrome99”,“chrome100”,“chrome101”,“chrome104”,“chrome107”,“chrome99_android”,“edge99”,“edge101”,“safari15_3”,“safari15_5”} 详细查看 https://github.com/lwthiker/curl-impersonate"
+            ],
+            [
+              "使用默认请求头",
+              "bool?",
+              "真则同时套用该型号自带的默认请求头；一般传假，自己拼头。"
+            ]
+          ],
+          "impl": "Impersonate",
+          "释": "套用浏览器 TLS 指纹型号。"
+        },
+        {
+          "名": "访问网页_cURL",
+          "返": "bin",
+          "参": [
+            [
+              "完整网址",
+              "text",
+              "提供UTF8编码"
+            ],
+            [
+              "访问方式",
+              "text?",
+              "默认GET 也可以POST"
+            ],
+            [
+              "回调子程序",
+              "int?",
+              "参数1整数型 void *clientp 指针,   参数2双精度小数 curl_off_t dltotal 总大小,   参数3双精度小数 curl_off_t dlnow 已下载,   参数4双精度小数 curl_off_t ultotal,  参数5双精度小数 curl_off_t ulnow"
+            ],
+            [
+              "提交信息",
+              "bin?",
+              "POST 正文，省略即无正文。"
+            ],
+            [
+              "超时",
+              "int?",
+              "单位秒"
+            ],
+            [
+              "附加协议头",
+              "text?",
+              "额外请求头，一行一条；缺失的常用头会自动补全。"
+            ],
+            [
+              "返回头",
+              "text_ref?",
+              "请求返回的头信息"
+            ],
+            [
+              "禁止重定向",
+              "bool?",
+              "禁止重定向 默认为假"
+            ],
+            [
+              "网站登录用户名",
+              "text?",
+              "目标站的登录用户名，留空不带。"
+            ],
+            [
+              "网站登录密码",
+              "text?",
+              "目标站的登录密码。"
+            ],
+            [
+              "代理地址",
+              "text?",
+              "0.0.0.0:0000格式"
+            ],
+            [
+              "代理用户名",
+              "text?",
+              "代理账号"
+            ],
+            [
+              "代理密码",
+              "text?",
+              "代理密码"
+            ],
+            [
+              "是否采用Gzip",
+              "bool?",
+              "是否使用GZIP压缩 设置时确保请求头里不要包含accpent-encoding 否则就会乱套了!"
+            ],
+            [
+              "失败日志",
+              "text_ref?",
+              "返回错误原因"
+            ],
+            [
+              "代理连接失败自动处理",
+              "bool?",
+              "如果代理服务器连接失败，则自动取消代理重试"
+            ],
+            [
+              "模拟浏览器TSL",
+              "text?",
+              "默认为chrome107   其他查看 https://github.com/lwthiker/curl-impersonate/blob/main/browsers.json"
+            ],
+            [
+              "回调用户参数",
+              "int?",
+              "回调第一个参数"
+            ],
+            [
+              "回调次数",
+              "int?",
+              "内部重试计数，首次调用请留空或 0。"
+            ]
+          ],
+          "impl": "AccessPageCurl",
+          "释": "返回 CURLE_ 开头的常量，CURLE_OK 表示执行正常 CURL常量解释：https://curl.haxx.se/libcurl/c/curl_easy_setopt.html CURL官方页面https://curl.haxx.se/libcurl/c/example.html"
+        }
+      ]
+    },
+    {
+      "名": "HTTP访问_WinHTTP访问类",
+      "英文": "AccessWinHttp",
+      "说明": "原模块同名类：WinHTTP 路线的一次性网页访问。",
+      "对象": 6,
+      "类型宏": "CX_TYPE_ACC_WINHTTP",
+      "序号": 17,
+      "命令": [
+        {
+          "名": "取上次提交请求头",
+          "返": "text",
+          "参": [],
+          "impl": "GetLastHeader",
+          "释": "返回上次访问实际提交的请求头文本。"
+        },
+        {
+          "名": "设置每次接收长度",
+          "返": "null",
+          "参": [
+            [
+              "接收长度",
+              "int",
+              "默认为512字节"
+            ]
+          ],
+          "impl": "SetRecvChunk",
+          "释": "字节"
+        },
+        {
+          "名": "设置COOKIE",
+          "返": "null",
+          "参": [
+            [
+              "COOKIE",
+              "text?",
+              "设置的COOKIE 若设置 是否使用默认COOKIE 本项无效"
+            ],
+            [
+              "是否使用默认COOKIE",
+              "bool?",
+              "默认为假 使用默认后，设置COOKIE参数 将失效，自动使用IE默认COOKIE进行提交"
+            ],
+            [
+              "是否自动更新COOKIE_参数",
+              "bool?",
+              "默认为真 开启后 后续将自动将服务器返回的COOKIE合并到下次提交的COOKIE中"
+            ]
+          ],
+          "impl": "SetCookie",
+          "释": "访问之前设置有效"
+        },
+        {
+          "名": "获取当前提交的COOKIE",
+          "返": "text",
+          "参": [],
+          "impl": "GetSubmitCookie",
+          "释": "访问之前设置有效"
+        },
+        {
+          "名": "获取当前返回的COOKIE",
+          "返": "text",
+          "参": [],
+          "impl": "GetRetCookie",
+          "释": "取得上次访问服务端返回的的COOKIE"
+        },
+        {
+          "名": "访问网页_WinHTTP",
+          "返": "bin",
+          "参": [
+            [
+              "完整网址",
+              "text",
+              "要访问的网址（UTF-8）。"
+            ],
+            [
+              "访问方式",
+              "text?",
+              "默认GET 也可以POST"
+            ],
+            [
+              "回调子程序",
+              "int?",
+              "所有参数必须为整数型 子程序需要5个参数 1. HTTP状态_  2为返回状态代码 3为总文件大小 4.保留 5.保留"
+            ],
+            [
+              "提交信息",
+              "bin?",
+              "POST 正文，省略即无正文。"
+            ],
+            [
+              "超时",
+              "int?",
+              "单位秒"
+            ],
+            [
+              "附加协议头",
+              "text?",
+              "额外请求头，一行一条；缺失的常用头会自动补全。"
+            ],
+            [
+              "返回头",
+              "text_ref?",
+              "请求返回的头信息"
+            ],
+            [
+              "禁止重定向",
+              "bool?",
+              "禁止重定向 默认为假"
+            ],
+            [
+              "网站登录用户名",
+              "text?",
+              "目标站的登录用户名，留空不带。"
+            ],
+            [
+              "网站登录密码",
+              "text?",
+              "目标站的登录密码。"
+            ],
+            [
+              "代理地址",
+              "text?",
+              "0.0.0.0:0000格式"
+            ],
+            [
+              "代理用户名",
+              "text?",
+              "代理账号"
+            ],
+            [
+              "代理密码",
+              "text?",
+              "代理密码"
+            ],
+            [
+              "是否采用Gzip",
+              "bool?",
+              "是否使用GZIP压缩"
+            ]
+          ],
+          "impl": "AccessPageWinHttp",
+          "释": "WinHTTP1.1 访问稳定版 子程序"
+        }
+      ]
+    },
+    {
+      "名": "HTTP访问_WinInet访问类",
+      "英文": "AccessWinInet",
+      "说明": "原模块同名类：WinInet 路线的一次性网页访问。",
+      "对象": 7,
+      "类型宏": "CX_TYPE_ACC_WININET",
+      "序号": 18,
+      "命令": [
+        {
+          "名": "设置每次接收长度",
+          "返": "null",
+          "参": [
+            [
+              "接收长度",
+              "int",
+              "默认为512字节"
+            ]
+          ],
+          "impl": "SetRecvChunk",
+          "释": "字节"
+        },
+        {
+          "名": "设置COOKIE",
+          "返": "null",
+          "参": [
+            [
+              "COOKIE",
+              "text?",
+              "设置的COOKIE 若设置 是否使用默认COOKIE 本项无效"
+            ],
+            [
+              "是否使用默认COOKIE",
+              "bool?",
+              "默认为假 使用默认后，设置COOKIE参数 将失效，自动使用IE默认COOKIE进行提交"
+            ],
+            [
+              "是否自动更新COOKIE_参数",
+              "bool?",
+              "默认为真 开启后 后续将自动将服务器返回的COOKIE合并到下次提交的COOKIE中"
+            ]
+          ],
+          "impl": "SetCookie",
+          "释": "访问之前设置有效"
+        },
+        {
+          "名": "获取当前提交的COOKIE",
+          "返": "text",
+          "参": [],
+          "impl": "GetSubmitCookie",
+          "释": "访问之前设置有效"
+        },
+        {
+          "名": "获取当前返回的COOKIE",
+          "返": "text",
+          "参": [],
+          "impl": "GetRetCookie",
+          "释": "取得上次访问服务端返回的的COOKIE"
+        },
+        {
+          "名": "访问网页_WinInet",
+          "返": "bin",
+          "参": [
+            [
+              "完整网址",
+              "text",
+              "完整的网页地址"
+            ],
+            [
+              "访问方式",
+              "text?",
+              "默认GET 也可以POST"
+            ],
+            [
+              "回调子程序",
+              "int?",
+              "返回常量 HTTP状态_ 开头。子程序需要三个参数 第一个为返回状态代码 第二个为总文件大小 第三个为按状态返回数值"
+            ],
+            [
+              "提交信息",
+              "bin?",
+              "POST专用"
+            ],
+            [
+              "超时",
+              "int?",
+              "秒"
+            ],
+            [
+              "附加协议头",
+              "text?",
+              "一行一个请用换行符隔开"
+            ],
+            [
+              "返回头",
+              "text_ref?",
+              "Location"
+            ],
+            [
+              "禁止重定向",
+              "bool?",
+              "默认不禁止网页重定向"
+            ],
+            [
+              "代理地址",
+              "text?",
+              "代理地址"
+            ],
+            [
+              "代理用户名",
+              "text?",
+              "代理认证用户名。"
+            ],
+            [
+              "代理密码",
+              "text?",
+              "代理认证密码。"
+            ],
+            [
+              "是否采用Gzip",
+              "bool?",
+              "真则在请求头带 Accept-Encoding: gzip 并自动解压；省略按真。"
+            ]
+          ],
+          "impl": "AccessPageWinInet",
+          "释": "使用WinInet的方式访问网页"
+        }
+      ]
+    }
+  ],
+  "_统计": {
+    "curl_easy": 18,
+    "curl_http": 54,
+    "curl_smtp": 24,
+    "curl_multi": 10,
+    "URL参数类": 8
+  },
+  "全局命令": [
+    {
+      "名": "网页_访问_Curl",
+      "英文": "WebAccessCurl",
+      "说明": "使用CurlLib访问 超级稳定版！",
+      "类别": 6,
+      "返": "bin",
+      "参": [
+        [
+          "完整网址",
+          "text",
+          "要访问的网址（UTF-8）。"
+        ],
+        [
+          "访问方式",
+          "text?",
+          "默认GET 也可以POST"
+        ],
+        [
+          "回调子程序",
+          "int?",
+          "子程序内返回0为继续 除了参数1所有参数必须为双精度  1为停止 1参数为CRUL的句柄 2参数为总大小【双精度小数型】 3参数为已下载大小【双精度小数型】 4参数为总上传大小【双精度小数型】 5参数为已上传大小【双精度小数型】"
+        ],
+        [
+          "提交信息",
+          "bin?",
+          "POST 正文，省略即无正文。"
+        ],
+        [
+          "提交COOKIE",
+          "text?",
+          "提交COOKIE 如果留空（空文本不算留空）提交COOKIE则使用系统默认cookie"
+        ],
+        [
+          "返回COOKIE",
+          "text?",
+          "提交后返回的COOKIE 返回更新后的COOKIE"
+        ],
+        [
+          "超时",
+          "int?",
+          "单位秒"
+        ],
+        [
+          "附加协议头",
+          "text?",
+          "额外请求头，一行一条；缺失的常用头会自动补全。"
+        ],
+        [
+          "返回头",
+          "text_ref?",
+          "请求返回的头信息"
+        ],
+        [
+          "禁止重定向",
+          "bool?",
+          "禁止重定向 默认为假"
+        ],
+        [
+          "网站登录用户名",
+          "text?",
+          "目标站的登录用户名，留空不带。"
+        ],
+        [
+          "网站登录密码",
+          "text?",
+          "目标站的登录密码。"
+        ],
+        [
+          "代理地址",
+          "text?",
+          "0.0.0.0:0000格式"
+        ],
+        [
+          "代理用户名",
+          "text?",
+          "代理账号"
+        ],
+        [
+          "代理密码",
+          "text?",
+          "代理密码"
+        ],
+        [
+          "是否采用Gzip",
+          "bool?",
+          "是否使用GZIP压缩"
+        ],
+        [
+          "返回错误日志",
+          "text_ref?",
+          "失败返回的文本"
+        ],
+        [
+          "代理连接失败自动重试",
+          "bool?",
+          "如果代理服务器连接失败，则自动取消代理重试 最大重试3次"
+        ],
+        [
+          "模拟浏览器TSL",
+          "text?",
+          "留空使用chrome107  其他请看https://github.com/lwthiker/curl-impersonate/blob/main/browsers.json"
+        ],
+        [
+          "取消令牌",
+          "cancel_ref?",
+          "可空。传入令牌当前状态控制本次访问的取消、暂停、恢复；省略不绑定。调用期间内部保留引用，取消返回空字节集。"
+        ]
+      ]
+    },
+    {
+      "名": "网页_访问_WinHTTP",
+      "英文": "WebAccessWinHttp",
+      "说明": "使用winhttp访问",
+      "类别": 6,
+      "返": "bin",
+      "参": [
+        [
+          "完整网址",
+          "text",
+          "要访问的网址（UTF-8）。"
+        ],
+        [
+          "访问方式",
+          "text?",
+          "默认GET 也可以POST"
+        ],
+        [
+          "回调子程序",
+          "int?",
+          "返回常量 HTTP状态_ 开头。所有参数必须为整数型  1状态码 2参数为总大小【双精度小数型】 3参数为已下载大小【双精度小数型】 4保留  5保留"
+        ],
+        [
+          "提交信息",
+          "bin?",
+          "POST 正文，省略即无正文。"
+        ],
+        [
+          "提交COOKIE",
+          "text?",
+          "提交COOKIE 如果留空（空文本不算留空）提交COOKIE则使用系统默认cookie"
+        ],
+        [
+          "返回COOKIE",
+          "text?",
+          "提交后返回的COOKIE"
+        ],
+        [
+          "超时",
+          "int?",
+          "单位秒"
+        ],
+        [
+          "附加协议头",
+          "text?",
+          "额外请求头，一行一条；缺失的常用头会自动补全。"
+        ],
+        [
+          "返回头",
+          "text_ref?",
+          "请求返回的头信息"
+        ],
+        [
+          "禁止重定向",
+          "bool?",
+          "禁止重定向 默认为假"
+        ],
+        [
+          "网站登录用户名",
+          "text?",
+          "目标站的登录用户名，留空不带。"
+        ],
+        [
+          "网站登录密码",
+          "text?",
+          "目标站的登录密码。"
+        ],
+        [
+          "代理地址",
+          "text?",
+          "为*则使用系统默认代理 0.0.0.0:0000格式"
+        ],
+        [
+          "代理用户名",
+          "text?",
+          "代理账号"
+        ],
+        [
+          "代理密码",
+          "text?",
+          "代理密码"
+        ],
+        [
+          "是否采用Gzip",
+          "bool?",
+          "是否使用GZIP压缩"
+        ],
+        [
+          "取消令牌",
+          "cancel_ref?",
+          "可空。传入令牌当前状态控制本次访问的取消、暂停、恢复；省略不绑定。调用期间内部保留引用，取消返回空字节集。"
+        ]
+      ]
+    },
+    {
+      "名": "网页_访问_WinInet",
+      "英文": "WebAccessWinInet",
+      "说明": "使用winInet访问",
+      "类别": 6,
+      "返": "bin",
+      "参": [
+        [
+          "完整网址",
+          "text",
+          "要访问的网址（UTF-8）。"
+        ],
+        [
+          "访问方式",
+          "text?",
+          "默认GET 也可以POST"
+        ],
+        [
+          "回调子程序",
+          "int?",
+          "返回常量 HTTP状态_ 开头。所有参数必须为整数型   1状态码 2参数为总大小【双精度小数型】 3参数为已下载大小【双精度小数型】 4保留 5保留"
+        ],
+        [
+          "提交信息",
+          "bin?",
+          "POST 正文，省略即无正文。"
+        ],
+        [
+          "提交COOKIE",
+          "text?",
+          "提交COOKIE 如果留空（空文本不算留空）提交COOKIE则使用系统默认cookie"
+        ],
+        [
+          "返回COOKIE",
+          "text?",
+          "提交后返回的COOKIE 返回更新后的COOKIE"
+        ],
+        [
+          "超时",
+          "int?",
+          "单位秒"
+        ],
+        [
+          "附加协议头",
+          "text?",
+          "额外请求头，一行一条；缺失的常用头会自动补全。"
+        ],
+        [
+          "返回头",
+          "text_ref?",
+          "请求返回的头信息"
+        ],
+        [
+          "禁止重定向",
+          "bool?",
+          "禁止重定向 默认为假"
+        ],
+        [
+          "代理地址",
+          "text?",
+          "0.0.0.0:0000格式"
+        ],
+        [
+          "代理用户名",
+          "text?",
+          "代理账号"
+        ],
+        [
+          "代理密码",
+          "text?",
+          "代理密码"
+        ],
+        [
+          "是否采用Gzip",
+          "bool?",
+          "是否使用GZIP压缩"
+        ],
+        [
+          "取消令牌",
+          "cancel_ref?",
+          "可空。传入令牌当前状态控制本次访问的取消、暂停、恢复；省略不绑定。调用期间内部保留引用，取消返回空字节集。"
+        ]
+      ]
+    },
+    {
+      "名": "网页_Cookie合并更新_内部",
+      "英文": "WebCookieMerge",
+      "说明": "返回更新后的Cookie",
+      "类别": 6,
+      "返": "text",
+      "参": [
+        [
+          "旧Cookie",
+          "text",
+          "参与合并的旧 Cookie 串，可传文本常量或变量。"
+        ],
+        [
+          "新Cookie",
+          "text",
+          "服务端新返回的 Cookie 串，同名覆盖旧值。"
+        ]
+      ]
+    },
+    {
+      "名": "网页_提取返回头COOKIE",
+      "英文": "WebCookieFromHead",
+      "说明": "从返回头提取出COOKIE",
+      "类别": 6,
+      "返": "text",
+      "参": [
+        [
+          "返回头",
+          "text",
+          "输出参数：收到响应头原文，可省略。"
+        ]
+      ]
+    },
+    {
+      "名": "网页_提取头",
+      "英文": "WebPickHeader",
+      "说明": "从头信息中提取值 例如提取Content-Encoding: gzip 中的gzip",
+      "类别": 6,
+      "返": "text",
+      "参": [
+        [
+          "头信息",
+          "text",
+          "要从中取字段的响应头原文。"
+        ],
+        [
+          "提取的头信息部分",
+          "text",
+          "例如Content-Encoding"
+        ]
+      ]
+    },
+    {
+      "名": "网页_构建协议头",
+      "英文": "WebBuildHeaders",
+      "说明": "对协议头进行补充 规范为本模块协议头",
+      "类别": 6,
+      "返": "text",
+      "参": [
+        [
+          "附加协议头",
+          "text",
+          "额外请求头，一行一条；缺失的常用头会自动补全。"
+        ],
+        [
+          "完整网址",
+          "text",
+          "要访问的网址（UTF-8）。"
+        ],
+        [
+          "提交COOKIE",
+          "text",
+          "本次要提交的 Cookie 串。"
+        ],
+        [
+          "是否为POST",
+          "bool",
+          "逻辑型参数：是否为POST。"
+        ],
+        [
+          "是否采用GZIP",
+          "bool",
+          "逻辑型参数：是否采用GZIP。"
+        ],
+        [
+          "提交POST字节集长度",
+          "int?",
+          "默认不设置头 Content-Length:"
+        ]
+      ]
+    },
+    {
+      "名": "网页_取系统代理EX",
+      "英文": "WebSystemProxy",
+      "说明": "读取本机代理设置，返回 ip:port 形式；无代理返回空文本。",
+      "类别": 6,
+      "返": "text",
+      "参": []
+    },
+    {
+      "名": "判断响应头是否有效",
+      "英文": "JudgeHeadValid",
+      "说明": "是否有 200 OK",
+      "类别": 6,
+      "返": "bool",
+      "参": [
+        [
+          "响应头",
+          "text",
+          "要判断的响应头原文。"
+        ]
+      ]
+    },
+    {
+      "名": "取响应头代码",
+      "英文": "GetHeadCode",
+      "说明": "是否有 200 OK",
+      "类别": 6,
+      "返": "bool",
+      "参": [
+        [
+          "响应头",
+          "text",
+          "要判断的响应头原文。"
+        ]
+      ]
+    },
+    {
+      "名": "网页_取返回协议代码",
+      "英文": "WebStatusCode",
+      "说明": "提取响应代码",
+      "类别": 6,
+      "返": "text",
+      "参": [
+        [
+          "响应协议头",
+          "text",
+          "要解析的响应头原文。"
+        ],
+        [
+          "返回文本码",
+          "text_ref?",
+          "返回具体错误内容"
+        ]
+      ]
+    },
+    {
+      "名": "网页_构建提交表单数据",
+      "英文": "WebBuildForm",
+      "说明": "构建form形式提交的字节集",
+      "类别": 6,
+      "返": "bin",
+      "参": [
+        [
+          "formDatas",
+          "int[]",
+          "表单元素数组，元素为 #formData 类型。"
+        ],
+        [
+          "返回请求头文本",
+          "text_ref?",
+          "输出参数：收到 Content-Type: multipart/form-data; boundary=... 整行。"
+        ]
+      ]
+    },
+    {
+      "名": "网页_取常见ContentType",
+      "英文": "WebContentType",
+      "说明": "根据文件名 扩展名 返回常见的HTTP文件类型",
+      "类别": 6,
+      "返": "text",
+      "参": [
+        [
+          "文件名或扩展名",
+          "text",
+          "文件名或扩展名（可带点，如 a.png / .html）。"
+        ]
+      ]
+    },
+    {
+      "名": "分析返回头COOKIES",
+      "英文": "AnalyseHeadCookies",
+      "说明": "从响应头中提取所有 Set-Cookie 并合并成一条 Cookie 串。",
+      "类别": 6,
+      "返": "text",
+      "参": [
+        [
+          "返回头",
+          "text",
+          "输出参数：收到响应头原文，可省略。"
+        ]
+      ]
+    },
+    {
+      "名": "取中间文本",
+      "英文": "GetMiddleText",
+      "说明": "取中间文本：原模块同名公开子程序的库内实现。",
+      "类别": 6,
+      "返": "text",
+      "参": [
+        [
+          "待取内容",
+          "text",
+          "被截取的原文本。"
+        ],
+        [
+          "起始查找位置",
+          "int_ref",
+          "起始位置（1 基），命令会把游标推进到命中处之后。"
+        ],
+        [
+          "起始文本1",
+          "text",
+          "左标记。"
+        ],
+        [
+          "起始文本2",
+          "text?",
+          "可选的第二层左标记，先定位它再取到结束文本。"
+        ],
+        [
+          "结束文本",
+          "text",
+          "右标记。"
+        ],
+        [
+          "不区分大小写",
+          "bool?",
+          "默认为真"
+        ],
+        [
+          "是否包含起始文本",
+          "bool?",
+          "默认真"
+        ]
+      ]
+    },
+    {
+      "名": "COOKIE合并更新",
+      "英文": "CookieMerge",
+      "说明": "返回更新后的COOKIE",
+      "类别": 6,
+      "返": "text",
+      "参": [
+        [
+          "原COOKIE",
+          "text",
+          "原有 Cookie 串。"
+        ],
+        [
+          "本次COOKIE",
+          "text",
+          "本次要合并进来的 Cookie 串。"
+        ]
+      ]
+    },
+    {
+      "名": "网页_取Cookie_内部",
+      "英文": "WebCookieInner",
+      "说明": "按域名取系统(IE)Cookie 容器里的 Cookie，含 HttpOnly。",
+      "类别": 6,
+      "返": "text",
+      "参": [
+        [
+          "域名",
+          "text",
+          "只接受域名"
+        ],
+        [
+          "Cookie名称",
+          "text?",
+          "为空返回全部Cookie"
+        ],
+        [
+          "是否为HTTPS",
+          "bool?",
+          "真按 https 取，假按 http。"
+        ]
+      ]
+    },
+    {
+      "名": "网页_取单条Cookie",
+      "英文": "WebCookieOne",
+      "说明": "从左往右获取",
+      "类别": 6,
+      "返": "text",
+      "参": [
+        [
+          "Cookie",
+          "text",
+          "待查找的 Cookie 串。"
+        ],
+        [
+          "名称",
+          "text",
+          "Cookie 名。"
+        ],
+        [
+          "不附带名称",
+          "bool?",
+          "真则只返回值，不返回「名称=」。"
+        ]
+      ]
+    },
+    {
+      "名": "文本_取出现次数",
+      "英文": "TextCountOccur",
+      "说明": "精易论坛会员 Mr.Yang提供的代码",
+      "类别": 6,
+      "返": "int",
+      "参": [
+        [
+          "被搜索文本",
+          "text",
+          "被查找的原文本。"
+        ],
+        [
+          "欲搜索文本",
+          "text",
+          "要查找的子串。"
+        ],
+        [
+          "是否区分大小写",
+          "bool?",
+          "真区分大小写；省略按真。"
+        ]
+      ]
+    },
+    {
+      "名": "压缩亚马逊页面数据",
+      "英文": "CompressAmazonPage",
+      "说明": "对亚马逊页面数据无需采集的 进行压缩 防止体积过大",
+      "类别": 6,
+      "返": "bin",
+      "参": [
+        [
+          "要压缩的数据",
+          "bin",
+          "原始页面字节集，命令返回瘦身后的新字节集。"
+        ]
+      ]
+    },
+    {
+      "名": "CURL_预载入",
+      "英文": "CurlPreload",
+      "说明": "用于多线程中初始化运行 失败返回安装失败的DLL文件名",
+      "类别": 6,
+      "返": "text",
+      "参": []
+    },
+    {
+      "名": "CURL_关闭CURL",
+      "英文": "CurlShutdown",
+      "说明": "结束程序是销毁CURL 失败返回安装失败的DLL文件名",
+      "类别": 6,
+      "返": "text",
+      "参": []
+    }
+  ]
+}

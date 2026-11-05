@@ -1,0 +1,630 @@
+{
+  "类": [
+    {
+      "名": "HTTP访问_Curl访问类",
+      "英文": "AccessCurl",
+      "说明": "旧版",
+      "命令": [
+        {
+          "名": "设置每次接收长度",
+          "返": "null",
+          "参": [
+            [
+              "接收长度",
+              "int"
+            ]
+          ],
+          "impl": "SetRecvChunk"
+        },
+        {
+          "名": "设置COOKIE",
+          "返": "null",
+          "参": [
+            [
+              "COOKIE",
+              "text?"
+            ],
+            [
+              "是否使用默认COOKIE",
+              "bool?"
+            ],
+            [
+              "是否自动更新COOKIE_参数",
+              "bool?"
+            ]
+          ],
+          "impl": "SetCookie"
+        },
+        {
+          "名": "设置DNS服务器",
+          "返": "null",
+          "参": [
+            [
+              "服务器1",
+              "text?"
+            ],
+            [
+              "服务器2",
+              "text?"
+            ]
+          ],
+          "impl": "SetDns"
+        },
+        {
+          "名": "获取当前提交的COOKIE",
+          "返": "text",
+          "参": [],
+          "impl": "GetSubmitCookie"
+        },
+        {
+          "名": "获取当前返回的COOKIE",
+          "返": "text",
+          "参": [],
+          "impl": "GetRetCookie"
+        },
+        {
+          "名": "设置CURL句柄",
+          "返": "null",
+          "参": [
+            [
+              "CURL2",
+              "int"
+            ]
+          ],
+          "impl": "SetCurlHandle"
+        },
+        {
+          "名": "设置共享的DNS缓存",
+          "返": "null",
+          "参": [
+            [
+              "SHARE句柄",
+              "int?"
+            ]
+          ],
+          "impl": "SetShareDns"
+        },
+        {
+          "名": "SetOption",
+          "返": "int",
+          "参": [
+            [
+              "Option",
+              "int"
+            ],
+            [
+              "Value",
+              "common"
+            ]
+          ],
+          "impl": "SetOption"
+        },
+        {
+          "名": "SetOption_int",
+          "返": "int",
+          "参": [
+            [
+              "Option",
+              "int"
+            ],
+            [
+              "Value",
+              "int"
+            ]
+          ],
+          "impl": "SetOptionInt"
+        },
+        {
+          "名": "模仿",
+          "返": "int",
+          "参": [
+            [
+              "脚本名称",
+              "text"
+            ],
+            [
+              "使用默认请求头",
+              "bool?"
+            ]
+          ],
+          "impl": "Impersonate"
+        },
+        {
+          "名": "访问网页_cURL",
+          "返": "bin",
+          "参": [
+            [
+              "完整网址",
+              "text"
+            ],
+            [
+              "访问方式",
+              "text?"
+            ],
+            [
+              "回调子程序",
+              "int?"
+            ],
+            [
+              "提交信息",
+              "bin?"
+            ],
+            [
+              "超时",
+              "int?"
+            ],
+            [
+              "附加协议头",
+              "text?"
+            ],
+            [
+              "返回头",
+              "text_ref"
+            ],
+            [
+              "禁止重定向",
+              "bool?"
+            ],
+            [
+              "网站登录用户名",
+              "text?"
+            ],
+            [
+              "网站登录密码",
+              "text?"
+            ],
+            [
+              "代理地址",
+              "text?"
+            ],
+            [
+              "代理用户名",
+              "text?"
+            ],
+            [
+              "代理密码",
+              "text?"
+            ],
+            [
+              "是否采用Gzip",
+              "bool?"
+            ],
+            [
+              "失败日志",
+              "text_ref"
+            ],
+            [
+              "代理连接失败自动处理",
+              "bool?"
+            ],
+            [
+              "模拟浏览器TSL",
+              "text?"
+            ],
+            [
+              "回调用户参数",
+              "int?"
+            ],
+            [
+              "回调次数",
+              "int?"
+            ]
+          ],
+          "impl": "AccessPageCurl"
+        }
+      ],
+      "_源": "../../../创想亚马逊采集软件问题分析/源码txt/创想HTTP访问类/ecode/代码/cURL类/HTTP访问_Curl访问类.class.e.txt"
+    },
+    {
+      "名": "HTTP访问_WinHTTP访问类",
+      "英文": "AccessWinHttp",
+      "说明": "",
+      "命令": [
+        {
+          "名": "取上次提交请求头",
+          "返": "text",
+          "参": [],
+          "impl": "GetLastHeader"
+        },
+        {
+          "名": "设置每次接收长度",
+          "返": "null",
+          "参": [
+            [
+              "接收长度",
+              "int"
+            ]
+          ],
+          "impl": "SetRecvChunk"
+        },
+        {
+          "名": "设置COOKIE",
+          "返": "null",
+          "参": [
+            [
+              "COOKIE",
+              "text?"
+            ],
+            [
+              "是否使用默认COOKIE",
+              "bool?"
+            ],
+            [
+              "是否自动更新COOKIE_参数",
+              "bool?"
+            ]
+          ],
+          "impl": "SetCookie"
+        },
+        {
+          "名": "获取当前提交的COOKIE",
+          "返": "text",
+          "参": [],
+          "impl": "GetSubmitCookie"
+        },
+        {
+          "名": "获取当前返回的COOKIE",
+          "返": "text",
+          "参": [],
+          "impl": "GetRetCookie"
+        },
+        {
+          "名": "访问网页_WinHTTP",
+          "返": "bin",
+          "参": [
+            [
+              "完整网址",
+              "text"
+            ],
+            [
+              "访问方式",
+              "text?"
+            ],
+            [
+              "回调子程序",
+              "int?"
+            ],
+            [
+              "提交信息",
+              "bin?"
+            ],
+            [
+              "超时",
+              "int?"
+            ],
+            [
+              "附加协议头",
+              "text?"
+            ],
+            [
+              "返回头",
+              "text_ref"
+            ],
+            [
+              "禁止重定向",
+              "bool?"
+            ],
+            [
+              "网站登录用户名",
+              "text?"
+            ],
+            [
+              "网站登录密码",
+              "text?"
+            ],
+            [
+              "代理地址",
+              "text?"
+            ],
+            [
+              "代理用户名",
+              "text?"
+            ],
+            [
+              "代理密码",
+              "text?"
+            ],
+            [
+              "是否采用Gzip",
+              "bool?"
+            ]
+          ],
+          "impl": "AccessPageWinHttp"
+        }
+      ],
+      "_源": "../../../创想亚马逊采集软件问题分析/源码txt/创想HTTP访问类/ecode/代码/WinHTTP类/HTTP访问_WinHTTP访问类.class.e.txt"
+    },
+    {
+      "名": "HTTP访问_WinInet访问类",
+      "英文": "AccessWinInet",
+      "说明": "",
+      "命令": [
+        {
+          "名": "设置每次接收长度",
+          "返": "null",
+          "参": [
+            [
+              "接收长度",
+              "int"
+            ]
+          ],
+          "impl": "SetRecvChunk"
+        },
+        {
+          "名": "设置COOKIE",
+          "返": "null",
+          "参": [
+            [
+              "COOKIE",
+              "text?"
+            ],
+            [
+              "是否使用默认COOKIE",
+              "bool?"
+            ],
+            [
+              "是否自动更新COOKIE_参数",
+              "bool?"
+            ]
+          ],
+          "impl": "SetCookie"
+        },
+        {
+          "名": "获取当前提交的COOKIE",
+          "返": "text",
+          "参": [],
+          "impl": "GetSubmitCookie"
+        },
+        {
+          "名": "获取当前返回的COOKIE",
+          "返": "text",
+          "参": [],
+          "impl": "GetRetCookie"
+        },
+        {
+          "名": "访问网页_WinInet",
+          "返": "bin",
+          "参": [
+            [
+              "完整网址",
+              "text"
+            ],
+            [
+              "访问方式",
+              "text?"
+            ],
+            [
+              "回调子程序",
+              "int?"
+            ],
+            [
+              "提交信息",
+              "bin?"
+            ],
+            [
+              "超时",
+              "int?"
+            ],
+            [
+              "附加协议头",
+              "text?"
+            ],
+            [
+              "返回头",
+              "text_ref"
+            ],
+            [
+              "禁止重定向",
+              "bool?"
+            ],
+            [
+              "代理地址",
+              "text?"
+            ],
+            [
+              "代理用户名",
+              "text?"
+            ],
+            [
+              "代理密码",
+              "text?"
+            ],
+            [
+              "是否采用Gzip",
+              "bool?"
+            ]
+          ],
+          "impl": "AccessPageWinInet"
+        }
+      ],
+      "_源": "../../../创想亚马逊采集软件问题分析/源码txt/创想HTTP访问类/ecode/代码/WinInet类/HTTP访问_WinInet访问类.class.e.txt"
+    }
+  ],
+  "全局": [
+    {
+      "名": "分析返回头COOKIES",
+      "英文": "AnalyseHeadCookies",
+      "说明": "",
+      "返": "text",
+      "参": [
+        [
+          "返回头",
+          "text"
+        ]
+      ],
+      "_源": "../../../创想亚马逊采集软件问题分析/源码txt/创想HTTP访问类/ecode/代码/WinHTTP类/WinHTTP专用.static.e.txt"
+    },
+    {
+      "名": "取中间文本",
+      "英文": "GetMiddleText",
+      "说明": "",
+      "返": "text",
+      "参": [
+        [
+          "待取内容",
+          "text"
+        ],
+        [
+          "起始查找位置",
+          "int_ref"
+        ],
+        [
+          "起始文本1",
+          "text"
+        ],
+        [
+          "起始文本2",
+          "text?"
+        ],
+        [
+          "结束文本",
+          "text"
+        ],
+        [
+          "不区分大小写",
+          "bool?"
+        ],
+        [
+          "是否包含起始文本",
+          "bool?"
+        ]
+      ],
+      "_源": "../../../创想亚马逊采集软件问题分析/源码txt/创想HTTP访问类/ecode/代码/WinHTTP类/WinHTTP专用.static.e.txt"
+    },
+    {
+      "名": "COOKIE合并更新",
+      "英文": "CookieMerge",
+      "说明": "",
+      "返": "text",
+      "参": [
+        [
+          "原COOKIE",
+          "text"
+        ],
+        [
+          "本次COOKIE",
+          "text"
+        ]
+      ],
+      "_源": "../../../创想亚马逊采集软件问题分析/源码txt/创想HTTP访问类/ecode/代码/WinHTTP类/WinHTTP专用.static.e.txt"
+    },
+    {
+      "名": "网页_取Cookie_内部",
+      "英文": "WebCookieInner",
+      "说明": "",
+      "返": "text",
+      "参": [
+        [
+          "域名",
+          "text"
+        ],
+        [
+          "Cookie名称",
+          "text?"
+        ],
+        [
+          "是否为HTTPS",
+          "bool?"
+        ]
+      ],
+      "_源": "../../../创想亚马逊采集软件问题分析/源码txt/创想HTTP访问类/ecode/代码/WinHTTP类/WinHTTP专用.static.e.txt"
+    },
+    {
+      "名": "网页_取单条Cookie",
+      "英文": "WebCookieOne",
+      "说明": "",
+      "返": "text",
+      "参": [
+        [
+          "Cookie",
+          "text"
+        ],
+        [
+          "名称",
+          "text"
+        ],
+        [
+          "不附带名称",
+          "bool?"
+        ]
+      ],
+      "_源": "../../../创想亚马逊采集软件问题分析/源码txt/创想HTTP访问类/ecode/代码/WinHTTP类/WinHTTP专用.static.e.txt"
+    },
+    {
+      "名": "取CURL版本",
+      "英文": "GetCurlVersion",
+      "说明": "",
+      "返": "int",
+      "参": [
+        [
+          "type",
+          "int"
+        ]
+      ],
+      "_源": "../../../创想亚马逊采集软件问题分析/源码txt/创想HTTP访问类/ecode/代码/cURL类/CURL专用.static.e.txt"
+    },
+    {
+      "名": "CURL_预载入",
+      "英文": "CurlPreload",
+      "说明": "",
+      "返": "text",
+      "参": [],
+      "_源": "../../../创想亚马逊采集软件问题分析/源码txt/创想HTTP访问类/ecode/代码/cURL类/CURL专用.static.e.txt"
+    },
+    {
+      "名": "CURL_关闭CURL",
+      "英文": "CurlShutdown",
+      "说明": "",
+      "返": "text",
+      "参": [],
+      "_源": "../../../创想亚马逊采集软件问题分析/源码txt/创想HTTP访问类/ecode/代码/cURL类/CURL专用.static.e.txt"
+    },
+    {
+      "名": "CURL_GetXferinfoAddress",
+      "英文": "CurlXferinfoAddr",
+      "说明": "",
+      "返": "int",
+      "参": [
+        [
+          "var",
+          "int"
+        ]
+      ],
+      "_源": "../../../创想亚马逊采集软件问题分析/源码txt/创想HTTP访问类/ecode/代码/cURL类/CURL专用.static.e.txt"
+    },
+    {
+      "名": "文本_取出现次数",
+      "英文": "TextCountOccur",
+      "说明": "",
+      "返": "int",
+      "参": [
+        [
+          "被搜索文本",
+          "text"
+        ],
+        [
+          "欲搜索文本",
+          "text"
+        ],
+        [
+          "是否区分大小写",
+          "bool?"
+        ]
+      ],
+      "_源": "../../../创想亚马逊采集软件问题分析/源码txt/创想HTTP访问类/ecode/代码/程序集1.static.e.txt"
+    },
+    {
+      "名": "压缩亚马逊页面数据",
+      "英文": "CompressAmazonPage",
+      "说明": "",
+      "返": "bin",
+      "参": [
+        [
+          "要压缩的数据",
+          "bin_ref"
+        ]
+      ],
+      "_源": "../../../创想亚马逊采集软件问题分析/源码txt/创想HTTP访问类/ecode/代码/程序集1.static.e.txt"
+    }
+  ]
+}

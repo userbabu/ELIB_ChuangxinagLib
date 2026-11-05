@@ -1,0 +1,5 @@
+// Toolbox bitmap for the EPL visual component. Keep this file pure ASCII.
+// The ID must match WV_UNIT_BMP_ID in lib.cpp.
+#define WV_UNIT_BMP_ID 1000
+
+WV_UNIT_BMP_ID BITMAP DISCARDABLE "res\webview.bmp"

@@ -1,0 +1,11 @@
+// 由 gen_http_cancel_table.mjs 生成，勿手改。
+    _T("AccessCurl_BindStop"),
+    _T("AccessCurl_BindStopPointer"),
+    _T("AccessCurl_GetLastError"),
+    _T("AccessWinHttp_BindStop"),
+    _T("AccessWinHttp_BindStopPointer"),
+    _T("AccessWinHttp_GetLastError"),
+    _T("AccessWinInet_BindStop"),
+    _T("AccessWinInet_BindStopPointer"),
+    _T("AccessWinInet_GetLastError"),
+    _T("G_HttpExchangeStop"),

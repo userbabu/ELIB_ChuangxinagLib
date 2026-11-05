@@ -1,0 +1,15 @@
+﻿{
+    "Rename": {
+        "Struct": [
+            {
+                "Dst": "URL_COMPONENTS2",
+                "Src": "URL_COMPONENTS"
+            },
+            {
+                "Dst": "IP地址类型2",
+                "Src": "IP地址类型"
+            }
+        ]
+    },
+    "Source": "E:\\dev\\a我的程序项目\\☆模块\\a创想易更易模块强化版.ec"
+}

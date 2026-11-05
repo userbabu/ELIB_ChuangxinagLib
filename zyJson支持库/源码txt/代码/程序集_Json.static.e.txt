@@ -1,0 +1,3418 @@
+﻿.版本 2
+
+.程序集 程序集_Json
+.子程序 JsonValue_InitFunctons, 整数型
+    .参数 hHeap, 整数型
+    .局部变量 pFunctions, 整数型
+
+    pFunctions ＝ _Alloc (16, hHeap)
+    _Set (pFunctions, 0, _子程序指针到整数 (&zyObject_QueryInterface))
+    _Set (pFunctions, 4, _子程序指针到整数 (&zyObject_AddRef))
+    _Set (pFunctions, 8, _子程序指针到整数 (&JsonValue_OnRelease))
+    _Set (pFunctions, 12, _子程序指针到整数 (&JsonValue_Destory))
+    返回 (pFunctions)
+
+.子程序 JsonValue_OnRelease, 整数型
+    .参数 this, 整数型
+    .局部变量 cRef, 整数型
+
+    cRef ＝ InterlockedDecrement (this ＋ #zyobj_refCount)
+    .如果真 (cRef ＝ 0)
+        JsonValue_Detch (this)
+        zyThisCall (this, #zy_Destory)
+        zyDeleteObject (this)
+    .如果真结束
+    返回 (cRef)
+    
+
+.子程序 JsonValue_Destory
+    .参数 this, 整数型
+    .局部变量 type, 整数型
+    .局部变量 v, 整数型
+    .局部变量 hHeap, 整数型
+    .局部变量 items, 整数型, , "0"
+    .局部变量 count, 整数型
+    .局部变量 i, 整数型
+    .局部变量 raw, 整数型
+
+    .如果真 (this ＝ 0)
+        返回 ()
+    .如果真结束
+    hHeap ＝ _Get (this, #zyobj_hHeap)
+    type ＝ _Get (this, #jv_type)
+    .判断开始 (type ＝ #JVTYPE_STRING)
+        v ＝ _Get (this, #jv_value)
+        .如果真 (v ≠ 0)
+            _Free (v, hHeap)
+            _Set (this, #jv_value, 0)
+        .如果真结束
+        
+    .判断 (type ＝ #JVTYPE_OBJECT)
+        v ＝ _Get (this, #jv_value)
+        .如果真 (v ≠ 0)
+            count ＝ HashEx_GetValues (v, items)
+            .计次循环首 (count, i)
+                zyThisCall (items [i], #zy_Release)
+            .计次循环尾 ()
+            HashEx_Destory (v)
+            _Set (this, #jv_value, 0)
+        .如果真结束
+        
+    .判断 (type ＝ #JVTYPE_ARRAY)
+        v ＝ _Get (this, #jv_value)
+        .如果真 (v ≠ 0)
+            count ＝ Array_GetValues (v, items)
+            .计次循环首 (count, i)
+                zyThisCall (items [i], #zy_Release)
+            .计次循环尾 ()
+            Array_Destroy (v)
+            _Set (this, #jv_value, 0)
+        .如果真结束
+        
+    .默认
+        
+    .判断结束
+    
+    raw ＝ _Get (this, #jv_raw)
+    .如果真 (raw ≠ 0)
+        _Free (raw, hHeap)
+        _Set (this, #jv_raw, 0)
+    .如果真结束
+    
+
+.子程序 JsonValue_Clear
+    .参数 jsonValue, 整数型
+    .局部变量 type, 整数型
+    .局部变量 v, 整数型
+    .局部变量 hHeap, 整数型
+    .局部变量 count, 整数型
+    .局部变量 items, 整数型, , "0"
+    .局部变量 i, 整数型
+    .局部变量 raw, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 ()
+    .如果真结束
+    hHeap ＝ _Get (jsonValue, #zyobj_hHeap)
+    type ＝ _Get (jsonValue, #jv_type)
+    .判断开始 (type ＝ #JVTYPE_STRING)
+        v ＝ _Get (jsonValue, #jv_value)
+        .如果真 (v ≠ 0)
+            _Free (v, hHeap)
+            _Set (jsonValue, #jv_value, 0)
+        .如果真结束
+        
+    .判断 (type ＝ #JVTYPE_OBJECT)
+        v ＝ _Get (jsonValue, #jv_value)
+        .如果真 (v ≠ 0)
+            count ＝ HashEx_GetValues (v, items)
+            .计次循环首 (count, i)
+                zyThisCall (items [i], #zy_Release)
+            .计次循环尾 ()
+            HashEx_Clear (v)
+        .如果真结束
+        
+    .判断 (type ＝ #JVTYPE_ARRAY)
+        v ＝ _Get (jsonValue, #jv_value)
+        .如果真 (v ≠ 0)
+            count ＝ Array_GetValues (v, items)
+            .计次循环首 (count, i)
+                zyThisCall (items [i], #zy_Release)
+            .计次循环尾 ()
+            Array_Clear (v)
+        .如果真结束
+        
+    .默认
+        _SetLong (jsonValue, #jv_value, 0)
+        
+    .判断结束
+    
+    raw ＝ _Get (jsonValue, #jv_raw)
+    .如果真 (raw ≠ 0)
+        _Free (raw, hHeap)
+        _Set (jsonValue, #jv_raw, 0)
+    .如果真结束
+    
+
+.子程序 JsonValue_Detch
+    .参数 jsonValue, 整数型
+    .局部变量 jvParent, 整数型
+    .局部变量 type, 整数型
+    .局部变量 pArray, 整数型
+    .局部变量 pHash, 整数型
+    .局部变量 count, 整数型
+    .局部变量 i, 整数型
+    .局部变量 ret, 逻辑型
+
+    jvParent ＝ _Get (jsonValue, #jv_parent)
+    .如果真 (jvParent ≠ 0)
+        type ＝ _Get (jvParent, #jv_type)
+        .判断开始 (type ＝ #JVTYPE_ARRAY)
+            pArray ＝ _Get (jvParent, #jv_value)
+            .如果真 (pArray ≠ 0)
+                ret ＝ Array_RemoveFromValue (pArray, jsonValue)
+            .如果真结束
+            
+        .判断 (type ＝ #JVTYPE_OBJECT)
+            pHash ＝ _Get (jvParent, #jv_value)
+            .如果真 (pHash ≠ 0)
+                ret ＝ HashEx_RemoveFromValue (pHash, jsonValue)
+            .如果真结束
+            
+        .默认
+            
+        .判断结束
+        _Set (jsonValue, #jv_parent, 0)
+        
+    .如果真结束
+    
+
+.子程序 JsonValue_Addref, 整数型
+    .参数 jsonValue, 整数型
+
+    .如果真 (jsonValue ≠ 0)
+        返回 (zyThisCall (jsonValue, #zy_AddRef))
+    .如果真结束
+    返回 (0)
+
+.子程序 JsonValue_Release, 整数型
+    .参数 jsonValue, 整数型
+
+    .如果真 (jsonValue ≠ 0)
+        返回 (zyThisCall (jsonValue, #zy_Release))
+    .如果真结束
+    返回 (0)
+
+.子程序 JsonValue_Undefined, 整数型
+    .参数 json, 整数型
+    .参数 raw, 字节集
+    .局部变量 this, 整数型
+    .局部变量 hHeap, 整数型
+
+    .如果 (json ＝ 0)
+        hHeap ＝ GetProcessHeap ()
+    .否则
+        hHeap ＝ _Get (json, #zyobj_hHeap)
+    .如果结束
+    this ＝ zyNewObjectEmpty (hHeap, #jv_cbSize)
+    _Set (this, #zyobj_hHeap, hHeap)
+    _Set (this, #zyobj_pFunctions, JsonValue_InitFunctons (hHeap))
+    _Set (this, #zyobj_refCount, 1)
+    _SetLong (this, #jv_value, 0)
+    _Set (this, #jv_type, #JVTYPE_UNDEFINED)
+    _Set (this, #jv_raw, _CloneString (raw, hHeap))
+    返回 (this)
+    
+
+.子程序 JsonValue_SetUndefined, 逻辑型
+    .参数 jsonValue, 整数型
+    .参数 raw, 字节集
+    .局部变量 hHeap, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (假)
+    .如果真结束
+    hHeap ＝ _Get (jsonValue, #zyobj_hHeap)
+    JsonValue_Destory (jsonValue)
+    _SetLong (jsonValue, #jv_value, 0)
+    _Set (jsonValue, #jv_type, #JVTYPE_UNDEFINED)
+    _Set (jsonValue, #jv_raw, _CloneString (raw, hHeap))
+    返回 (真)
+
+.子程序 JsonValue_Null, 整数型
+    .参数 json, 整数型
+    .局部变量 this, 整数型
+    .局部变量 hHeap, 整数型
+    .局部变量 raw, 字节集
+
+    .如果 (json ＝ 0)
+        hHeap ＝ GetProcessHeap ()
+    .否则
+        hHeap ＝ _Get (json, #zyobj_hHeap)
+    .如果结束
+    this ＝ zyNewObjectEmpty (hHeap, #jv_cbSize)
+    _Set (this, #zyobj_hHeap, hHeap)
+    _Set (this, #zyobj_pFunctions, JsonValue_InitFunctons (hHeap))
+    _Set (this, #zyobj_refCount, 1)
+    _SetLong (this, #jv_value, 0)
+    _Set (this, #jv_type, #JVTYPE_NULL)
+    raw ＝ { 110, 0, 117, 0, 108, 0, 108, 0, 0, 0 } ' null
+    ' raw ＝ { 0, 0 }  ' null
+    _Set (this, #jv_raw, _CloneString (raw, hHeap))
+    返回 (this)
+    
+
+.子程序 JsonValue_SetNull, 逻辑型
+    .参数 jsonValue, 整数型
+    .局部变量 hHeap, 整数型
+    .局部变量 raw, 字节集
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (假)
+    .如果真结束
+    hHeap ＝ _Get (jsonValue, #zyobj_hHeap)
+    JsonValue_Destory (jsonValue)
+    _SetLong (jsonValue, #jv_value, 0)
+    _Set (jsonValue, #jv_type, #JVTYPE_NULL)
+    ' raw ＝ { 110, 0, 117, 0, 108, 0, 108, 0, 0, 0 }  ' null
+    raw ＝ { 110, 0, 117, 0, 108, 0, 108, 0, 0, 0 } ' null
+    _Set (jsonValue, #jv_raw, _CloneString (raw, hHeap))
+    返回 (真)
+
+.子程序 JsonValue_Double, 整数型
+    .参数 json, 整数型
+    .参数 double, 双精度小数型
+    .参数 rawData, 字节集, 可空
+    .局部变量 this, 整数型
+    .局部变量 hHeap, 整数型
+    .局部变量 raw, 字节集
+
+    .如果 (json ＝ 0)
+        hHeap ＝ GetProcessHeap ()
+    .否则
+        hHeap ＝ _Get (json, #zyobj_hHeap)
+    .如果结束
+    this ＝ zyNewObjectEmpty (hHeap, #jv_cbSize)
+    _Set (this, #zyobj_hHeap, hHeap)
+    _Set (this, #zyobj_pFunctions, JsonValue_InitFunctons (hHeap))
+    _Set (this, #zyobj_refCount, 1)
+    _SetDouble (this, #jv_value, double)
+    _Set (this, #jv_type, #JVTYPE_DOUBLE)
+    .如果 (rawData ≠ { })
+        _Set (this, #jv_raw, _CloneString (rawData, hHeap))
+    .否则
+        raw ＝ zyA2W (到文本 (double))
+        _Set (this, #jv_raw, _CloneString (raw, hHeap))
+    .如果结束
+    
+    返回 (this)
+    
+
+.子程序 JsonValue_GetDouble, 双精度小数型
+    .参数 jsonVal, 整数型
+    .局部变量 type, 整数型
+    .局部变量 v, 整数型
+
+    .如果真 (jsonVal ＝ 0)
+        返回 (0)
+    .如果真结束
+    type ＝ _Get (jsonVal, #jv_type)
+    .判断开始 (type ＝ #JVTYPE_DOUBLE)
+        返回 (_GetDouble (jsonVal, #jv_value))
+    .判断 (type ＝ #JVTYPE_LONG)
+        返回 (到数值 (_GetLong (jsonVal, #jv_value)))
+    .判断 (type ＝ #JVTYPE_BOOL)
+        返回 (_Get (jsonVal, #jv_value))
+    .判断 (type ＝ #JVTYPE_STRING)
+        v ＝ _Get (jsonVal, #jv_value)
+        .如果真 (v ≠ 0)
+            返回 (到数值 (zyW2A_Point (v)))
+        .如果真结束
+        
+    .默认
+        
+    .判断结束
+    返回 (0)
+    
+
+.子程序 JsonValue_SetDouble, 逻辑型
+    .参数 jsonValue, 整数型
+    .参数 double, 双精度小数型
+    .参数 rawData, 字节集, 可空
+    .局部变量 raw, 字节集
+    .局部变量 hHeap, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (假)
+    .如果真结束
+    hHeap ＝ _Get (jsonValue, #zyobj_hHeap)
+    JsonValue_Destory (jsonValue)
+    _SetDouble (jsonValue, #jv_value, double)
+    _Set (jsonValue, #jv_type, #JVTYPE_DOUBLE)
+    .如果 (rawData ≠ { })
+        _Set (jsonValue, #jv_raw, _CloneString (rawData, hHeap))
+    .否则
+        raw ＝ zyA2W (到文本 (double))
+        _Set (jsonValue, #jv_raw, _CloneString (raw, hHeap))
+    .如果结束
+    
+    
+    返回 (真)
+    
+
+.子程序 JsonValue_Long, 整数型
+    .参数 json, 整数型
+    .参数 long, 长整数型
+    .参数 rawData, 字节集, 可空
+    .局部变量 this, 整数型
+    .局部变量 hHeap, 整数型
+    .局部变量 raw, 字节集
+
+    .如果 (json ＝ 0)
+        hHeap ＝ GetProcessHeap ()
+    .否则
+        hHeap ＝ _Get (json, #zyobj_hHeap)
+    .如果结束
+    this ＝ zyNewObjectEmpty (hHeap, #jv_cbSize)
+    _Set (this, #zyobj_hHeap, hHeap)
+    _Set (this, #zyobj_pFunctions, JsonValue_InitFunctons (hHeap))
+    _Set (this, #zyobj_refCount, 1)
+    _SetLong (this, #jv_value, long)
+    _Set (this, #jv_type, #JVTYPE_LONG)
+    .如果 (rawData ≠ { })
+        _Set (this, #jv_raw, _CloneString (rawData, hHeap))
+    .否则
+        raw ＝ zyA2W (到文本 (long))
+        _Set (this, #jv_raw, _CloneString (raw, hHeap))
+    .如果结束
+    
+    返回 (this)
+    
+
+.子程序 JsonValue_GetLong, 长整数型
+    .参数 jsonVal, 整数型
+    .局部变量 type, 整数型
+    .局部变量 v, 整数型
+
+    .如果真 (jsonVal ＝ 0)
+        返回 (0)
+    .如果真结束
+    type ＝ _Get (jsonVal, #jv_type)
+    .判断开始 (type ＝ #JVTYPE_LONG)
+        返回 (_GetLong (jsonVal, #jv_value))
+    .判断 (type ＝ #JVTYPE_DOUBLE)
+        返回 (到长整数 (_GetDouble (jsonVal, #jv_value)))
+    .判断 (type ＝ #JVTYPE_BOOL)
+        返回 (_Get (jsonVal, #jv_value))
+    .判断 (type ＝ #JVTYPE_STRING)
+        v ＝ _Get (jsonVal, #jv_value)
+        .如果真 (v ≠ 0)
+            返回 (_wtoi64_ptr (v))
+        .如果真结束
+        
+    .默认
+        
+    .判断结束
+    返回 (0)
+    
+
+.子程序 JsonValue_SetLong, 逻辑型
+    .参数 jsonValue, 整数型
+    .参数 Long, 长整数型
+    .参数 rawData, 字节集, 可空
+    .局部变量 hHeap, 整数型
+    .局部变量 raw, 字节集
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (假)
+    .如果真结束
+    hHeap ＝ _Get (jsonValue, #zyobj_hHeap)
+    JsonValue_Destory (jsonValue)
+    _SetLong (jsonValue, #jv_value, Long)
+    _Set (jsonValue, #jv_type, #JVTYPE_LONG)
+    .如果 (rawData ≠ { })
+        _Set (jsonValue, #jv_raw, _CloneString (rawData, hHeap))
+    .否则
+        raw ＝ zyA2W (到文本 (Long))
+        _Set (jsonValue, #jv_raw, _CloneString (raw, hHeap))
+    .如果结束
+    返回 (真)
+    
+
+.子程序 JsonValue_GetInt, 整数型
+    .参数 jsonVal, 整数型
+    .局部变量 type, 整数型
+    .局部变量 v, 整数型
+
+    .如果真 (jsonVal ＝ 0)
+        返回 (0)
+    .如果真结束
+    type ＝ _Get (jsonVal, #jv_type)
+    .判断开始 (type ＝ #JVTYPE_LONG)
+        返回 (_Get (jsonVal, #jv_value))
+    .判断 (type ＝ #JVTYPE_DOUBLE)
+        返回 (到整数 (_GetDouble (jsonVal, #jv_value)))
+    .判断 (type ＝ #JVTYPE_BOOL)
+        返回 (_Get (jsonVal, #jv_value))
+    .判断 (type ＝ #JVTYPE_STRING)
+        v ＝ _Get (jsonVal, #jv_value)
+        .如果真 (v ≠ 0)
+            返回 (StrToInt (v))
+        .如果真结束
+        
+    .默认
+        
+    .判断结束
+    返回 (0)
+    
+
+.子程序 JsonValue_SetInt, 逻辑型
+    .参数 jsonValue, 整数型
+    .参数 Int, 整数型
+    .参数 rawData, 字节集, 可空
+    .局部变量 hHeap, 整数型
+    .局部变量 raw, 字节集
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (假)
+    .如果真结束
+    hHeap ＝ _Get (jsonValue, #zyobj_hHeap)
+    JsonValue_Destory (jsonValue)
+    _SetLong (jsonValue, #jv_value, Int)
+    _Set (jsonValue, #jv_type, #JVTYPE_LONG)
+    .如果 (rawData ≠ { })
+        _Set (jsonValue, #jv_raw, _CloneString (rawData, hHeap))
+    .否则
+        raw ＝ zyA2W (到文本 (Int))
+        _Set (jsonValue, #jv_raw, _CloneString (raw, hHeap))
+    .如果结束
+    返回 (真)
+
+.子程序 JsonValue_Bool, 整数型
+    .参数 json, 整数型
+    .参数 bool, 逻辑型
+    .局部变量 this, 整数型
+    .局部变量 hHeap, 整数型
+    .局部变量 raw, 字节集
+
+    .如果 (json ＝ 0)
+        hHeap ＝ GetProcessHeap ()
+    .否则
+        hHeap ＝ _Get (json, #zyobj_hHeap)
+    .如果结束
+    this ＝ zyNewObjectEmpty (hHeap, #jv_cbSize)
+    _Set (this, #zyobj_hHeap, hHeap)
+    _Set (this, #zyobj_pFunctions, JsonValue_InitFunctons (hHeap))
+    _Set (this, #zyobj_refCount, 1)
+    _Set (this, #jv_value, 到整数 (bool))
+    _Set (this, #jv_type, #JVTYPE_BOOL)
+    raw ＝ 选择 (bool, { 116, 0, 114, 0, 117, 0, 101, 0, 0, 0 }, { 102, 0, 97, 0, 108, 0, 115, 0, 101, 0, 0, 0 }) ' true false
+    _Set (this, #jv_raw, _CloneString (raw, hHeap))
+    
+    返回 (this)
+    
+
+.子程序 JsonValue_GetBool, 逻辑型
+    .参数 jsonVal, 整数型
+    .局部变量 type, 整数型
+
+    .如果真 (jsonVal ＝ 0)
+        返回 (假)
+    .如果真结束
+    type ＝ _Get (jsonVal, #jv_type)
+    .判断开始 (type ＝ #JVTYPE_LONG)
+        返回 (_Get (jsonVal, #jv_value) ≠ 0)
+    .判断 (type ＝ #JVTYPE_DOUBLE)
+        返回 (_GetDouble (jsonVal, #jv_value) ≠ 0)
+    .判断 (type ＝ #JVTYPE_BOOL)
+        返回 (_Get (jsonVal, #jv_value) ≠ 0)
+    .默认
+        
+    .判断结束
+    返回 (假)
+
+.子程序 JsonValue_SetBool, 逻辑型
+    .参数 jsonValue, 整数型
+    .参数 bool, 逻辑型
+    .局部变量 hHeap, 整数型
+    .局部变量 raw, 字节集
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (假)
+    .如果真结束
+    hHeap ＝ _Get (jsonValue, #zyobj_hHeap)
+    JsonValue_Destory (jsonValue)
+    _Set (jsonValue, #jv_value, 到整数 (bool))
+    _Set (jsonValue, #jv_type, #JVTYPE_BOOL)
+    raw ＝ 选择 (bool, { 116, 0, 114, 0, 117, 0, 101, 0, 0, 0 }, { 102, 0, 97, 0, 108, 0, 115, 0, 101, 0, 0, 0 }) ' true false
+    _Set (jsonValue, #jv_raw, _CloneString (raw, hHeap))
+    返回 (真)
+
+.子程序 JsonValue_SetRawW, 逻辑型
+    .参数 jsonValue, 整数型
+    .参数 rawData, 字节集
+    .局部变量 hHeap, 整数型
+    .局部变量 raw, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (假)
+    .如果真结束
+    hHeap ＝ _Get (jsonValue, #zyobj_hHeap)
+    raw ＝ _Get (jsonValue, #jv_raw)
+    .如果真 (raw ≠ 0)
+        _Free (raw, hHeap)
+    .如果真结束
+    _Set (jsonValue, #jv_raw, _CloneString (rawData, hHeap))
+    返回 (真)
+
+.子程序 JsonValue_SetRawA, 逻辑型
+    .参数 jsonValue, 整数型
+    .参数 rawData, 文本型
+    .局部变量 hHeap, 整数型
+    .局部变量 raw, 整数型
+    .局部变量 str, 字节集
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (假)
+    .如果真结束
+    hHeap ＝ _Get (jsonValue, #zyobj_hHeap)
+    raw ＝ _Get (jsonValue, #jv_raw)
+    .如果真 (raw ≠ 0)
+        _Free (raw, hHeap)
+    .如果真结束
+    str ＝ zyA2W (rawData)
+    _Set (jsonValue, #jv_raw, _CloneString (str, hHeap))
+    返回 (真)
+
+.子程序 JsonValue_GetRawW, 字节集, , 获取元数据，不支持 文本、数组和对象
+    .参数 jsonValue, 整数型
+    .局部变量 raw, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 ({ 0, 0 })
+    .如果真结束
+    raw ＝ _Get (jsonValue, #jv_raw)
+    .如果真 (raw ≠ 0)
+        返回 (指针到字节集 (raw, lstrlenW_Ptr (raw) × 2 ＋ 2))
+    .如果真结束
+    返回 ({ 0, 0 })
+    
+
+.子程序 JsonValue_GetRawA, 文本型, , 获取元数据，不支持 文本、数组和对象
+    .参数 jsonValue, 整数型
+    .局部变量 raw, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (“”)
+    .如果真结束
+    raw ＝ _Get (jsonValue, #jv_raw)
+    .如果真 (raw ≠ 0)
+        返回 (zyW2A_Point (raw))
+    .如果真结束
+    返回 (“”)
+
+.子程序 JsonValue_String, 整数型
+    .参数 json, 整数型
+    .参数 lpstr, 整数型
+    .参数 strLen, 整数型
+    .局部变量 this, 整数型
+    .局部变量 hHeap, 整数型
+
+    .如果 (json ＝ 0)
+        hHeap ＝ GetProcessHeap ()
+    .否则
+        hHeap ＝ _Get (json, #zyobj_hHeap)
+    .如果结束
+    this ＝ zyNewObjectEmpty (hHeap, #jv_cbSize)
+    _Set (this, #zyobj_hHeap, hHeap)
+    _Set (this, #zyobj_pFunctions, JsonValue_InitFunctons (hHeap))
+    _Set (this, #zyobj_refCount, 1)
+    _Set (this, #jv_value, _CloneStringPtr (lpstr, strLen, hHeap)) ' zzzzz
+    _Set (this, #jv_type, #JVTYPE_STRING)
+    返回 (this)
+    
+
+.子程序 JsonValue_StringW, 整数型
+    .参数 json, 整数型
+    .参数 str, 字节集
+    .局部变量 this, 整数型
+    .局部变量 hHeap, 整数型
+
+    .如果 (json ＝ 0)
+        hHeap ＝ GetProcessHeap ()
+    .否则
+        hHeap ＝ _Get (json, #zyobj_hHeap)
+    .如果结束
+    this ＝ zyNewObjectEmpty (hHeap, #jv_cbSize)
+    _Set (this, #zyobj_hHeap, hHeap)
+    _Set (this, #zyobj_pFunctions, JsonValue_InitFunctons (hHeap))
+    _Set (this, #zyobj_refCount, 1)
+    _Set (this, #jv_value, _CloneString (str, hHeap))
+    _Set (this, #jv_type, #JVTYPE_STRING)
+    返回 (this)
+    
+
+.子程序 JsonValue_StringA, 整数型
+    .参数 json, 整数型
+    .参数 str, 文本型
+    .局部变量 this, 整数型
+    .局部变量 hHeap, 整数型
+    .局部变量 strW, 字节集
+
+    .如果 (json ＝ 0)
+        hHeap ＝ GetProcessHeap ()
+    .否则
+        hHeap ＝ _Get (json, #zyobj_hHeap)
+    .如果结束
+    this ＝ zyNewObjectEmpty (hHeap, #jv_cbSize)
+    _Set (this, #zyobj_hHeap, hHeap)
+    _Set (this, #zyobj_pFunctions, JsonValue_InitFunctons (hHeap))
+    _Set (this, #zyobj_refCount, 1)
+    strW ＝ zyA2W (str)
+    _Set (this, #jv_value, _CloneString (strW, hHeap))
+    _Set (this, #jv_type, #JVTYPE_STRING)
+    返回 (this)
+
+.子程序 JsonValue_GetString, 整数型
+    .参数 jsonVal, 整数型
+
+    .如果真 (jsonVal ＝ 0)
+        返回 (0)
+    .如果真结束
+    .如果真 (_Get (jsonVal, #jv_type) ≠ #JVTYPE_STRING)
+        返回 (0)
+    .如果真结束
+    返回 (_Get (jsonVal, #jv_value))
+    
+
+.子程序 JsonValue_GetStringW, 字节集
+    .参数 jsonVal, 整数型
+    .局部变量 pStr, 整数型
+
+    .如果真 (jsonVal ＝ 0)
+        返回 ({ 0, 0 })
+    .如果真结束
+    .如果真 (_Get (jsonVal, #jv_type) ≠ #JVTYPE_STRING)
+        返回 ({ 0, 0 })
+    .如果真结束
+    pStr ＝ _Get (jsonVal, #jv_value)
+    .如果真 (pStr ＝ 0)
+        返回 ({ 0, 0 })
+    .如果真结束
+    返回 (指针到字节集 (pStr, lstrlenW_Ptr (pStr) × 2 ＋ 2))
+    
+
+.子程序 JsonValue_GetStringA, 文本型
+    .参数 jsonVal, 整数型
+    .局部变量 pStr, 整数型
+
+    .如果真 (jsonVal ＝ 0)
+        返回 (“”)
+    .如果真结束
+    .如果真 (_Get (jsonVal, #jv_type) ≠ #JVTYPE_STRING)
+        返回 (“”)
+    .如果真结束
+    pStr ＝ _Get (jsonVal, #jv_value)
+    .如果真 (pStr ＝ 0)
+        返回 (“”)
+    .如果真结束
+    返回 (zyW2A_Point (pStr))
+    
+
+.子程序 JsonValue_GetStringExW, 字节集
+    .参数 jsonVal, 整数型
+    .局部变量 pStr, 整数型
+    .局部变量 type, 整数型
+
+    .如果真 (jsonVal ＝ 0)
+        返回 ({ 0, 0 })
+    .如果真结束
+    type ＝ _Get (jsonVal, #jv_type)
+    .判断开始 (type ＝ #JVTYPE_STRING)
+        pStr ＝ _Get (jsonVal, #jv_value)
+    .判断 (type ＝ #JVTYPE_NULL 或 type ＝ #JVTYPE_BOOL 或 type ＝ #JVTYPE_LONG 或 type ＝ #JVTYPE_DOUBLE)
+        pStr ＝ _Get (jsonVal, #jv_raw)
+    .默认
+        pStr ＝ 0
+    .判断结束
+    
+    .如果真 (pStr ＝ 0)
+        返回 ({ 0, 0 })
+    .如果真结束
+    返回 (指针到字节集 (pStr, lstrlenW_Ptr (pStr) × 2 ＋ 2))
+    
+
+.子程序 JsonValue_GetStringExA, 文本型
+    .参数 jsonVal, 整数型
+    .局部变量 pStr, 整数型
+    .局部变量 type, 整数型
+
+    .如果真 (jsonVal ＝ 0)
+        返回 (“”)
+    .如果真结束
+    type ＝ _Get (jsonVal, #jv_type)
+    .判断开始 (type ＝ #JVTYPE_STRING)
+        pStr ＝ _Get (jsonVal, #jv_value)
+    .判断 (type ＝ #JVTYPE_NULL 或 type ＝ #JVTYPE_BOOL 或 type ＝ #JVTYPE_LONG 或 type ＝ #JVTYPE_DOUBLE)
+        pStr ＝ _Get (jsonVal, #jv_raw)
+    .默认
+        pStr ＝ 0
+    .判断结束
+    
+    .如果真 (pStr ＝ 0)
+        返回 (“”)
+    .如果真结束
+    返回 (zyW2A_Point (pStr))
+
+.子程序 JsonValue_SetString, 逻辑型
+    .参数 jsonValue, 整数型
+    .参数 pstr, 整数型
+    .参数 strlen, 整数型
+    .局部变量 hHeap, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (假)
+    .如果真结束
+    hHeap ＝ _Get (jsonValue, #zyobj_hHeap)
+    JsonValue_Destory (jsonValue)
+    _Set (jsonValue, #jv_value, _CloneStringPtr (pstr, strlen, hHeap))
+    _Set (jsonValue, #jv_type, #JVTYPE_STRING)
+    返回 (真)
+
+.子程序 JsonValue_SetStringW, 逻辑型
+    .参数 jsonValue, 整数型
+    .参数 str, 字节集
+    .局部变量 hHeap, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (假)
+    .如果真结束
+    hHeap ＝ _Get (jsonValue, #zyobj_hHeap)
+    JsonValue_Destory (jsonValue)
+    _Set (jsonValue, #jv_value, _CloneString (str, hHeap))
+    _Set (jsonValue, #jv_type, #JVTYPE_STRING)
+    返回 (真)
+
+.子程序 JsonValue_SetStringA, 逻辑型
+    .参数 jsonValue, 整数型
+    .参数 str, 文本型
+    .局部变量 hHeap, 整数型
+    .局部变量 s, 字节集
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (假)
+    .如果真结束
+    hHeap ＝ _Get (jsonValue, #zyobj_hHeap)
+    JsonValue_Destory (jsonValue)
+    s ＝ zyA2W (str)
+    _Set (jsonValue, #jv_value, _CloneString (s, hHeap))
+    _Set (jsonValue, #jv_type, #JVTYPE_STRING)
+    返回 (真)
+
+.子程序 JsonValue_Array, 整数型
+    .参数 json, 整数型
+    .局部变量 this, 整数型
+    .局部变量 hHeap, 整数型
+
+    .如果 (json ＝ 0)
+        hHeap ＝ GetProcessHeap ()
+    .否则
+        hHeap ＝ _Get (json, #zyobj_hHeap)
+    .如果结束
+    this ＝ zyNewObjectEmpty (hHeap, #jv_cbSize)
+    _Set (this, #zyobj_hHeap, hHeap)
+    _Set (this, #zyobj_pFunctions, JsonValue_InitFunctons (hHeap))
+    _Set (this, #zyobj_refCount, 1)
+    _Set (this, #jv_value, Array_Create (hHeap))
+    _Set (this, #jv_type, #JVTYPE_ARRAY)
+    返回 (this)
+    
+
+.子程序 JsonValue_SetArray, 逻辑型, , 设置为数组
+    .参数 jsonValue, 整数型
+    .局部变量 hHeap, 整数型
+    .局部变量 parent, 整数型
+    .局部变量 type, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (假)
+    .如果真结束
+    type ＝ _Get (jsonValue, #jv_type)
+    .如果真 (type ≠ #JVTYPE_ARRAY)
+        JsonValue_Destory (jsonValue)
+        _Set (jsonValue, #jv_value, Array_Create (hHeap))
+        _Set (jsonValue, #jv_type, #JVTYPE_ARRAY)
+    .如果真结束
+    返回 (真)
+
+.子程序 JsonValue_Object, 整数型
+    .参数 json, 整数型
+    .局部变量 this, 整数型
+    .局部变量 hHeap, 整数型
+
+    .如果 (json ＝ 0)
+        hHeap ＝ GetProcessHeap ()
+    .否则
+        hHeap ＝ _Get (json, #zyobj_hHeap)
+    .如果结束
+    this ＝ zyNewObjectEmpty (hHeap, #jv_cbSize)
+    _Set (this, #zyobj_hHeap, hHeap)
+    _Set (this, #zyobj_pFunctions, JsonValue_InitFunctons (hHeap))
+    _Set (this, #zyobj_refCount, 1)
+    _Set (this, #jv_value, HashEx_Create (hHeap))
+    _Set (this, #jv_type, #JVTYPE_OBJECT)
+    返回 (this)
+    
+
+.子程序 JsonValue_SetObject, 逻辑型, , 设置为空对象
+    .参数 jsonValue, 整数型
+    .局部变量 parent, 整数型
+    .局部变量 type, 整数型
+    .局部变量 hHeap, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (假)
+    .如果真结束
+    hHeap ＝ _Get (jsonValue, #zyobj_hHeap)
+    type ＝ _Get (jsonValue, #jv_type)
+    .如果真 (type ≠ #JVTYPE_OBJECT)
+        JsonValue_Destory (jsonValue)
+        _Set (jsonValue, #jv_value, HashEx_Create (hHeap))
+        _Set (jsonValue, #jv_type, #JVTYPE_OBJECT)
+        
+    .如果真结束
+    返回 (真)
+    
+
+.子程序 JsonValue_Append, 逻辑型, , 添加数组成员
+    .参数 jsonValue, 整数型
+    .参数 jsonVal, 整数型
+    .局部变量 pArray, 整数型
+
+    .如果真 (jsonValue ＝ 0 或 jsonVal ＝ 0)
+        返回 (假)
+    .如果真结束
+    .如果真 (_Get (jsonValue, #jv_type) ≠ #JVTYPE_ARRAY)
+        .如果真 (JsonValue_SetArray (jsonValue) ＝ 假)
+            返回 (假)
+        .如果真结束
+        
+    .如果真结束
+    pArray ＝ _Get (jsonValue, #jv_value)
+    .如果真 (pArray ＝ 0)
+        返回 (假)
+    .如果真结束
+    _Set (jsonVal, #jv_parent, jsonValue)
+    返回 (Array_Add (pArray, jsonVal) ≠ -1)
+    
+    
+    
+
+.子程序 JsonValue_Insert, 逻辑型, , 插入数组成员
+    .参数 jsonValue, 整数型
+    .参数 index, 整数型
+    .参数 jsonVal, 整数型
+    .局部变量 pArray, 整数型
+
+    .如果真 (jsonValue ＝ 0 或 jsonVal ＝ 0)
+        返回 (假)
+    .如果真结束
+    .如果真 (_Get (jsonValue, #jv_type) ≠ #JVTYPE_ARRAY)
+        .如果真 (JsonValue_SetArray (jsonValue) ＝ 假)
+            返回 (假)
+        .如果真结束
+        
+    .如果真结束
+    pArray ＝ _Get (jsonValue, #jv_value)
+    .如果真 (pArray ＝ 0)
+        返回 (假)
+    .如果真结束
+    _Set (jsonVal, #jv_parent, jsonValue)
+    返回 (Array_Insert (pArray, index, jsonVal) ≠ -1)
+
+.子程序 JsonValue_GetAt, 整数型, , 获取数组成员
+    .参数 jsonValue, 整数型
+    .参数 index, 整数型
+    .局部变量 pArray, 整数型
+    .局部变量 count, 整数型
+    .局部变量 newCount, 整数型
+    .局部变量 i, 整数型
+    .局部变量 jv, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (0)
+    .如果真结束
+    .如果真 (_Get (jsonValue, #jv_type) ≠ #JVTYPE_ARRAY)
+        .如果真 (JsonValue_SetArray (jsonValue) ＝ 假)
+            返回 (0)
+        .如果真结束
+        
+    .如果真结束
+    pArray ＝ _Get (jsonValue, #jv_value)
+    .如果真 (pArray ＝ 0)
+        返回 (0)
+    .如果真结束
+    count ＝ Array_GetCount (pArray)
+    .如果真 (index ≥ count) ' 如果超出范围添加null值
+        newCount ＝ index ＋ 1
+        .判断循环首 (count ＜ newCount)
+            jv ＝ JsonValue_Null (jsonValue)
+            Array_Add (pArray, jv)
+            _Set (jv, #jv_parent, jsonValue)
+            count ＝ count ＋ 1
+        .判断循环尾 ()
+        
+    .如果真结束
+    
+    返回 (Array_Get (pArray, index))
+    
+
+.子程序 JsonValue_GetAtReadOnly, 整数型, , 获取数组成员
+    .参数 jsonValue, 整数型
+    .参数 index, 整数型
+    .局部变量 pArray, 整数型
+    .局部变量 pMap, 整数型
+    .局部变量 count, 整数型
+    .局部变量 newCount, 整数型
+    .局部变量 i, 整数型
+    .局部变量 jv, 整数型
+    .局部变量 type, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (0)
+    .如果真结束
+    type ＝ _Get (jsonValue, #jv_type)
+    .判断开始 (type ＝ #JVTYPE_ARRAY)
+        pArray ＝ _Get (jsonValue, #jv_value)
+        .如果真 (pArray ＝ 0)
+            返回 (0)
+        .如果真结束
+        返回 (Array_Get (pArray, index))
+        
+    .判断 (type ＝ #JVTYPE_OBJECT)
+        pMap ＝ _Get (jsonValue, #jv_value)
+        .如果真 (pMap ＝ 0)
+            返回 (0)
+        .如果真结束
+        返回 (HashEx_GetAt (pMap, index))
+    .默认
+        
+    .判断结束
+    
+    返回 (0)
+    
+
+.子程序 JsonValue_SetAt, 逻辑型
+    .参数 jsonValue, 整数型
+    .参数 index, 整数型
+    .参数 jsonVal, 整数型
+    .局部变量 pArray, 整数型
+    .局部变量 count, 整数型
+    .局部变量 jv, 整数型
+    .局部变量 newCount, 整数型
+    .局部变量 i, 整数型
+    .局部变量 ret, 整数型
+
+    .如果真 (jsonValue ＝ 0 或 jsonVal ＝ 0)
+        返回 (假)
+    .如果真结束
+    .如果真 (_Get (jsonValue, #jv_type) ≠ #JVTYPE_ARRAY)
+        .如果真 (JsonValue_SetArray (jsonValue) ＝ 假)
+            返回 (假)
+        .如果真结束
+        
+    .如果真结束
+    pArray ＝ _Get (jsonValue, #jv_value)
+    .如果真 (pArray ＝ 0)
+        返回 (假)
+    .如果真结束
+    count ＝ Array_GetCount (pArray)
+    .如果真 (index ≥ count) ' 如果超出范围添加null值
+        newCount ＝ index ＋ 1
+        i ＝ count
+        .判断循环首 (count ＜ newCount)
+            .如果 (i ≠ index)
+                jv ＝ JsonValue_Null (jsonValue)
+            .否则
+                jv ＝ jsonVal
+            .如果结束
+            ret ＝ Array_Add (pArray, jv)
+            .如果真 (ret ＝ -1)
+                .如果真 (i ≠ index)
+                    zyThisCall (jv, #zy_Release)
+                .如果真结束
+                返回 (假)
+            .如果真结束
+            _Set (jv, #jv_parent, jsonValue)
+            count ＝ count ＋ 1
+            i ＝ i ＋ 1
+        .判断循环尾 ()
+        返回 (真)
+    .如果真结束
+    jv ＝ Array_Get (pArray, index)
+    .如果 (jv ≠ 0)
+        zyThisCall (jv, #zy_Release)
+        _Set (jsonVal, #jv_parent, jsonValue)
+        返回 (Array_Insert (pArray, index, jsonVal) ≠ -1)
+        
+    .否则
+        _Set (jsonVal, #jv_parent, jsonValue)
+        返回 (Array_Set (pArray, index, jsonVal))
+    .如果结束
+    
+    
+    
+
+.子程序 JsonValue_Get, 整数型
+    .参数 jsonValue, 整数型
+    .参数 key, 整数型
+    .局部变量 pMap, 整数型
+    .局部变量 jv, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (0)
+    .如果真结束
+    .如果真 (_Get (jsonValue, #jv_type) ≠ #JVTYPE_OBJECT)
+        .如果真 (JsonValue_SetObject (jsonValue) ＝ 假)
+            返回 (0)
+        .如果真结束
+        
+    .如果真结束
+    pMap ＝ _Get (jsonValue, #jv_value)
+    .如果真 (pMap ＝ 0)
+        返回 (0)
+    .如果真结束
+    jv ＝ HashEx_GetPtr (pMap, key)
+    .如果真 (jv ＝ 0)
+        jv ＝ JsonValue_Null (jsonValue)
+        .如果真 (HashEx_PutPtr (pMap, key, jv) ＝ -1)
+            zyThisCall (jv, #zy_Release)
+            返回 (0)
+        .如果真结束
+        _Set (jv, #jv_parent, jsonValue)
+    .如果真结束
+    返回 (jv)
+
+.子程序 JsonValue_GetW, 整数型
+    .参数 jsonValue, 整数型
+    .参数 key, 字节集
+    .局部变量 pMap, 整数型
+    .局部变量 jv, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (0)
+    .如果真结束
+    .如果真 (_Get (jsonValue, #jv_type) ≠ #JVTYPE_OBJECT)
+        .如果真 (JsonValue_SetObject (jsonValue) ＝ 假)
+            返回 (0)
+        .如果真结束
+        
+    .如果真结束
+    pMap ＝ _Get (jsonValue, #jv_value)
+    .如果真 (pMap ＝ 0)
+        返回 (0)
+    .如果真结束
+    jv ＝ HashEx_Get (pMap, key)
+    .如果真 (jv ＝ 0)
+        jv ＝ JsonValue_Null (jsonValue)
+        .如果真 (HashEx_Put (pMap, key, jv) ＝ -1)
+            zyThisCall (jv, #zy_Release)
+            返回 (0)
+        .如果真结束
+        _Set (jv, #jv_parent, jsonValue)
+    .如果真结束
+    返回 (jv)
+    
+
+.子程序 JsonValue_GetA, 整数型
+    .参数 jsonValue, 整数型
+    .参数 key, 文本型
+    .局部变量 pMap, 整数型
+    .局部变量 str, 字节集
+    .局部变量 jv, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (0)
+    .如果真结束
+    .如果真 (_Get (jsonValue, #jv_type) ≠ #JVTYPE_OBJECT)
+        .如果真 (JsonValue_SetObject (jsonValue) ＝ 假)
+            返回 (0)
+        .如果真结束
+        
+    .如果真结束
+    pMap ＝ _Get (jsonValue, #jv_value)
+    .如果真 (pMap ＝ 0)
+        返回 (0)
+    .如果真结束
+    str ＝ zyA2W (key)
+    jv ＝ HashEx_Get (pMap, str)
+    .如果真 (jv ＝ 0)
+        jv ＝ JsonValue_Null (jsonValue)
+        .如果真 (HashEx_Put (pMap, str, jv) ＝ -1)
+            zyThisCall (jv, #zy_Release)
+            返回 (0)
+        .如果真结束
+        _Set (jv, #jv_parent, jsonValue)
+    .如果真结束
+    返回 (jv)
+
+.子程序 JsonValue_GetReadOnlyW, 整数型
+    .参数 jsonValue, 整数型
+    .参数 key, 字节集
+    .局部变量 pMap, 整数型
+    .局部变量 jv, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (0)
+    .如果真结束
+    .如果真 (_Get (jsonValue, #jv_type) ≠ #JVTYPE_OBJECT)
+        返回 (0)
+    .如果真结束
+    pMap ＝ _Get (jsonValue, #jv_value)
+    .如果真 (pMap ＝ 0)
+        返回 (0)
+    .如果真结束
+    jv ＝ HashEx_Get (pMap, key)
+    返回 (jv)
+    
+
+.子程序 JsonValue_GetReadOnlyA, 整数型
+    .参数 jsonValue, 整数型
+    .参数 key, 文本型
+    .局部变量 pMap, 整数型
+    .局部变量 jv, 整数型
+    .局部变量 wKey, 字节集
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (0)
+    .如果真结束
+    .如果真 (_Get (jsonValue, #jv_type) ≠ #JVTYPE_OBJECT)
+        返回 (0)
+    .如果真结束
+    pMap ＝ _Get (jsonValue, #jv_value)
+    .如果真 (pMap ＝ 0)
+        返回 (0)
+    .如果真结束
+    wKey ＝ zyA2W (key)
+    jv ＝ HashEx_Get (pMap, wKey)
+    返回 (jv)
+
+.子程序 JsonValue_SetW, 逻辑型
+    .参数 jsonValue, 整数型
+    .参数 key, 字节集
+    .参数 jsonVal, 整数型
+    .局部变量 pMap, 整数型
+    .局部变量 old, 整数型
+    .局部变量 ret, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (假)
+    .如果真结束
+    .如果真 (_Get (jsonValue, #jv_type) ≠ #JVTYPE_OBJECT)
+        .如果真 (JsonValue_SetObject (jsonValue) ＝ 假)
+            返回 (假)
+        .如果真结束
+        
+    .如果真结束
+    pMap ＝ _Get (jsonValue, #jv_value)
+    .如果真 (pMap ＝ 0)
+        返回 (假)
+    .如果真结束
+    old ＝ HashEx_Get (pMap, key)
+    _Set (jsonVal, #jv_parent, jsonValue)
+    ret ＝ HashEx_Put (pMap, key, jsonVal)
+    .如果真 (old ≠ 0)
+        zyThisCall (old, #zy_Release)
+    .如果真结束
+    返回 (ret ≠ -1)
+
+.子程序 JsonValue_SetA, 逻辑型
+    .参数 jsonValue, 整数型
+    .参数 key, 文本型
+    .参数 newValue, 整数型
+    .局部变量 pMap, 整数型
+    .局部变量 str, 字节集
+    .局部变量 old, 整数型
+    .局部变量 ret, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (假)
+    .如果真结束
+    .如果真 (_Get (jsonValue, #jv_type) ≠ #JVTYPE_OBJECT)
+        .如果真 (JsonValue_SetObject (jsonValue) ＝ 假)
+            返回 (假)
+        .如果真结束
+        
+    .如果真结束
+    pMap ＝ _Get (jsonValue, #jv_value)
+    .如果真 (pMap ＝ 0)
+        返回 (假)
+    .如果真结束
+    str ＝ zyA2W (key)
+    old ＝ HashEx_Get (pMap, str)
+    _Set (newValue, #jv_parent, jsonValue)
+    ret ＝ HashEx_Put (pMap, str, newValue)
+    .如果真 (old ≠ 0)
+        zyThisCall (old, #zy_Release)
+    .如果真结束
+    返回 (ret ≠ -1)
+
+.子程序 JsonValue_Set, 逻辑型
+    .参数 jsonValue, 整数型
+    .参数 key, 整数型
+    .参数 newValue, 整数型
+    .局部变量 pMap, 整数型
+    .局部变量 str, 字节集
+    .局部变量 old, 整数型
+    .局部变量 ret, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (假)
+    .如果真结束
+    .如果真 (_Get (jsonValue, #jv_type) ≠ #JVTYPE_OBJECT)
+        .如果真 (JsonValue_SetObject (jsonValue) ＝ 假)
+            返回 (假)
+        .如果真结束
+        
+    .如果真结束
+    pMap ＝ _Get (jsonValue, #jv_value)
+    .如果真 (pMap ＝ 0)
+        返回 (假)
+    .如果真结束
+    old ＝ HashEx_GetPtr (pMap, key)
+    _Set (newValue, #jv_parent, jsonValue)
+    ret ＝ HashEx_PutPtr (pMap, key, newValue)
+    .如果真 (old ≠ 0)
+        zyThisCall (old, #zy_Release)
+    .如果真结束
+    返回 (ret ≠ -1)
+    
+
+.子程序 JsonValue_InsertObjAttrW, 逻辑型
+    .参数 jsonValue, 整数型
+    .参数 index, 整数型
+    .参数 key, 字节集
+    .参数 jsonVal, 整数型
+    .局部变量 pMap, 整数型
+    .局部变量 old, 整数型
+    .局部变量 ret, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (假)
+    .如果真结束
+    .如果真 (_Get (jsonValue, #jv_type) ≠ #JVTYPE_OBJECT)
+        .如果真 (JsonValue_SetObject (jsonValue) ＝ 假)
+            返回 (假)
+        .如果真结束
+        
+    .如果真结束
+    pMap ＝ _Get (jsonValue, #jv_value)
+    .如果真 (pMap ＝ 0)
+        返回 (假)
+    .如果真结束
+    old ＝ HashEx_Get (pMap, key)
+    _Set (jsonVal, #jv_parent, jsonValue)
+    ret ＝ HashEx_Insert (pMap, index, key, jsonVal)
+    .如果真 (old ≠ 0)
+        zyThisCall (old, #zy_Release)
+    .如果真结束
+    返回 (ret ≠ -1)
+
+.子程序 JsonValue_GetLength, 整数型
+    .参数 jsonVal, 整数型
+    .局部变量 type, 整数型
+    .局部变量 p, 整数型
+
+    .如果真 (jsonVal ＝ 0)
+        返回 (0)
+    .如果真结束
+    type ＝ _Get (jsonVal, #jv_type)
+    .判断开始 (type ＝ #JVTYPE_OBJECT)
+        p ＝ _Get (jsonVal, #jv_value)
+        .如果真 (p ≠ 0)
+            返回 (HashEx_GetSize (p))
+        .如果真结束
+        
+    .判断 (type ＝ #JVTYPE_ARRAY)
+        p ＝ _Get (jsonVal, #jv_value)
+        .如果真 (p ≠ 0)
+            返回 (Array_GetCount (p))
+        .如果真结束
+        
+    .默认
+        
+    .判断结束
+    返回 (0)
+
+.子程序 JsonValue_GetALength, 整数型, , 数组成员数
+    .参数 jsonVal, 整数型
+    .局部变量 type, 整数型
+    .局部变量 p, 整数型
+
+    .如果真 (jsonVal ＝ 0)
+        返回 (0)
+    .如果真结束
+    
+    p ＝ _Get (jsonVal, #jv_value)
+    .如果真 (p ≠ 0)
+        返回 (Array_GetCount (p))
+    .如果真结束
+    
+    
+    
+    返回 (0)
+
+.子程序 JsonValue_GetType, 整数型
+    .参数 jsonVal, 整数型
+
+    .如果真 (jsonVal ＝ 0)
+        返回 (#JVTYPE_UNDEFINED)
+    .如果真结束
+    返回 (_Get (jsonVal, #jv_type))
+    
+
+.子程序 JsonValue_GetParent, 整数型
+    .参数 jsonVal, 整数型
+
+    .如果真 (jsonVal ＝ 0)
+        返回 (#JVTYPE_UNDEFINED)
+    .如果真结束
+    返回 (_Get (jsonVal, #jv_parent))
+
+.子程序 JsonValue_Parsed3, 整数型
+    .参数 jsonVal, 整数型
+    .参数 pStr, 整数型
+    .参数 strLen, 整数型
+    .参数 transU, 逻辑型
+    .参数 errorPos, 整数型, 参考 可空
+    .局部变量 byteLen, 整数型
+    .局部变量 error, 整数型
+    .局部变量 hHeap, 整数型
+    .局部变量 hStack, 整数型
+    .局部变量 namePos, 整数型
+    .局部变量 nameLen, 整数型
+    .局部变量 i, 整数型
+    .局部变量 wchar, 整数型
+
+    errorPos ＝ 0
+    .如果真 (jsonVal ＝ 0 或 pStr ＝ 0 或 strLen ＝ 0)
+        返回 (#JSON_INVALIDARG)
+    .如果真结束
+    error ＝ #JSON_OK
+    hHeap ＝ _Get (jsonVal, #zyobj_hHeap)
+    hStack ＝ Stack_Create (hHeap)
+    .如果真 (hStack ＝ 0)
+        返回 (#JSON_MEMORY)
+    .如果真结束
+    JsonValue_Clear (jsonVal) ' 清除源数据，如果后面执行失败也会清除
+    namePos ＝ -1
+    nameLen ＝ 0
+    i ＝ 0
+    .判断循环首 (i ≤ strLen) ' 10170
+        
+        wchar ＝ _指针到短整数U (pStr ＋ i × 2)
+        
+        .判断开始 (wchar ＝ 32 或 wchar ＝ 9 或 wchar ＝ 13 或 wchar ＝ 10 或 wchar ＝ 0)
+            i ＝ i ＋ 1
+            到循环尾 ()
+        .判断 (wchar ＝ 123) ' {
+            error ＝ jsonValue_parsed_object (jsonVal, pStr, hStack, namePos, nameLen, transU)
+            .如果真 (error ≠ #JSON_OK)
+                跳出循环 ()
+            .如果真结束
+            
+        .判断 (wchar ＝ 91) ' [
+            error ＝ jsonValue_parsed_array (jsonVal, pStr, hStack, namePos, nameLen, transU)
+            .如果真 (error ≠ #JSON_OK)
+                跳出循环 ()
+            .如果真结束
+            
+        .默认
+            error ＝ jsonValue_parsed_other (jsonVal, pStr, strLen, hStack, namePos, nameLen, transU, i)
+            .如果真 (error ≠ #JSON_OK)
+                跳出循环 ()
+            .如果真结束
+            
+        .判断结束
+        
+        i ＝ i ＋ 1
+    .判断循环尾 ()
+    
+    ' 输出调试文本 (error)
+    .如果真 (error ≠ #JSON_OK)
+        Stack_Destroy (hStack)
+        JsonValue_Clear (jsonVal)
+        errorPos ＝ i
+        ' jsonValue_parsed_get_error_line (pStr, strLen, i, errorPos, errorCol)
+        返回 (error)
+    .如果真结束
+    
+    .如果真 (Stack_GetTopPos (hStack) ≠ 0)
+        Stack_Destroy (hStack)
+        JsonValue_Clear (jsonVal)
+        errorPos ＝ i
+        ' jsonValue_parsed_get_error_line (pStr, strLen, i, errorPos, errorCol)
+        返回 (#JSON_OBJECTPARENT)
+    .如果真结束
+    
+    Stack_Destroy (hStack)
+    
+    返回 (error)
+
+.子程序 jsonValue_parsed_get_error_line
+    .参数 pstr, 整数型
+    .参数 strLen, 整数型
+    .参数 pos, 整数型
+    .参数 errorLine, 整数型, 参考
+    .参数 errorCol, 整数型, 参考
+    .局部变量 i, 整数型
+    .局部变量 wchar, 整数型
+
+    errorLine ＝ 0
+    errorCol ＝ 0
+    .判断循环首 (i ≤ pos － 1)
+        wchar ＝ _指针到短整数U (pstr ＋ i × 2)
+        .如果真 (wchar ＝ 10)
+            errorLine ＝ errorLine ＋ 1
+            errorCol ＝ 0
+            i ＝ i ＋ 1
+            到循环尾 ()
+        .如果真结束
+        
+        errorCol ＝ errorCol ＋ 1
+        i ＝ i ＋ 1
+    .判断循环尾 ()
+    
+
+.子程序 jsonValue_parsed_object, 整数型
+    .参数 jsonVal, 整数型
+    .参数 pStr, 整数型
+    .参数 hStack, 整数型
+    .参数 namePos, 整数型
+    .参数 nameLen, 整数型
+    .参数 transU, 逻辑型
+    .局部变量 jvParent, 整数型
+    .局部变量 type, 整数型
+    .局部变量 jv, 整数型
+    .局部变量 pName, 整数型
+    .局部变量 name, 字节集
+    .局部变量 status, 整数型
+
+    jvParent ＝ Stack_Get (hStack, status)
+    .如果 (jvParent ＝ 0) ' 根对象
+        type ＝ JsonValue_GetType (jsonVal)
+        .如果真 (type ≠ #JVTYPE_OBJECT)
+            .如果真 (JsonValue_SetObject (jsonVal) ＝ 假)
+                返回 (#JSON_MEMORY)
+            .如果真结束
+            
+        .如果真结束
+        .如果真 (Stack_Push (hStack, jsonVal, #jvp_needName) ＝ 假) ' 将子对象压入栈
+            返回 (#JSON_MEMORY)
+        .如果真结束
+        
+    .否则
+        ' 非根对象
+        .如果真 (status ≠ #jvp_needValue)
+            返回 (#JSON_INVALIDNAME)
+        .如果真结束
+        type ＝ JsonValue_GetType (jvParent)
+        .如果 (type ＝ #JVTYPE_ARRAY) ' 父是数组
+            jv ＝ JsonValue_Object (jsonVal) ' 创建子对象
+            .如果真 (jv ＝ 0)
+                返回 (#JSON_MEMORY)
+            .如果真结束
+            
+            .如果真 (JsonValue_Append (jvParent, jv) ＝ 假) ' 添加到数组中
+                zyThisCall (jv, #zy_Release)
+                返回 (#JSON_MEMORY)
+            .如果真结束
+            
+            .如果真 (Stack_Push (hStack, jv, #jvp_needName) ＝ 假) ' 将子对象压入栈
+                zyThisCall (jv, #zy_Release)
+                返回 (#JSON_MEMORY)
+            .如果真结束
+            
+        .否则
+            
+            ' 父是对象
+            .如果真 (namePos ＝ -1 或 nameLen ＝ 0)
+                返回 (#JSON_INVALIDNAME)
+            .如果真结束
+            jv ＝ JsonValue_Object (jsonVal) ' 创建子对象
+            .如果真 (jv ＝ 0)
+                返回 (#JSON_MEMORY)
+            .如果真结束
+            
+            name ＝ 取空白字节集 (nameLen × 2 ＋ 2)
+            pName ＝ _取指针字节集 (name)
+            RtlMoveMemory_int (pName, pStr ＋ namePos × 2, nameLen × 2)
+            ' JsonValue_Parsed_RemoveSpace (name)
+            JsonValue_TranslationIn (_取指针字节集 (name), transU)
+            .如果真 (JsonValue_SetW (jvParent, name, jv) ＝ 假) ' 添加到父对象
+                zyThisCall (jv, #zy_Release)
+                返回 (#JSON_MEMORY)
+            .如果真结束
+            .如果真 (Stack_Push (hStack, jv, #jvp_needName) ＝ 假) ' 将子对象压入栈
+                zyThisCall (jv, #zy_Release)
+                返回 (#JSON_MEMORY)
+            .如果真结束
+            
+        .如果结束
+        
+    .如果结束
+    返回 (#JSON_OK)
+
+.子程序 jsonValue_parsed_array, 整数型
+    .参数 jsonVal, 整数型
+    .参数 pStr, 整数型
+    .参数 hStack, 整数型
+    .参数 namePos, 整数型
+    .参数 nameLen, 整数型
+    .参数 transU, 逻辑型
+    .局部变量 jvParent, 整数型
+    .局部变量 type, 整数型
+    .局部变量 jv, 整数型
+    .局部变量 pName, 整数型
+    .局部变量 name, 字节集
+    .局部变量 status, 整数型
+
+    jvParent ＝ Stack_Get (hStack, status)
+    .如果 (jvParent ＝ 0) ' 根数组
+        type ＝ JsonValue_GetType (jsonVal)
+        .如果真 (type ≠ #JVTYPE_ARRAY)
+            .如果真 (JsonValue_SetArray (jsonVal) ＝ 假)
+                返回 (#JSON_MEMORY)
+            .如果真结束
+            
+        .如果真结束
+        
+        .如果真 (Stack_Push (hStack, jsonVal, #jvp_needValue) ＝ 假) ' 将子对象压入栈
+            zyThisCall (jv, #zy_Release)
+            返回 (#JSON_MEMORY)
+        .如果真结束
+        
+        
+        
+    .否则
+        ' 非根数组
+        .如果真 (status ≠ #jvp_needValue)
+            返回 (#JSON_INVALIDNAME)
+        .如果真结束
+        
+        type ＝ JsonValue_GetType (jvParent)
+        ' 父是数组
+        .如果 (type ＝ #JVTYPE_ARRAY)
+            jv ＝ JsonValue_Array (jsonVal) ' 创建子对象
+            .如果真 (jv ＝ 0)
+                返回 (#JSON_MEMORY)
+            .如果真结束
+            
+            .如果真 (JsonValue_Append (jvParent, jv) ＝ 假) ' 添加到数组中
+                zyThisCall (jv, #zy_Release)
+                返回 (#JSON_MEMORY)
+            .如果真结束
+            
+            .如果真 (Stack_Push (hStack, jv, #jvp_needValue) ＝ 假) ' 将子对象压入栈
+                zyThisCall (jv, #zy_Release)
+                返回 (#JSON_MEMORY)
+            .如果真结束
+            
+        .否则
+            
+            ' 父是对象
+            .如果真 (namePos ＝ -1 或 nameLen ＝ 0)
+                返回 (#JSON_INVALIDNAME)
+            .如果真结束
+            jv ＝ JsonValue_Array (jsonVal) ' 创建子数组
+            .如果真 (jv ＝ 0)
+                返回 (#JSON_MEMORY)
+            .如果真结束
+            
+            name ＝ 取空白字节集 (nameLen × 2 ＋ 2)
+            pName ＝ _取指针字节集 (name)
+            RtlMoveMemory_int (pName, pStr ＋ namePos × 2, nameLen × 2)
+            ' JsonValue_Parsed_RemoveSpace (name)
+            JsonValue_TranslationIn (_取指针字节集 (name), transU)
+            .如果真 (JsonValue_SetW (jvParent, name, jv) ＝ 假) ' 添加到父对象
+                zyThisCall (jv, #zy_Release)
+                返回 (#JSON_MEMORY)
+            .如果真结束
+            .如果真 (Stack_Push (hStack, jv, #jvp_needValue) ＝ 假) ' 将子对象压入栈
+                zyThisCall (jv, #zy_Release)
+                返回 (#JSON_MEMORY)
+            .如果真结束
+            
+        .如果结束
+        
+    .如果结束
+    返回 (#JSON_OK)
+    
+
+.子程序 jsonValue_parsed_other, 整数型
+    .参数 jsonVal, 整数型
+    .参数 pStr, 整数型
+    .参数 strLen, 整数型
+    .参数 hStack, 整数型
+    .参数 namePos, 整数型, 参考
+    .参数 nameLen, 整数型, 参考
+    .参数 transU, 逻辑型
+    .参数 pos, 整数型, 参考
+    .局部变量 jvParent, 整数型
+    .局部变量 jvPreParent, 整数型
+    .局部变量 type, 整数型
+    .局部变量 childType, 整数型
+    .局部变量 jv, 整数型
+    .局部变量 pName, 整数型
+    .局部变量 name, 字节集
+    .局部变量 valueStart, 整数型
+    .局部变量 valueLen, 整数型
+    .局部变量 wchar, 整数型
+    .局部变量 nextChar, 整数型
+    .局部变量 quoteChar, 整数型
+    .局部变量 status, 整数型
+    .局部变量 preStatus, 整数型
+    .局部变量 value, 字节集
+    .局部变量 isDouble, 逻辑型
+    .局部变量 trueStr, 字节集
+    .局部变量 bool, 逻辑型
+    .局部变量 pValue, 整数型
+    .局部变量 nameEnd, 整数型
+
+    jvParent ＝ Stack_Get (hStack, status)
+    .如果 (jvParent ＝ 0)
+        wchar ＝ _指针到短整数U (pStr ＋ pos × 2)
+        valueStart ＝ pos
+        .判断循环首 (pos ＜ strLen)
+            pos ＝ pos ＋ 1
+            valueLen ＝ valueLen ＋ 1
+        .判断循环尾 ()
+        value ＝ 取空白字节集 (valueLen × 2 ＋ 2)
+        RtlMoveMemory_int (_取指针字节集 (value), pStr, valueLen × 2)
+    .否则
+        
+        type ＝ JsonValue_GetType (jvParent)
+        .判断开始 (type ＝ #JVTYPE_ARRAY)
+            wchar ＝ _指针到短整数U (pStr ＋ pos × 2)
+            .如果真 (status ＝ #jvp_isEnded)
+                status ＝ #jvp_needValue
+                Stack_Set (hStack, jvParent, status)
+                .如果真 (wchar ＝ 44) ' ,
+                    返回 (#JSON_OK)
+                .如果真结束
+                
+            .如果真结束
+            
+            .如果真 (status ≠ #jvp_needValue)
+                返回 (#JSON_INVALIDVALUE)
+            .如果真结束
+            
+            valueStart ＝ pos
+            valueLen ＝ 0
+            .判断循环首 (pos ＜ strLen)
+                wchar ＝ _指针到短整数U (pStr ＋ pos × 2)
+                .判断开始 (wchar ＝ 32 或 wchar ＝ 9 或 wchar ＝ 13 或 wchar ＝ 10 且 quoteChar ＝ 0)
+                    pos ＝ pos ＋ 1
+                    .如果真 (valueLen ＝ 0)
+                        valueStart ＝ pos
+                    .如果真结束
+                    到循环尾 ()
+                .判断 (wchar ＝ 34 或 wchar ＝ 39) ' 引号或单引号
+                    .如果 (quoteChar ＝ 0)
+                        quoteChar ＝ wchar
+                    .否则
+                        
+                        .如果真 (quoteChar ＝ wchar)
+                            quoteChar ＝ 0
+                        .如果真结束
+                        
+                    .如果结束
+                    
+                .判断 (wchar ＝ 92) ' \ 转移符
+                    nextChar ＝ _指针到短整数U (pStr ＋ (pos ＋ 1) × 2)
+                    .如果 (nextChar ＝ 117) ' u
+                        pos ＝ pos ＋ 6
+                        valueLen ＝ valueLen ＋ 6
+                        
+                    .否则
+                        pos ＝ pos ＋ 2
+                        valueLen ＝ valueLen ＋ 2
+                    .如果结束
+                    
+                    到循环尾 ()
+                    
+                .判断 (wchar ＝ 123 且 quoteChar ＝ 0) ' {
+                    .如果真 (valueLen ≠ 0)
+                        pos ＝ valueStart
+                        返回 (#JSON_INVALIDVALUE)
+                    .如果真结束
+                    返回 (jsonValue_parsed_object (jsonVal, pStr, hStack, namePos, nameLen, transU))
+                .判断 (wchar ＝ 91 且 quoteChar ＝ 0) ' [
+                    .如果真 (valueLen ≠ 0)
+                        pos ＝ valueStart
+                        返回 (#JSON_INVALIDVALUE)
+                    .如果真结束
+                    返回 (jsonValue_parsed_array (jsonVal, pStr, hStack, namePos, nameLen, transU))
+                .判断 (wchar ＝ 93 且 quoteChar ＝ 0) ' ]
+                    Stack_Pop (hStack, jvParent, status)
+                    jvPreParent ＝ Stack_Get (hStack, preStatus)
+                    .如果真 (jvPreParent ≠ 0)
+                        preStatus ＝ #jvp_isEnded
+                        Stack_Set (hStack, jvPreParent, preStatus)
+                    .如果真结束
+                    
+                    .如果真 (valueLen ＝ 0)
+                        返回 (#JSON_OK)
+                    .如果真结束
+                    
+                    跳出循环 ()
+                .判断 (wchar ＝ 44 且 quoteChar ＝ 0) ' ,
+                    跳出循环 ()
+                    
+                .默认
+                    
+                .判断结束
+                pos ＝ pos ＋ 1
+                valueLen ＝ valueLen ＋ 1
+            .判断循环尾 ()
+            .如果真 (quoteChar ≠ 0)
+                pos ＝ valueStart
+                返回 (#JSON_INVALIDVALUE)
+            .如果真结束
+            
+            .如果 (valueLen ≠ 0)
+                value ＝ 取空白字节集 (valueLen × 2 ＋ 2)
+                RtlMoveMemory_int (_取指针字节集 (value), pStr ＋ valueStart × 2, valueLen × 2)
+                
+            .否则
+                返回 (#JSON_OK)
+            .如果结束
+            
+        .判断 (type ＝ #JVTYPE_OBJECT) ' ================================================================对象================================================================
+            wchar ＝ _指针到短整数U (pStr ＋ pos × 2)
+            .如果真 (status ＝ #jvp_isEnded)
+                status ＝ #jvp_needName
+                Stack_Set (hStack, jvParent, status)
+                .如果真 (wchar ＝ 44) ' ,
+                    返回 (#JSON_OK)
+                .如果真结束
+                
+            .如果真结束
+            
+            .如果真 (status ≠ #jvp_needName)
+                返回 (#JSON_INVALIDNAME)
+            .如果真结束
+            
+            namePos ＝ pos
+            nameLen ＝ 0
+            valueStart ＝ 0
+            valueLen ＝ 0
+            .判断循环首 (pos ＜ strLen)
+                wchar ＝ _指针到短整数U (pStr ＋ pos × 2)
+                .判断开始 (wchar ＝ 32 或 wchar ＝ 9 或 wchar ＝ 13 或 wchar ＝ 10 且 quoteChar ＝ 0)
+                    pos ＝ pos ＋ 1
+                    .如果 (status ＝ #jvp_needName)
+                        .如果真 (nameLen ＝ 0)
+                            namePos ＝ pos
+                        .如果真结束
+                        
+                    .否则
+                        .如果真 (valueLen ＝ 0)
+                            valueStart ＝ pos
+                        .如果真结束
+                        
+                    .如果结束
+                    到循环尾 ()
+                .判断 (wchar ＝ 34 或 wchar ＝ 39) ' 引号或单引号
+                    .如果 (quoteChar ＝ 0)
+                        quoteChar ＝ wchar
+                        pos ＝ pos ＋ 1
+                        .如果 (status ＝ #jvp_needName)
+                            .如果真 (nameLen ≠ 0)
+                                返回 (#JSON_INVALIDNAME)
+                            .如果真结束
+                            namePos ＝ pos
+                        .否则
+                            valueLen ＝ valueLen ＋ 1
+                        .如果结束
+                        
+                        到循环尾 ()
+                    .否则
+                        
+                        .如果真 (quoteChar ＝ wchar)
+                            quoteChar ＝ 0
+                        .如果真结束
+                        
+                        pos ＝ pos ＋ 1
+                        .如果 (status ＝ #jvp_needValue)
+                            valueLen ＝ valueLen ＋ 1
+                        .否则
+                            nameEnd ＝ 1
+                        .如果结束
+                        
+                        到循环尾 ()
+                    .如果结束
+                    
+                .判断 (wchar ＝ 92) ' \ 转移符
+                    nextChar ＝ _指针到短整数U (pStr ＋ (pos ＋ 1) × 2)
+                    .如果 (nextChar ＝ 117) ' u
+                        pos ＝ pos ＋ 6
+                        .如果 (status ＝ #jvp_needName)
+                            nameLen ＝ nameLen ＋ 6
+                        .否则
+                            valueLen ＝ valueLen ＋ 6
+                        .如果结束
+                        
+                    .否则
+                        pos ＝ pos ＋ 2
+                        .如果 (status ＝ #jvp_needName)
+                            nameLen ＝ nameLen ＋ 2
+                        .否则
+                            valueLen ＝ valueLen ＋ 2
+                        .如果结束
+                        
+                    .如果结束
+                    
+                    到循环尾 ()
+                    
+                .判断 (wchar ＝ 58 且 quoteChar ＝ 0) ' :
+                    .如果真 (status ＝ #jvp_needName)
+                        .如果真 (nameLen ＝ 0)
+                            返回 (#JSON_INVALIDNAME)
+                        .如果真结束
+                        pos ＝ pos ＋ 1
+                        valueStart ＝ pos
+                        valueLen ＝ 0
+                        status ＝ #jvp_needValue
+                        Stack_Set (hStack, jvParent, status)
+                        到循环尾 ()
+                    .如果真结束
+                    
+                .判断 (wchar ＝ 123 且 quoteChar ＝ 0) ' {
+                    .如果真 (valueLen ≠ 0)
+                        pos ＝ valueStart
+                        返回 (#JSON_INVALIDVALUE)
+                    .如果真结束
+                    返回 (jsonValue_parsed_object (jsonVal, pStr, hStack, namePos, nameLen, transU))
+                .判断 (wchar ＝ 91 且 quoteChar ＝ 0) ' [
+                    .如果真 (valueLen ≠ 0)
+                        pos ＝ valueStart
+                        ' 输出调试文本 (zyW2A_Point (pStr ＋ valueStart × 2))
+                        返回 (#JSON_INVALIDVALUE)
+                    .如果真结束
+                    返回 (jsonValue_parsed_array (jsonVal, pStr, hStack, namePos, nameLen, transU))
+                .判断 (wchar ＝ 125 且 quoteChar ＝ 0) ' }
+                    Stack_Pop (hStack, jvParent, status)
+                    jvPreParent ＝ Stack_Get (hStack, preStatus)
+                    .如果真 (jvPreParent ≠ 0)
+                        preStatus ＝ #jvp_isEnded
+                        Stack_Set (hStack, jvPreParent, preStatus)
+                    .如果真结束
+                    
+                    .如果真 (nameLen ＝ 0)
+                        返回 (#JSON_OK)
+                    .如果真结束
+                    
+                    跳出循环 ()
+                .判断 (wchar ＝ 44 且 quoteChar ＝ 0) ' ,
+                    跳出循环 ()
+                .默认
+                    
+                    .如果真 (status ＝ #JVPS_NAME 且 nameEnd ≠ 0) ' 当解析属性名时， 且属性名有引号，则不能再出现其他字符(除了空白字符和':')
+                        返回 (#JSON_INVALIDNAME)
+                    .如果真结束
+                    
+                .判断结束
+                
+                pos ＝ pos ＋ 1
+                .如果 (status ＝ #jvp_needName)
+                    nameLen ＝ nameLen ＋ 1
+                .否则
+                    valueLen ＝ valueLen ＋ 1
+                .如果结束
+                
+            .判断循环尾 ()
+            .判断开始 (nameLen ＝ 0 且 valueLen ≠ 0) ' 有值但是没有名称
+                pos ＝ namePos
+                返回 (#JSON_INVALIDNAME)
+                
+            .判断 (nameLen ≠ 0 且 valueLen ＝ 0) ' 有名称但是没有值
+                pos ＝ valueStart
+                返回 (#JSON_INVALIDVALUE)
+            .默认
+                
+            .判断结束
+            
+            
+            value ＝ 取空白字节集 (valueLen × 2 ＋ 2)
+            RtlMoveMemory_int (_取指针字节集 (value), pStr ＋ valueStart × 2, valueLen × 2)
+            .如果真 (preStatus ≠ #jvp_isEnded)
+                status ＝ #jvp_needName
+                Stack_Set (hStack, jvParent, status)
+            .如果真结束
+            
+        .默认
+            
+        .判断结束
+        
+    .如果结束
+    
+    ' 处理值
+    pValue ＝ _取指针字节集 (value)
+    wchar ＝ _指针到短整数U (pValue)
+    .如果 (wchar ＝ 34 或 wchar ＝ 39) ' 引号或单引号
+        quoteChar ＝ wchar
+        nextChar ＝ _指针到短整数U (pValue ＋ (valueLen － 1) × 2) ' 最后一个字符
+        .如果真 (quoteChar ≠ nextChar)
+            pos ＝ valueStart
+            返回 (#JSON_INVALIDVALUE)
+        .如果真结束
+        
+        childType ＝ #JVTYPE_STRING
+    .否则
+        childType ＝ JsonValue_Parsed_GetValueType (value)
+    .如果结束
+    
+    .判断开始 (childType ＝ #JVTYPE_NULL)
+        .如果 (jvParent ＝ 0)
+            .如果真 (JsonValue_SetNull (jsonVal))
+                返回 (#JSON_OK)
+            .如果真结束
+            pos ＝ valueStart
+            返回 (#JSON_MEMORY)
+        .否则
+            jv ＝ JsonValue_Null (jsonVal)
+        .如果结束
+        
+    .判断 (childType ＝ #JVTYPE_BOOL)
+        trueStr ＝ { 116, 0, 114, 0, 117, 0, 101, 0, 0, 0 }
+        bool ＝ lstrcmpW (_取指针字节集 (value), _取指针字节集 (trueStr)) ＝ 0 ' true
+        .如果 (jvParent ＝ 0)
+            .如果真 (JsonValue_SetBool (jsonVal, bool))
+                返回 (#JSON_OK)
+            .如果真结束
+            pos ＝ valueStart
+            返回 (#JSON_MEMORY)
+        .否则
+            jv ＝ JsonValue_Bool (jsonVal, bool)
+        .如果结束
+        
+    .判断 (childType ＝ #JVTYPE_DOUBLE)
+        .如果 (jvParent ＝ 0)
+            .如果真 (JsonValue_SetDouble (jsonVal, _StrToDoubleW (value), value))
+                返回 (#JSON_OK)
+            .如果真结束
+            pos ＝ valueStart
+            返回 (#JSON_MEMORY)
+        .否则
+            jv ＝ JsonValue_Double (jsonVal, _StrToDoubleW (value), value)
+            
+        .如果结束
+        
+    .判断 (childType ＝ #JVTYPE_LONG)
+        .如果 (jvParent ＝ 0)
+            .如果真 (JsonValue_SetLong (jsonVal, _StrToLongW (value), value))
+                返回 (#JSON_OK)
+            .如果真结束
+            pos ＝ valueStart
+            返回 (#JSON_MEMORY)
+        .否则
+            jv ＝ JsonValue_Double (jsonVal, _StrToLongW (value), value)
+        .如果结束
+        
+    .判断 (childType ＝ #JVTYPE_STRING)
+        pValue ＝ _取指针字节集 (value)
+        JsonValue_TranslationIn (pValue, transU)
+        valueLen ＝ lstrlenW (value) － 2
+        pValue ＝ pValue ＋ 2
+        .如果 (jvParent ＝ 0)
+            .如果真 (JsonValue_SetString (jsonVal, pValue, valueLen))
+                返回 (#JSON_OK)
+            .如果真结束
+            pos ＝ valueStart
+            返回 (#JSON_MEMORY)
+        .否则
+            jv ＝ JsonValue_String (jsonVal, pValue, valueLen)
+        .如果结束
+        
+    .默认
+        pos ＝ valueStart
+        返回 (#JSON_INVALIDVALUE)
+    .判断结束
+    
+    .如果真 (jv ＝ 0)
+        pos ＝ valueStart
+        返回 (#JSON_MEMORY)
+    .如果真结束
+    
+    
+    .判断开始 (type ＝ #JVTYPE_ARRAY)
+        .如果真 (JsonValue_Append (jvParent, jv) ＝ 假)
+            JsonValue_Release (jv)
+            pos ＝ valueStart
+            返回 (#JSON_MEMORY)
+        .如果真结束
+        
+        
+    .判断 (type ＝ #JVTYPE_OBJECT)
+        name ＝ 取空白字节集 (nameLen × 2 ＋ 2)
+        pName ＝ _取指针字节集 (name)
+        RtlMoveMemory_int (pName, pStr ＋ namePos × 2, nameLen × 2)
+        JsonValue_TranslationIn (pName, transU)
+        .如果真 (JsonValue_SetW (jvParent, name, jv) ＝ 假)
+            JsonValue_Release (jv)
+            pos ＝ valueStart
+            返回 (#JSON_MEMORY)
+        .如果真结束
+        namePos ＝ -1
+        nameLen ＝ 0
+    .默认
+        
+    .判断结束
+    
+    返回 (#JSON_OK)
+    
+
+.子程序 JsonValue_Parsed_GetValueType, 整数型, , 没有判断 文本、对象、数组，因为这些值都有符号决定
+    .参数 val, 字节集
+    .局部变量 nullStr, 字节集
+    .局部变量 trueStr, 字节集
+    .局部变量 falseStr, 字节集
+    .局部变量 pVal, 整数型
+    .局部变量 isDouble, 逻辑型
+
+    nullStr ＝ { 110, 0, 117, 0, 108, 0, 108, 0, 0, 0 }
+    trueStr ＝ { 116, 0, 114, 0, 117, 0, 101, 0, 0, 0 }
+    falseStr ＝ { 102, 0, 97, 0, 108, 0, 115, 0, 101, 0, 0, 0 }
+    pVal ＝ _取指针字节集 (val)
+    .判断开始 (lstrcmpW (pVal, _取指针字节集 (nullStr)) ＝ 0) ' null
+        返回 (#JVTYPE_NULL)
+    .判断 (lstrcmpW (pVal, _取指针字节集 (trueStr)) ＝ 0 或 lstrcmpW (pVal, _取指针字节集 (falseStr)) ＝ 0) ' true or false
+        返回 (#JVTYPE_BOOL)
+    .判断 (JsonValue_Parsed_ValueIsNumber (val, isDouble))
+        .如果 (isDouble)
+            返回 (#JVTYPE_DOUBLE)
+        .否则
+            返回 (#JVTYPE_LONG)
+        .如果结束
+        
+    .默认
+        
+    .判断结束
+    返回 (#JVTYPE_UNDEFINED)
+    
+
+.子程序 JsonValue_Parsed_ValueIsNumber, 逻辑型
+    .参数 val, 字节集
+    .参数 isDouble, 逻辑型, 参考
+    .局部变量 pVal, 整数型
+    .局部变量 len, 整数型
+    .局部变量 wchar, 整数型
+    .局部变量 i, 整数型
+    .局部变量 done, 整数型
+    .局部变量 e, 整数型
+    .局部变量 f, 整数型
+
+    pVal ＝ _取指针字节集 (val)
+    len ＝ lstrlenW (val)
+    .如果真 (len ＝ 0)
+        返回 (假)
+    .如果真结束
+    .判断循环首 (i ＜ len)
+        wchar ＝ _指针到短整数U (pVal ＋ i × 2)
+        .如果真 (wchar ≤ 32) ' 跳过空白
+            i ＝ i ＋ 1
+            到循环尾 ()
+        .如果真结束
+        
+        .如果 (i ＝ 0)
+            .如果真 (wchar ≠ 45 且 wchar ≠ 43 且 (wchar ＜ 48 或 wchar ＞ 57)) ' 不是 + - 0~9
+                .如果真 (wchar ＝ 46) ' 点.
+                    done ＝ done ＋ 1
+                    .如果真 (done ＞ 1) ' 有两个点以上返回假
+                        返回 (假)
+                    .如果真结束
+                    i ＝ i ＋ 1
+                    到循环尾 ()
+                .如果真结束
+                返回 (假)
+            .如果真结束
+            
+        .否则
+            
+            .如果真 (wchar ＜ 48 或 wchar ＞ 57) ' 0~9
+                .判断开始 (wchar ＝ 46) ' 点.
+                    done ＝ done ＋ 1
+                    .如果真 (done ＞ 1) ' 有两个点以上返回假
+                        返回 (假)
+                    .如果真结束
+                    i ＝ i ＋ 1
+                    到循环尾 ()
+                .判断 (wchar ＝ 101 或 wchar ＝ 69) ' E 或 e
+                    e ＝ e ＋ 1
+                    .如果真 (e ＞ 1)
+                        返回 (假)
+                    .如果真结束
+                    i ＝ i ＋ 1
+                    到循环尾 ()
+                .判断 (wchar ＝ 43 或 wchar ＝ 45) ' + -
+                    f ＝ f ＋ 1
+                    .如果真 (f ＞ 1) ' 有两个点以上返回假
+                        返回 (假)
+                    .如果真结束
+                    i ＝ i ＋ 1
+                    到循环尾 ()
+                .默认
+                    
+                .判断结束
+                返回 (假)
+            .如果真结束
+            
+        .如果结束
+        i ＝ i ＋ 1
+    .判断循环尾 ()
+    .如果真 (done ＝ 1 或 e ＝ 1 或 f ＝ 1)
+        isDouble ＝ 真
+    .如果真结束
+    返回 (真)
+    
+
+.子程序 JsonValue_ToStringW, 字节集
+    .参数 jsonValue, 整数型
+    .参数 autoFormat, 逻辑型
+    .参数 isTrans, 逻辑型
+    .参数 initBuffSize, 整数型
+    .局部变量 zyString, 整数型
+    .局部变量 ret, 字节集
+    .局部变量 indent, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 ({ 0, 0 })
+    .如果真结束
+    zyString ＝ zyString_Create (initBuffSize)
+    JsonValue_ToStringProc (jsonValue, zyString, autoFormat, indent, isTrans)
+    ret ＝ zyString_GetStrW (zyString)
+    zyThisCall (zyString, #zy_Release)
+    返回 (ret)
+
+.子程序 JsonValue_ToStringA, 文本型
+    .参数 jsonValue, 整数型
+    .参数 autoFormat, 逻辑型
+    .参数 isTrans, 逻辑型
+    .参数 initBuffSize, 整数型
+    .局部变量 zyString, 整数型
+    .局部变量 ret, 文本型
+    .局部变量 indent, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (“”)
+    .如果真结束
+    zyString ＝ zyString_Create (initBuffSize)
+    JsonValue_ToStringProc (jsonValue, zyString, autoFormat, indent, isTrans)
+    ret ＝ zyString_GetStr (zyString)
+    zyThisCall (zyString, #zy_Release)
+    返回 (ret)
+
+.子程序 JsonValue_ToStringProc
+    .参数 jsonValue, 整数型
+    .参数 zyString, 整数型
+    .参数 autoFormat, 逻辑型
+    .参数 indent, 整数型, 参考
+    .参数 isTrans, 逻辑型
+    .局部变量 type, 整数型
+    .局部变量 val, 整数型
+    .局部变量 values, 整数型, , "0"
+    .局部变量 names, 字节集, , "0"
+    .局部变量 count, 整数型
+    .局部变量 i, 整数型
+    .局部变量 value, 字节集
+
+    type ＝ _Get (jsonValue, #jv_type)
+    .判断开始 (type ＝ #JVTYPE_NULL)
+        zyString_AddW (zyString, { 110, 0, 117, 0, 108, 0, 108, 0, 0, 0 })
+    .判断 (type ＝ #JVTYPE_BOOL)
+        zyString_AddW (zyString, 选择 (JsonValue_GetBool (jsonValue), { 116, 0, 114, 0, 117, 0, 101, 0, 0, 0 }, { 102, 0, 97, 0, 108, 0, 115, 0, 101, 0, 0, 0 }))
+    .判断 (type ＝ #JVTYPE_DOUBLE)
+        zyString_AddW (zyString, JsonValue_GetRawW (jsonValue))
+    .判断 (type ＝ #JVTYPE_LONG)
+        zyString_AddW (zyString, JsonValue_GetRawW (jsonValue))
+    .判断 (type ＝ #JVTYPE_UNDEFINED)
+        zyString_AddW (zyString, JsonValue_GetRawW (jsonValue))
+    .判断 (type ＝ #JVTYPE_STRING)
+        zyString_AddChar (zyString, 34) ' 引号
+        
+        .如果 (isTrans)
+            JsonValue_TranslationOut (JsonValue_GetString (jsonValue), value)
+        .否则
+            value ＝ JsonValue_GetStringW (jsonValue)
+        .如果结束
+        
+        zyString_AddW (zyString, value)
+        zyString_AddChar (zyString, 34) ' 引号
+        
+    .判断 (type ＝ #JVTYPE_ARRAY)
+        val ＝ _Get (jsonValue, #jv_value)
+        .如果真 (val ≠ 0)
+            zyString_AddChar (zyString, 91) ' [
+            count ＝ Array_GetValues (val, values)
+            indent ＝ indent ＋ 1
+            .计次循环首 (count, i)
+                JsonValue_ToStringProc (values [i], zyString, autoFormat, indent, isTrans)
+                .如果真 (i ≠ count)
+                    zyString_AddChar (zyString, 44) ' 逗号
+                .如果真结束
+                
+            .计次循环尾 ()
+            indent ＝ indent － 1
+            zyString_AddChar (zyString, 93) ' ]
+            
+        .如果真结束
+        
+    .判断 (type ＝ #JVTYPE_OBJECT)
+        val ＝ _Get (jsonValue, #jv_value)
+        .如果真 (val ≠ 0)
+            zyString_AddChar (zyString, 123) ' {
+            .如果真 (autoFormat)
+                zyString_AddW (zyString, { 13, 0, 10, 0, 0, 0 }) ' 换行符
+            .如果真结束
+            
+            count ＝ HashEx_GetKeys (val, names)
+            indent ＝ indent ＋ 1
+            .计次循环首 (count, i)
+                .如果真 (autoFormat 且 indent ＞ 0)
+                    zyString_AddW (zyString, 取重复字节集 (indent, { 9, 0 }) ＋ { 0, 0 })
+                .如果真结束
+                zyString_AddChar (zyString, 34) ' 引号
+                .如果 (isTrans)
+                    JsonValue_TranslationOut (_取指针字节集 (names [i]), value)
+                    zyString_AddW (zyString, value)
+                .否则
+                    zyString_AddW (zyString, names [i])
+                .如果结束
+                
+                zyString_AddChar (zyString, 34) ' 引号
+                zyString_AddChar (zyString, 58) ' :
+                JsonValue_ToStringProc (HashEx_Get (val, names [i]), zyString, autoFormat, indent, isTrans)
+                .如果真 (i ≠ count)
+                    zyString_AddChar (zyString, 44) ' 逗号
+                .如果真结束
+                
+                .如果真 (autoFormat)
+                    zyString_AddW (zyString, { 13, 0, 10, 0, 0, 0 }) ' 换行符
+                .如果真结束
+                
+            .计次循环尾 ()
+            indent ＝ indent － 1
+            .如果真 (autoFormat 且 indent ＞ 0)
+                zyString_AddW (zyString, 取重复字节集 (indent, { 9, 0 }) ＋ { 0, 0 })
+            .如果真结束
+            zyString_AddChar (zyString, 125) ' }
+        .如果真结束
+        
+    .默认
+        
+    .判断结束
+    
+
+.子程序 JsonValue_FreePathParsed
+    .参数 pArrayStep, 整数型
+    .局部变量 count, 整数型
+    .局部变量 hHeap, 整数型
+    .局部变量 pStep, 整数型
+    .局部变量 i, 整数型
+    .局部变量 stepName, 整数型
+
+    .如果真 (pArrayStep ＝ 0)
+        返回 ()
+    .如果真结束
+    count ＝ Array_GetCount (pArrayStep)
+    .如果真 (count ＝ 0)
+        Array_Destroy (pArrayStep)
+        返回 ()
+    .如果真结束
+    hHeap ＝ Array_GetHeap (pArrayStep)
+    .计次循环首 (count, i)
+        pStep ＝ Array_Get (pArrayStep, i － 1)
+        .如果真 (pStep ＝ 0)
+            到循环尾 ()
+        .如果真结束
+        stepName ＝ _Get (pStep, #jvstep_name)
+        .如果真 (stepName ≠ 0)
+            _Free (stepName, hHeap)
+        .如果真结束
+        _Free (pStep, hHeap)
+    .计次循环尾 ()
+    Array_Destroy (pArrayStep)
+
+.子程序 JsonValue_PathParsed, 整数型, , 返回 JsonValuePathStep 数组Array
+    .参数 path, 字节集
+    .局部变量 pStr, 整数型
+    .局部变量 strLen, 整数型
+    .局部变量 wchar, 整数型
+    .局部变量 nextChar, 整数型
+    .局部变量 pArray, 整数型
+    .局部变量 hHeap, 整数型
+    .局部变量 stepFlags, 整数型
+    .局部变量 stepName, 整数型
+    .局部变量 stepIndex, 整数型
+    .局部变量 pStep, 整数型
+    .局部变量 pos, 整数型
+    .局部变量 namePos, 整数型
+    .局部变量 nameLen, 整数型
+    .局部变量 indexPos, 整数型
+    .局部变量 indexStr, 整数型
+    .局部变量 hasName, 逻辑型
+    .局部变量 hasIndex, 逻辑型
+
+    .如果真 (path ＝ { })
+        返回 (0)
+    .如果真结束
+    pStr ＝ _取指针字节集 (path)
+    strLen ＝ lstrlenW (path)
+    .如果真 (strLen ＝ 0)
+        返回 (0)
+    .如果真结束
+    pArray ＝ Array_Create (GetProcessHeap ())
+    .如果真 (pArray ＝ 0)
+        返回 (0)
+    .如果真结束
+    hHeap ＝ Array_GetHeap (pArray)
+    .判断循环首 (pos ≤ strLen)
+        wchar ＝ _指针到短整数U (pStr ＋ pos × 2)
+        .判断开始 (wchar ＝ 92) ' \ 转义 . 或 [ ]
+            nextChar ＝ _指针到短整数U (pStr ＋ (pos ＋ 1) × 2)
+            .如果真 (nextChar ＝ 46 或 nextChar ＝ 91 或 nextChar ＝ 93 或 nextChar ＝ 92)
+                RtlMoveMemory_int (pStr ＋ pos × 2, pStr ＋ (pos ＋ 1) × 2, (strLen － pos － 1) × 2)
+                ZeroMemory (pStr ＋ (strLen － 1) × 2, 2)
+                strLen ＝ strLen － 1
+            .如果真结束
+            
+        .判断 (wchar ＝ 46 或 pos ＝ strLen) ' 点 或 结尾
+            hasName ＝ namePos ＜ pos
+            .如果真 (hasName)
+                pStep ＝ _Alloc (#jvstep_cbSize, hHeap)
+                .如果真 (pStep ＝ 0)
+                    返回 (pArray)
+                .如果真结束
+                nameLen ＝ pos － namePos
+                stepName ＝ _CloneStringPtr (pStr ＋ namePos × 2, nameLen, hHeap)
+                _Set (pStep, #jvstep_flags, #JVPS_NAME)
+                _Set (pStep, #jvstep_name, stepName)
+                _Set (pStep, #jvstep_index, 0)
+                Array_Add (pArray, pStep)
+                stepName ＝ 0
+                stepIndex ＝ 0
+            .如果真结束
+            namePos ＝ pos ＋ 1
+        .判断 (wchar ＝ 91) ' [
+            indexPos ＝ pos ＋ 1
+            hasIndex ＝ 真
+            hasName ＝ namePos ＜ pos
+            .如果真 (hasName)
+                pStep ＝ _Alloc (#jvstep_cbSize, hHeap)
+                .如果真 (pStep ＝ 0)
+                    返回 (pArray)
+                .如果真结束
+                nameLen ＝ pos － namePos
+                stepName ＝ _CloneStringPtr (pStr ＋ namePos × 2, nameLen, hHeap)
+                _Set (pStep, #jvstep_flags, #JVPS_NAME)
+                _Set (pStep, #jvstep_name, stepName)
+                _Set (pStep, #jvstep_index, 0)
+                Array_Add (pArray, pStep)
+                stepName ＝ 0
+                stepIndex ＝ 0
+            .如果真结束
+            namePos ＝ pos ＋ 1
+        .判断 (wchar ＝ 93) ' ]
+            .如果真 (hasIndex)
+                pStep ＝ _Alloc (#jvstep_cbSize, hHeap)
+                .如果真 (pStep ＝ 0)
+                    返回 (pArray)
+                .如果真结束
+                nameLen ＝ pos － indexPos
+                indexStr ＝ _CloneStringPtr (pStr ＋ indexPos × 2, nameLen, hHeap)
+                ' 调试输出 (zyW2A_Point (indexStr))
+                stepIndex ＝ StrToInt (indexStr)
+                _Free (indexStr, hHeap)
+                _Set (pStep, #jvstep_flags, #JVPS_INDEX)
+                _Set (pStep, #jvstep_name, 0)
+                _Set (pStep, #jvstep_index, stepIndex)
+                Array_Add (pArray, pStep)
+                stepName ＝ 0
+                stepIndex ＝ 0
+            .如果真结束
+            namePos ＝ pos ＋ 1
+            
+        .默认
+            
+        .判断结束
+        pos ＝ pos ＋ 1
+    .判断循环尾 ()
+    返回 (pArray)
+    
+
+.子程序 JsonValue_SelectW, 整数型, , a.b.c[0] 或 [0].a.b.c
+    .参数 jsonValue, 整数型
+    .参数 path, 字节集
+    .局部变量 pArrayStep, 整数型
+    .局部变量 count, 整数型
+    .局部变量 i, 整数型
+    .局部变量 pStep, 整数型
+    .局部变量 stepFlags, 整数型
+    .局部变量 stepName, 整数型
+    .局部变量 stepIndex, 整数型
+    .局部变量 jv, 整数型
+    .局部变量 hHeap, 整数型
+
+    pArrayStep ＝ JsonValue_PathParsed (path)
+    .如果真 (pArrayStep ＝ 0)
+        返回 (jsonValue)
+    .如果真结束
+    count ＝ Array_GetCount (pArrayStep)
+    .如果真 (count ＝ 0)
+        Array_Destroy (pArrayStep)
+        返回 (jsonValue)
+    .如果真结束
+    jv ＝ jsonValue
+    .计次循环首 (count, i)
+        pStep ＝ Array_Get (pArrayStep, i － 1)
+        .如果真 (pStep ＝ 0)
+            到循环尾 ()
+        .如果真结束
+        stepFlags ＝ _Get (pStep, #jvstep_flags)
+        stepName ＝ _Get (pStep, #jvstep_name)
+        stepIndex ＝ _Get (pStep, #jvstep_index)
+        ' 输出调试文本 (stepFlags, zyW2A_Point (stepName), stepIndex)
+        .判断开始 (位与 (stepFlags, #JVPS_NAME) ＝ #JVPS_NAME 且 stepName ≠ 0)
+            jv ＝ JsonValue_GetW (jv, 指针到字节集 (stepName, lstrlenW_Ptr (stepName) × 2 ＋ 2))
+        .判断 (位与 (stepFlags, #JVPS_INDEX) ＝ #JVPS_INDEX)
+            .如果真 (i ＝ 1 且 位与 (stepFlags, #JVPS_NAME) ＝ 0) ' 第一个 且 没有名称
+                .如果真 (JsonValue_SetArray (jv) ＝ 假)
+                    jv ＝ 0
+                    跳出循环 ()
+                .如果真结束
+                
+            .如果真结束
+            jv ＝ JsonValue_GetAt (jv, stepIndex)
+            
+        .默认
+            
+        .判断结束
+        
+    .计次循环尾 ()
+    JsonValue_FreePathParsed (pArrayStep)
+    返回 (jv)
+    
+
+.子程序 JsonValue_SelectNoCreateW, 整数型, , a.b.c[0] 或 [0].a.b.c
+    .参数 jsonValue, 整数型
+    .参数 path, 字节集
+    .局部变量 pArrayStep, 整数型
+    .局部变量 count, 整数型
+    .局部变量 i, 整数型
+    .局部变量 pStep, 整数型
+    .局部变量 stepFlags, 整数型
+    .局部变量 stepName, 整数型
+    .局部变量 stepIndex, 整数型
+    .局部变量 jv, 整数型
+    .局部变量 hHeap, 整数型
+
+    pArrayStep ＝ JsonValue_PathParsed (path)
+    .如果真 (pArrayStep ＝ 0)
+        返回 (jsonValue)
+    .如果真结束
+    count ＝ Array_GetCount (pArrayStep)
+    .如果真 (count ＝ 0)
+        Array_Destroy (pArrayStep)
+        返回 (jsonValue)
+    .如果真结束
+    jv ＝ jsonValue
+    .计次循环首 (count, i)
+        pStep ＝ Array_Get (pArrayStep, i － 1)
+        .如果真 (pStep ＝ 0)
+            到循环尾 ()
+        .如果真结束
+        stepFlags ＝ _Get (pStep, #jvstep_flags)
+        stepName ＝ _Get (pStep, #jvstep_name)
+        stepIndex ＝ _Get (pStep, #jvstep_index)
+        ' 输出调试文本 (stepFlags, zyW2A_Point (stepName), stepIndex)
+        .判断开始 (位与 (stepFlags, #JVPS_NAME) ＝ #JVPS_NAME 且 stepName ≠ 0)
+            jv ＝ JsonValue_GetReadOnlyW (jv, 指针到字节集 (stepName, lstrlenW_Ptr (stepName) × 2 ＋ 2))
+            .如果真 (jv ＝ 0)
+                跳出循环 ()
+            .如果真结束
+            
+        .判断 (位与 (stepFlags, #JVPS_INDEX) ＝ #JVPS_INDEX)
+            jv ＝ JsonValue_GetAtReadOnly (jv, stepIndex)
+            .如果真 (jv ＝ 0)
+                跳出循环 ()
+            .如果真结束
+            
+        .默认
+            
+        .判断结束
+        
+    .计次循环尾 ()
+    JsonValue_FreePathParsed (pArrayStep)
+    返回 (jv)
+
+.子程序 JsonValue_SelectA, 整数型, , a.b.c[0] 或 [0].a.b.c
+    .参数 jsonValue, 整数型
+    .参数 path, 文本型
+
+    返回 (JsonValue_SelectW (jsonValue, zyA2W (path)))
+    
+
+.子程序 JsonValue_QueryW, 逻辑型, , 查询是否存在，并不会自己新创建
+    .参数 jsonValue, 整数型
+    .参数 path, 字节集, , a.b.c[0] 或 [0].a.b.c
+    .局部变量 pArrayStep, 整数型
+    .局部变量 count, 整数型
+    .局部变量 i, 整数型
+    .局部变量 pStep, 整数型
+    .局部变量 stepFlags, 整数型
+    .局部变量 stepName, 整数型
+    .局部变量 stepIndex, 整数型
+    .局部变量 jv, 整数型
+    .局部变量 hHeap, 整数型
+    .局部变量 ret, 逻辑型
+    .局部变量 key, 字节集
+
+    pArrayStep ＝ JsonValue_PathParsed (path)
+    ret ＝ 真
+    .如果真 (pArrayStep ＝ 0)
+        返回 (假)
+    .如果真结束
+    count ＝ Array_GetCount (pArrayStep)
+    .如果真 (count ＝ 0)
+        Array_Destroy (pArrayStep)
+        返回 (假)
+    .如果真结束
+    jv ＝ jsonValue
+    .计次循环首 (count, i)
+        pStep ＝ Array_Get (pArrayStep, i － 1)
+        .如果真 (pStep ＝ 0)
+            ret ＝ 假
+            到循环尾 ()
+        .如果真结束
+        stepFlags ＝ _Get (pStep, #jvstep_flags)
+        stepName ＝ _Get (pStep, #jvstep_name)
+        stepIndex ＝ _Get (pStep, #jvstep_index)
+        .判断开始 (位与 (stepFlags, #JVPS_NAME) ＝ #JVPS_NAME 且 stepName ≠ 0)
+            key ＝ 指针到字节集 (stepName, lstrlenW_Ptr (stepName) × 2 ＋ 2)
+            jv ＝ JsonValue_GetReadOnlyW (jv, key)
+            .如果真 (jv ＝ 0)
+                ret ＝ 假
+                跳出循环 ()
+            .如果真结束
+            
+        .判断 (位与 (stepFlags, #JVPS_INDEX) ＝ #JVPS_INDEX)
+            jv ＝ JsonValue_GetAtReadOnly (jv, stepIndex)
+            .如果真 (jv ＝ 0)
+                ret ＝ 假
+                跳出循环 ()
+            .如果真结束
+            
+        .默认
+            
+        .判断结束
+        
+    .计次循环尾 ()
+    JsonValue_FreePathParsed (pArrayStep)
+    返回 (ret)
+
+.子程序 JsonValue_QueryA, 逻辑型, , 查询是否存在，并不会自己新创建
+    .参数 jsonValue, 整数型
+    .参数 path, 文本型, , a.b.c[0] 或 [0].a.b.c
+
+    返回 (JsonValue_QueryW (jsonValue, zyA2W (path)))
+
+.子程序 JsonValue_ContainsKey, 逻辑型
+    .参数 jsonValue, 整数型
+    .参数 key, 整数型
+    .局部变量 type, 整数型
+    .局部变量 pHash, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (假)
+    .如果真结束
+    type ＝ _Get (jsonValue, #jv_type)
+    .如果真 (type ≠ #JVTYPE_OBJECT)
+        返回 (假)
+    .如果真结束
+    pHash ＝ _Get (jsonValue, #jv_value)
+    .如果真 (pHash ＝ 0)
+        返回 (假)
+    .如果真结束
+    返回 (HashEx_ContainsKeyPtr (pHash, key))
+
+.子程序 JsonValue_ContainsKeyW, 逻辑型
+    .参数 jsonValue, 整数型
+    .参数 key, 字节集
+    .局部变量 type, 整数型
+    .局部变量 pHash, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (假)
+    .如果真结束
+    type ＝ _Get (jsonValue, #jv_type)
+    .如果真 (type ≠ #JVTYPE_OBJECT)
+        返回 (假)
+    .如果真结束
+    pHash ＝ _Get (jsonValue, #jv_value)
+    .如果真 (pHash ＝ 0)
+        返回 (假)
+    .如果真结束
+    返回 (HashEx_ContainsKey (pHash, key))
+    
+
+.子程序 JsonValue_ContainsKeyA, 逻辑型
+    .参数 jsonValue, 整数型
+    .参数 key, 文本型
+
+    返回 (JsonValue_ContainsKeyW (jsonValue, zyA2W (key)))
+    
+
+.子程序 JsonValue_ContainsAt, 逻辑型
+    .参数 jsonValue, 整数型
+    .参数 index, 整数型
+    .局部变量 type, 整数型
+    .局部变量 pArray, 整数型
+    .局部变量 count, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (假)
+    .如果真结束
+    type ＝ _Get (jsonValue, #jv_type)
+    .如果真 (type ≠ #JVTYPE_ARRAY)
+        返回 (假)
+    .如果真结束
+    pArray ＝ _Get (jsonValue, #jv_value)
+    .如果真 (pArray ＝ 0)
+        返回 (假)
+    .如果真结束
+    count ＝ Array_GetCount (pArray)
+    .如果真 (count ＝ 0)
+        返回 (假)
+    .如果真结束
+    返回 (index ≥ 0 且 index ＜ count)
+    
+
+.子程序 JsonValue_GetKey, 整数型
+    .参数 jsonValue, 整数型
+
+    返回 (_Get (jsonValue, #jv_key))
+    
+
+.子程序 JsonValue_GetKeysW, 整数型
+    .参数 jsonValue, 整数型
+    .参数 keys, 字节集, 数组
+    .局部变量 type, 整数型
+    .局部变量 pHash, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (0)
+    .如果真结束
+    type ＝ _Get (jsonValue, #jv_type)
+    .如果真 (type ≠ #JVTYPE_OBJECT)
+        返回 (0)
+    .如果真结束
+    pHash ＝ _Get (jsonValue, #jv_value)
+    .如果真 (pHash ＝ 0)
+        返回 (0)
+    .如果真结束
+    返回 (HashEx_GetKeys (pHash, keys))
+    
+
+.子程序 JsonValue_GetKeysA, 整数型
+    .参数 jsonValue, 整数型
+    .参数 keys, 文本型, 数组
+    .局部变量 type, 整数型
+    .局部变量 pHash, 整数型
+    .局部变量 count, 整数型
+    .局部变量 wKeys, 字节集, , "0"
+    .局部变量 i, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (0)
+    .如果真结束
+    type ＝ _Get (jsonValue, #jv_type)
+    .如果真 (type ≠ #JVTYPE_OBJECT)
+        返回 (0)
+    .如果真结束
+    pHash ＝ _Get (jsonValue, #jv_value)
+    .如果真 (pHash ＝ 0)
+        返回 (0)
+    .如果真结束
+    count ＝ HashEx_GetKeys (pHash, wKeys)
+    重定义数组 (keys, 假, count)
+    .计次循环首 (count, i)
+        keys [i] ＝ zyW2A (wKeys [i])
+    .计次循环尾 ()
+    返回 (count)
+    
+
+.子程序 JsonValue_GetValues, 整数型
+    .参数 jsonValue, 整数型
+    .参数 childValues, 整数型, 数组
+    .局部变量 type, 整数型
+    .局部变量 pVal, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (0)
+    .如果真结束
+    type ＝ _Get (jsonValue, #jv_type)
+    .判断开始 (type ＝ #JVTYPE_OBJECT)
+        pVal ＝ _Get (jsonValue, #jv_value)
+        .如果真 (pVal ＝ 0)
+            返回 (0)
+        .如果真结束
+        返回 (HashEx_GetValues (pVal, childValues))
+    .判断 (type ＝ #JVTYPE_ARRAY)
+        pVal ＝ _Get (jsonValue, #jv_value)
+        .如果真 (pVal ＝ 0)
+            返回 (0)
+        .如果真结束
+        返回 (Array_GetValues (pVal, childValues))
+    .默认
+        
+    .判断结束
+    返回 (0)
+    
+
+.子程序 JsonValue_RemoveW, 逻辑型
+    .参数 jsonValue, 整数型
+    .参数 name, 字节集
+    .局部变量 type, 整数型
+    .局部变量 pHash, 整数型
+    .局部变量 child, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (假)
+    .如果真结束
+    type ＝ _Get (jsonValue, #jv_type)
+    .如果真 (type ≠ #JVTYPE_OBJECT)
+        返回 (假)
+    .如果真结束
+    pHash ＝ _Get (jsonValue, #jv_value)
+    .如果真 (pHash ＝ 0)
+        返回 (假)
+    .如果真结束
+    child ＝ HashEx_Get (pHash, name)
+    .如果真 (child ＝ 0)
+        返回 (假)
+    .如果真结束
+    HashEx_Remove (pHash, name)
+    zyThisCall (child, #zy_Release)
+    返回 (真)
+
+.子程序 JsonValue_RemoveA, 逻辑型
+    .参数 jsonValue, 整数型
+    .参数 name, 文本型
+    .局部变量 type, 整数型
+    .局部变量 pHash, 整数型
+    .局部变量 child, 整数型
+    .局部变量 str, 字节集
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (假)
+    .如果真结束
+    type ＝ _Get (jsonValue, #jv_type)
+    .如果真 (type ≠ #JVTYPE_OBJECT)
+        返回 (假)
+    .如果真结束
+    pHash ＝ _Get (jsonValue, #jv_value)
+    .如果真 (pHash ＝ 0)
+        返回 (假)
+    .如果真结束
+    str ＝ zyA2W (name)
+    child ＝ HashEx_Get (pHash, str)
+    .如果真 (child ＝ 0)
+        返回 (假)
+    .如果真结束
+    HashEx_Remove (pHash, str)
+    zyThisCall (child, #zy_Release)
+    返回 (真)
+    
+    
+
+.子程序 JsonValue_RemoveAt, 逻辑型
+    .参数 jsonValue, 整数型
+    .参数 index, 整数型
+    .局部变量 type, 整数型
+    .局部变量 pArray, 整数型
+    .局部变量 child, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (假)
+    .如果真结束
+    type ＝ _Get (jsonValue, #jv_type)
+    .如果真 (type ≠ #JVTYPE_ARRAY)
+        返回 (假)
+    .如果真结束
+    pArray ＝ _Get (jsonValue, #jv_value)
+    .如果真 (pArray ＝ 0)
+        返回 (假)
+    .如果真结束
+    child ＝ Array_Get (pArray, index)
+    .如果真 (child ＝ 0)
+        返回 (假)
+    .如果真结束
+    Array_Remove (pArray, index)
+    zyThisCall (child, #zy_Release)
+    返回 (真)
+    
+
+.子程序 JsonValue_Sort
+    .参数 jsonValue, 整数型
+    .参数 sortProc, 子程序指针
+    .参数 userData, 整数型
+    .参数 algorithm, 整数型, , 0、快速排序；1、希尔排序
+    .局部变量 type, 整数型
+    .局部变量 array, 整数型
+    .局部变量 pMap, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 ()
+    .如果真结束
+    type ＝ _Get (jsonValue, #jv_type)
+    .判断开始 (type ＝ #JVTYPE_OBJECT)
+        pMap ＝ _Get (jsonValue, #jv_value)
+        .如果真 (pMap ≠ 0)
+            array ＝ _Get (pMap, #htEx_eArray)
+            .如果真 (array ≠ 0)
+                Array_Sort (array, sortProc, userData, 0)
+                
+            .如果真结束
+            
+        .如果真结束
+        
+    .判断 (type ＝ #JVTYPE_ARRAY)
+        array ＝ _Get (jsonValue, #jv_value)
+        .如果真 (array ≠ 0)
+            Array_Sort (array, sortProc, userData, 0)
+        .如果真结束
+        
+    .默认
+        
+    .判断结束
+    
+
+.子程序 JsonValue_SortObj, 逻辑型
+    .参数 jsonValue, 整数型
+    .参数 asc, 逻辑型
+    .局部变量 type, 整数型
+    .局部变量 array, 整数型
+    .局部变量 pMap, 整数型
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (假)
+    .如果真结束
+    type ＝ _Get (jsonValue, #jv_type)
+    .判断开始 (type ＝ #JVTYPE_OBJECT)
+        pMap ＝ _Get (jsonValue, #jv_value)
+        .如果真 (pMap ≠ 0)
+            array ＝ _Get (pMap, #htEx_eArray)
+            .如果真 (array ≠ 0)
+                .如果 (asc)
+                    Array_Sort (array, &JsonValue_SortProcAsc, 0, 0)
+                .否则
+                    Array_Sort (array, &JsonValue_SortProcDesc, 0, 0)
+                .如果结束
+                
+                返回 (真)
+            .如果真结束
+            
+        .如果真结束
+        
+    .默认
+        
+    .判断结束
+    返回 (假)
+
+.子程序 JsonValue_SortProcAsc, 整数型
+    .参数 value1, 整数型
+    .参数 value2, 整数型
+    .参数 lParam, 整数型
+
+    返回 (lstrcmpW (_Get (value1, #jv_key), _Get (value2, #jv_key)))
+    
+
+.子程序 JsonValue_SortProcDesc, 整数型
+    .参数 value1, 整数型
+    .参数 value2, 整数型
+    .参数 lParam, 整数型
+
+    返回 (lstrcmpW (_Get (value2, #jv_key), _Get (value1, #jv_key)))
+
+.子程序 JsonValue_Clone, 整数型
+    .参数 jsonValue, 整数型
+    .局部变量 type, 整数型
+    .局部变量 dscJV, 整数型
+    .局部变量 pArray, 整数型
+    .局部变量 pHash, 整数型
+    .局部变量 count, 整数型
+    .局部变量 i, 整数型
+    .局部变量 items, 整数型, , "0"
+    .局部变量 names, 字节集, , "0"
+
+    .如果真 (jsonValue ＝ 0)
+        返回 (0)
+    .如果真结束
+    type ＝ _Get (jsonValue, #jv_type)
+    .判断开始 (type ＝ #JVTYPE_NULL)
+        dscJV ＝ JsonValue_Null (jsonValue)
+    .判断 (type ＝ #JVTYPE_UNDEFINED)
+        dscJV ＝ JsonValue_Undefined (jsonValue, JsonValue_GetRawW (jsonValue))
+    .判断 (type ＝ #JVTYPE_BOOL)
+        dscJV ＝ JsonValue_Bool (jsonValue, _Get (jsonValue, #jv_value) ≠ 0)
+    .判断 (type ＝ #JVTYPE_DOUBLE)
+        dscJV ＝ JsonValue_Double (jsonValue, _GetDouble (jsonValue, #jv_value))
+    .判断 (type ＝ #JVTYPE_LONG)
+        dscJV ＝ JsonValue_Long (jsonValue, _GetLong (jsonValue, #jv_value))
+    .判断 (type ＝ #JVTYPE_STRING)
+        dscJV ＝ JsonValue_StringW (jsonValue, JsonValue_GetStringW (jsonValue))
+    .判断 (type ＝ #JVTYPE_ARRAY)
+        dscJV ＝ JsonValue_Array (jsonValue)
+        pArray ＝ _Get (jsonValue, #jv_value)
+        .如果真 (pArray ≠ 0)
+            count ＝ Array_GetValues (pArray, items)
+            .计次循环首 (count, i)
+                JsonValue_Append (dscJV, JsonValue_Clone (items [i]))
+            .计次循环尾 ()
+        .如果真结束
+        
+    .判断 (type ＝ #JVTYPE_OBJECT)
+        dscJV ＝ JsonValue_Object (jsonValue)
+        pHash ＝ _Get (jsonValue, #jv_value)
+        .如果真 (pHash ≠ 0)
+            count ＝ HashEx_GetValues (pHash, items)
+            .计次循环首 (count, i)
+                JsonValue_Set (dscJV, _Get (items [i], #jv_key), JsonValue_Clone (items [i]))
+            .计次循环尾 ()
+        .如果真结束
+        
+    .默认
+        
+    .判断结束
+    返回 (dscJV)
+
+.子程序 JsonValue_USC2转Unicdoe
+    .参数 usc2Str, 整数型
+    .局部变量 strLen, 整数型
+    .局部变量 pos, 整数型
+    .局部变量 Ox, 字节集
+    .局部变量 buffer, 字节集
+    .局部变量 pBuff, 整数型
+    .局部变量 char1, 整数型
+    .局部变量 char2, 整数型
+
+    pos ＝ StrStrW_bin2 (usc2Str, { 92, 0, 117, 0, 0, 0 }) ' \u
+    .如果真 (pos ＝ 0)
+        返回 ()
+    .如果真结束
+    strLen ＝ lstrlenW_Ptr (usc2Str)
+    
+    buffer ＝ 取空白字节集 (10)
+    pBuff ＝ _取指针字节集 (buffer)
+    Ox ＝ { 48, 0, 120, 0 } ' 0x
+    RtlMoveMemory_int (pBuff, _取指针字节集 (Ox), 4)
+    
+    .判断循环首 (pos ≠ 0)
+        RtlMoveMemory_int (pBuff ＋ 4, pos ＋ 8, 4)
+        StrToIntEx_ptr (pBuff, #STIF_SUPPORT_HEX, char1)
+        RtlMoveMemory_int (pBuff ＋ 4, pos ＋ 4, 4)
+        StrToIntEx_ptr (pBuff, #STIF_SUPPORT_HEX, char2)
+        RtlMoveMemory_int (pos, _取变量地址 (char1), 1)
+        RtlMoveMemory_int (pos ＋ 1, _取变量地址 (char2), 1)
+        RtlMoveMemory_int (pos ＋ 2, pos ＋ 12, usc2Str ＋ strLen × 2 － pos － 12)
+        ZeroMemory (usc2Str ＋ strLen × 2 － 12 ＋ 2, 12 － 2)
+        pos ＝ StrStrW_bin2 (pos ＋ 2, { 92, 0, 117, 0, 0, 0 })
+    .判断循环尾 ()
+    
+
+.子程序 JsonValue_TranslationIn, , , 在写入时处理转译符
+    .参数 value, 整数型
+    .参数 transU, 逻辑型
+    .局部变量 Len, 整数型
+    .局部变量 pos, 整数型
+    .局部变量 nextChar, 整数型
+    .局部变量 overLen, 整数型
+    .局部变量 newChar, 整数型
+    .局部变量 preChar, 整数型
+    .局部变量 find, 逻辑型
+    .局部变量 Ox, 字节集
+    .局部变量 buffer, 字节集
+    .局部变量 pBuff, 整数型
+    .局部变量 char1, 整数型
+    .局部变量 char2, 整数型
+
+    pos ＝ StrStrW_bin2 (value, { 92, 0, 0, 0 }) ' \
+    .如果真 (pos ＝ 0)
+        返回 ()
+    .如果真结束
+    
+    .如果真 (transU)
+        buffer ＝ 取空白字节集 (10)
+        pBuff ＝ _取指针字节集 (buffer)
+        Ox ＝ { 48, 0, 120, 0 } ' 0x
+        RtlMoveMemory_int (pBuff, _取指针字节集 (Ox), 4)
+    .如果真结束
+    
+    
+    Len ＝ lstrlenW_Ptr (value) × 2
+    .判断循环首 (pos ≠ 0)
+        find ＝ 假
+        preChar ＝ 0
+        nextChar ＝ _指针到短整数U (pos ＋ 2)
+        .判断开始 (nextChar ＝ 92 或 nextChar ＝ 47 或 nextChar ＝ 34)
+            overLen ＝ Len － (pos － value)
+            .如果真 (overLen ≥ 2)
+                RtlMoveMemory_int (pos, pos ＋ 2, overLen － 2)
+            .如果真结束
+            ZeroMemory (pos ＋ overLen － 2, 2)
+            Len ＝ Len － 2
+        .判断 (nextChar ＝ 98) ' \b
+            newChar ＝ 8
+            find ＝ 真
+        .判断 (nextChar ＝ 116) ' \t
+            newChar ＝ 9
+            find ＝ 真
+        .判断 (nextChar ＝ 110) ' \n
+            .如果真 (pos ＞ value 且 _指针到短整数U (pos － 2) ≠ 13)
+                preChar ＝ 13
+            .如果真结束
+            newChar ＝ 10
+            find ＝ 真
+        .判断 (nextChar ＝ 114) ' \r
+            newChar ＝ 13
+            find ＝ 真
+        .判断 (nextChar ＝ 102) ' \f
+            newChar ＝ 12
+            find ＝ 真
+        .判断 (nextChar ＝ 117 且 transU) ' \u
+            RtlMoveMemory_int (pBuff ＋ 4, pos ＋ 8, 4)
+            StrToIntEx_ptr (pBuff, #STIF_SUPPORT_HEX, char1)
+            RtlMoveMemory_int (pBuff ＋ 4, pos ＋ 4, 4)
+            StrToIntEx_ptr (pBuff, #STIF_SUPPORT_HEX, char2)
+            RtlMoveMemory_int (pos, _取变量地址 (char1), 1)
+            RtlMoveMemory_int (pos ＋ 1, _取变量地址 (char2), 1)
+            RtlMoveMemory_int (pos ＋ 2, pos ＋ 12, value ＋ Len － pos － 12)
+            ZeroMemory (value ＋ Len － 12 ＋ 2, 12 － 2)
+            Len ＝ Len － 10
+        .默认
+            
+        .判断结束
+        
+        
+        .如果真 (find)
+            .如果 (preChar ≠ 0)
+                RtlMoveMemory_int (pos, _取变量地址 (preChar), 2)
+                RtlMoveMemory_int (pos ＋ 2, _取变量地址 (newChar), 2)
+            .否则
+                RtlMoveMemory_int (pos, _取变量地址 (newChar), 2)
+                overLen ＝ Len － (pos － value)
+                .如果真 (overLen ≥ 4)
+                    RtlMoveMemory_int (pos ＋ 2, pos ＋ 4, overLen － 4)
+                .如果真结束
+                ZeroMemory (pos ＋ overLen － 2, 2)
+                Len ＝ Len － 2
+            .如果结束
+            
+        .如果真结束
+        
+        pos ＝ StrStrW_bin2 (pos ＋ 2, { 92, 0, 0, 0 }) ' \
+        ' 输出调试文本 (zyW2A_Point (value))
+    .判断循环尾 ()
+    
+    
+    ' .如果真 (pos ＝ 0)
+        ' 返回 ()
+    ' .如果真结束
+    ' Len ＝ lstrlenW_Ptr (value)
+    ' JsonValue_TranslationInSingle (value, Len, { 92, 0, 34, 0, 0, 0 }, 34)  ' \"; "
+    ' ' JsonValue_TranslationInSingle (value, strLen, { 92, 0, 39, 0, 0, 0 }, 39)  ' \'; '
+    ' JsonValue_TranslationInSingle (value, Len, { 92, 0, 92, 0, 0, 0 }, 92)  ' \\; \
+    ' JsonValue_TranslationInSingle (value, Len, { 92, 0, 47, 0, 0, 0 }, 47)  ' \/; /
+    ' JsonValue_TranslationInSingle (value, Len, { 92, 0, 98, 0, 0, 0 }, 8)  ' \b; 退格符
+    ' JsonValue_TranslationInSingle (value, Len, { 92, 0, 116, 0, 0, 0 }, 9)  ' \t;
+    ' JsonValue_TranslationInSingle (value, Len, { 92, 0, 110, 0, 0, 0 }, 10)  ' \n;
+    ' JsonValue_TranslationInSingle (value, Len, { 92, 0, 114, 0, 0, 0 }, 13)  ' \r;
+    ' JsonValue_TranslationInSingle (value, Len, { 92, 0, 102, 0, 0, 0 }, 12)  ' \f;
+    ' .如果真 (transU)
+        ' JsonValue_USC2转Unicdoe (value)
+    ' .如果真结束
+    
+
+.子程序 JsonValue_TranslationInSingle, , , 导入时 转译符
+    .参数 value, 整数型
+    .参数 valueLen, 整数型
+    .参数 transStr, 字节集, , 如："\/"
+    .参数 newChar, 短整数型, , 如："/"
+    .局部变量 pos, 整数型
+    .局部变量 len, 整数型
+    .局部变量 src, 整数型
+
+    len ＝ lstrlenW (transStr) × 2
+    pos ＝ StrStrW_bin2 (value, transStr)
+    .判断循环首 (pos ≠ 0)
+        RtlMoveMemory_int (pos, _取变量地址 (newChar), 2)
+        RtlMoveMemory_int (pos ＋ 2, pos ＋ len, value ＋ valueLen × 2 － pos － len)
+        ZeroMemory (value ＋ valueLen × 2 － len ＋ 2, len － 2)
+        pos ＝ StrStrW_bin2 (pos ＋ 2, transStr)
+    .判断循环尾 ()
+
+.子程序 JsonValue_TranslationOut, 逻辑型
+    .参数 value, 整数型
+    .参数 outValue, 字节集
+    .局部变量 pos, 整数型
+    .局部变量 strLen, 整数型
+    .局部变量 buffLen, 整数型
+    .局部变量 pBuff, 整数型
+    .局部变量 len, 整数型
+    .局部变量 str, 字节集
+    .局部变量 wchar, 整数型
+    .局部变量 transChar, 整数型
+    .局部变量 i, 整数型
+    .局部变量 nextChar, 整数型
+
+    .如果真 (value ＝ 0)
+        outValue ＝ { 0, 0 }
+        返回 (假)
+    .如果真结束
+    strLen ＝ lstrlenW_Ptr (value)
+    ' str ＝ { 92, 0, 0, 0 }
+    ' .如果真 (StrStrW_bin2 (value, str) ＝ 0)
+        ' outValue ＝ 指针到字节集 (value, strLen × 2 ＋ 2)
+        ' 返回 (假)
+    ' .如果真结束
+    buffLen ＝ strLen × 6 ＋ 2
+    outValue ＝ 取空白字节集 (buffLen)
+    pBuff ＝ _取指针字节集 (outValue)
+    RtlMoveMemory_int (pBuff, value, strLen × 2)
+    
+    wchar ＝ _指针到短整数U (pBuff ＋ i × 2)
+    transChar ＝ 92 ' \
+    .判断循环首 (wchar ≠ 0 或 i ≥ buffLen)
+        .判断开始 (wchar ＝ 92 或 wchar ＝ 47 或 wchar ＝ 34) ' \ / "
+            pos ＝ pBuff ＋ i × 2
+            RtlMoveMemory_int (pos ＋ 2, pos, buffLen － i × 2 － 2)
+            RtlMoveMemory_int (pos, _取变量地址 (transChar), 2)
+            i ＝ i ＋ 1
+        .判断 (wchar ＝ 8)
+            str ＝ { 92, 0, 98, 0 } ' \b
+            pos ＝ pBuff ＋ i × 2
+            RtlMoveMemory_int (pos ＋ 2, pos, buffLen － i × 2 － 2)
+            RtlMoveMemory_int (pos, _取指针字节集 (str), 4)
+            i ＝ i ＋ 1
+        .判断 (wchar ＝ 9)
+            str ＝ { 92, 0, 116, 0 } ' \t
+            pos ＝ pBuff ＋ i × 2
+            RtlMoveMemory_int (pos ＋ 2, pos, buffLen － i × 2 － 2)
+            RtlMoveMemory_int (pos, _取指针字节集 (str), 4)
+            i ＝ i ＋ 1
+        .判断 (wchar ＝ 10)
+            str ＝ { 92, 0, 110, 0 } ' \n
+            pos ＝ pBuff ＋ i × 2
+            RtlMoveMemory_int (pos ＋ 2, pos, buffLen － i × 2 － 2)
+            RtlMoveMemory_int (pos, _取指针字节集 (str), 4)
+            i ＝ i ＋ 1
+        .判断 (wchar ＝ 13)
+            str ＝ { 92, 0, 114, 0 } ' \r
+            pos ＝ pBuff ＋ i × 2
+            RtlMoveMemory_int (pos ＋ 2, pos, buffLen － i × 2 － 2)
+            RtlMoveMemory_int (pos, _取指针字节集 (str), 4)
+            i ＝ i ＋ 1
+        .判断 (wchar ＝ 12)
+            str ＝ { 92, 0, 102, 0 } ' \f
+            pos ＝ pBuff ＋ i × 2
+            RtlMoveMemory_int (pos ＋ 2, pos, buffLen － i × 2 － 2)
+            RtlMoveMemory_int (pos, _取指针字节集 (str), 4)
+            i ＝ i ＋ 1
+            
+        .默认
+            
+        .判断结束
+        
+        i ＝ i ＋ 1
+        wchar ＝ _指针到短整数U (pBuff ＋ i × 2)
+    .判断循环尾 ()
+    返回 (真)
+
+.子程序 JsonValue_Combine, 逻辑型
+    .参数 jsonValue, 整数型
+    .参数 jsonStr, 整数型
+    .参数 usc2, 逻辑型, 可空
+    .参数 isAdd, 逻辑型, 可空, 如果属性名不存在，是否添加
+    .局部变量 descJson, 整数型
+
+    descJson ＝ JsonValue_Object (jsonValue)
+    .如果真 (descJson ＝ 0)
+        返回 (假)
+    .如果真结束
+    .如果真 (JsonValue_Parsed3 (descJson, jsonStr, lstrlenW_Ptr (jsonStr), usc2) ≠ 0)
+        zyThisCall (descJson, #zy_Release)
+        返回 (假)
+    .如果真结束
+    返回 (JsonValue_CombineProc (jsonValue, descJson, isAdd))
+
+.子程序 JsonValue_CombineProc, 逻辑型
+    .参数 jsonValue, 整数型
+    .参数 descJson, 整数型
+    .参数 isAdd, 逻辑型
+    .局部变量 countSrc, 整数型
+    .局部变量 countDesc, 整数型
+    .局部变量 i, 整数型
+    .局部变量 valuesSrc, 整数型, , "0"
+    .局部变量 valuesDesc, 整数型, , "0"
+    .局部变量 key, 整数型
+    .局部变量 typeDesc, 整数型
+    .局部变量 typeSrc, 整数型
+    .局部变量 jv, 整数型
+    .局部变量 jvSrc, 整数型
+    .局部变量 ret, 逻辑型
+    .局部变量 parent, 整数型
+
+    typeDesc ＝ JsonValue_GetType (descJson)
+    typeSrc ＝ JsonValue_GetType (jsonValue)
+    .如果 (typeSrc ＝ #JVTYPE_OBJECT 且 typeDesc ＝ #JVTYPE_OBJECT)
+        countDesc ＝ JsonValue_GetValues (descJson, valuesDesc)
+        .计次循环首 (countDesc, i)
+            key ＝ _Get (valuesDesc [i], #jv_key)
+            .如果 (JsonValue_ContainsKey (jsonValue, key))
+                jvSrc ＝ JsonValue_Get (jsonValue, key)
+                jv ＝ JsonValue_Clone (valuesDesc [i])
+                .如果真 (jv ＝ 0)
+                    返回 (假)
+                .如果真结束
+                ret ＝ JsonValue_CombineProc (jvSrc, jv, isAdd)
+                .如果真 (ret ＝ 假)
+                    zyThisCall (jv, #zy_Release)
+                    返回 (假)
+                .如果真结束
+                
+            .否则
+                
+                .如果真 (isAdd)
+                    jv ＝ JsonValue_Clone (valuesDesc [i])
+                    .如果真 (jv ＝ 0)
+                        返回 (假)
+                    .如果真结束
+                    ret ＝ JsonValue_Set (jsonValue, key, jv)
+                    .如果真 (ret ＝ 假)
+                        zyThisCall (jv, #zy_Release)
+                        返回 (假)
+                    .如果真结束
+                    
+                .如果真结束
+                
+            .如果结束
+            
+        .计次循环尾 ()
+        
+    .否则
+        
+        key ＝ _Get (jsonValue, #jv_key)
+        .如果真 (key ≠ 0)
+            parent ＝ JsonValue_GetParent (jsonValue)
+            .如果真 (parent ≠ 0)
+                ret ＝ JsonValue_Set (parent, key, descJson)
+                返回 (ret)
+            .如果真结束
+            
+        .如果真结束
+        zyThisCall (descJson, #zy_Release)
+        ret ＝ 假
+    .如果结束
+    
+    返回 (ret)
+    
+    
+    
+    
+    
+    
+    
+
+.子程序 JsonValue_CombineObject, 逻辑型
+    .参数 jsonValue, 整数型
+    .参数 jsonObjValue, 整数型
+    .局部变量 srcMap, 整数型
+    .局部变量 desMap, 整数型
+    .局部变量 count, 整数型
+    .局部变量 array, 整数型
+    .局部变量 i, 整数型
+    .局部变量 jv, 整数型
+    .局部变量 jvSrc, 整数型
+    .局部变量 key, 整数型
+
+    .如果真 (jsonValue ＝ 0 或 jsonObjValue ＝ 0)
+        返回 (假)
+    .如果真结束
+    
+    
+    .如果真 (_Get (jsonObjValue, #jv_type) ≠ #JVTYPE_OBJECT)
+        返回 (假)
+    .如果真结束
+    
+    .如果真 (_Get (jsonValue, #jv_type) ≠ #JVTYPE_OBJECT)
+        .如果真 (JsonValue_SetObject (jsonValue) ＝ 假)
+            返回 (假)
+        .如果真结束
+        
+    .如果真结束
+    srcMap ＝ _Get (jsonValue, #jv_value)
+    desMap ＝ _Get (jsonObjValue, #jv_value)
+    .如果真 (srcMap ＝ 0 或 desMap ＝ 0)
+        返回 (假)
+    .如果真结束
+    array ＝ _Get (desMap, #htEx_eArray)
+    .如果真 (array ＝ 0)
+        返回 (假)
+    .如果真结束
+    count ＝ _Get (array, #arr_count)
+    .计次循环首 (count, i)
+        jv ＝ Array_Get (array, i － 1)
+        key ＝ _Get (jv, #jv_key)
+        jv ＝ JsonValue_Clone (jv)
+        .如果真 (jv ＝ 0)
+            返回 (假)
+        .如果真结束
+        
+        .如果真 (JsonValue_Set (jsonValue, key, jv) ＝ 假)
+            zyThisCall (jv, #zy_Release)
+            返回 (假)
+            
+        .如果真结束
+        
+    .计次循环尾 ()
+    返回 (真)
+
+.子程序 JsonValue_CombineArray, 逻辑型
+    .参数 jsonValue, 整数型
+    .参数 jsonArrayValue, 整数型
+    .局部变量 srcArray, 整数型
+    .局部变量 desArray, 整数型
+    .局部变量 count, 整数型
+    .局部变量 i, 整数型
+    .局部变量 jv, 整数型
+
+    .如果真 (jsonValue ＝ 0 或 jsonArrayValue ＝ 0)
+        返回 (假)
+    .如果真结束
+    .如果真 (_Get (jsonArrayValue, #jv_type) ≠ #JVTYPE_ARRAY)
+        返回 (假)
+    .如果真结束
+    
+    .如果真 (_Get (jsonValue, #jv_type) ≠ #JVTYPE_ARRAY)
+        .如果真 (JsonValue_SetArray (jsonValue) ＝ 假)
+            返回 (假)
+        .如果真结束
+        
+    .如果真结束
+    
+    desArray ＝ _Get (jsonArrayValue, #jv_value)
+    .如果真 (desArray ＝ 0)
+        返回 (假)
+    .如果真结束
+    
+    count ＝ Array_GetCount (desArray)
+    .计次循环首 (count, i)
+        jv ＝ Array_Get (desArray, i － 1)
+        .如果真 (jv ≠ 0)
+            jv ＝ JsonValue_Clone (jv)
+            .如果真 (jv ＝ 0)
+                返回 (假)
+            .如果真结束
+            
+            .如果真 (JsonValue_Append (jsonValue, jv) ＝ 假)
+                zyThisCall (jv, #zy_Release)
+                返回 (假)
+            .如果真结束
+            
+        .如果真结束
+        
+    .计次循环尾 ()
+    返回 (真)
+    
+

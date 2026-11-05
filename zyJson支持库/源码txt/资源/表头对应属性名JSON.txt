@@ -1,0 +1,138 @@
+[
+        {
+            "head-name": "product_type",
+            "head-text":["型号","主父类型","变体","父子关系","对应关系","是否为变体","是否为主商品"]
+        },{
+            "head-name": "catalog_id",
+            "head-text":["分类ID","分类节点","分类"]
+        },{
+            "head-name": "catalog_parent_id",
+            "head-text":["父分类ID","父分类","父分类节点"]
+        },{
+            "head-name": "title",
+            "head-text":["产品标题","产品名称","商品标题","商品名称","product title"]
+        },{
+            "head-name": "remarker",
+            "head-text":["其他说明","备注","附加说明","说明"]
+        },{
+            "head-name": "sku",
+            "head-text":["SKU"]
+        },{
+            "head-name": "brand",
+            "head-text":["品牌","品牌名称","商标"]
+        },{
+            "head-name": "standard_price",
+            "head-text":["零售价","standard price","销售价","售价","产品价格","新品价格" , "BuyBox价格" , "offer最低价","价格"]
+        },{
+            "head-name": "msrp",
+            "head-text":["原价","msrp","原始价格"]
+        },{
+            "head-name": "quantity",
+            "head-text":["库存数量","库存","可售数量","数量总计"]
+        },{
+            "head-name": "manufacturer",
+            "head-text":["厂家","制造商","生产商","生产者"]
+        },{
+            "head-name": "color",
+            "head-text":["颜色","配色"]
+        },{
+            "head-name": "size",
+            "head-text":["大小","尺寸","码数","号数"]
+        },{
+            "head-name": "search_keyword1",
+            "head-text":["关键词1","搜索词1","keywords1","keywords"]
+        },{
+            "head-name": "search_keyword2",
+            "head-text":["关键词2","搜索词2","keywords2"]
+        },{
+            "head-name": "search_keyword3",
+            "head-text":["关键词3","搜索词3","keywords3"]
+        },{
+            "head-name": "search_keyword4",
+            "head-text":["关键词4","搜索词4","keywords4"]
+        },{
+            "head-name": "search_keyword5",
+            "head-text":["关键词5","搜索词5","keywords5"]
+        },{
+            "head-name": "search_keyword6",
+            "head-text":["关键词6","搜索词6","keywords6"]
+        },{
+            "head-name": "meta",
+            "head-text":["meta"]
+        },{
+            "head-name": "bullet_point1",
+            "head-text":["产品要点1","产品要点","短描述","产品简介"]
+        },{
+            "head-name": "bullet_point2",
+            "head-text":["产品要点2","短描述2","产品简介2"]
+        },{
+            "head-name": "bullet_point3",
+            "head-text":["产品要点3","短描述3","产品简介3"]
+        },{
+            "head-name": "bullet_point4",
+            "head-text":["产品要点4","短描述4","产品简介4"]
+        },{
+            "head-name": "bullet_point5",
+            "head-text":["产品要点5","短描述5","产品简介5"]
+        },{
+            "head-name": "description",
+            "head-text":["产品描述","产品长描述","产品说明","产品介绍","长描述"]
+        },{
+            "head-name": "weight",
+            "head-text":["重量","质量"]
+        },{
+            "head-name": "unit_weight",
+            "head-text":["重量单位","质量单位","unit weight"]
+        },{
+            "head-name": "unit_size",
+            "head-text":["长度单位","体积单位","大小单位","unit size"]
+        },{
+            "head-name": "lenght",
+            "head-text":["长度"]
+        },{
+            "head-name": "width",
+            "head-text":["宽度"]
+        },{
+            "head-name": "height",
+            "head-text":["高度"]
+        },{
+            "head-name": "shipping_options",
+            "head-text":["shipping options","配送方法","配送方式","配送模式"]
+        },{
+            "head-name": "fulfillment",
+            "head-text":["配送时间","配送时效","配送日期"]
+        },{
+            "head-name": "product_code",
+            "head-text":["产品代码","产品ID","product id","商品代码","商品ID","ASIN","UPC","EAN","GCID","ISBN","条码"]
+        },{
+            "head-name": "product_code_type",
+            "head-text":["产品代码类型","产品ID类型","product id type","商品代码类型","商品ID类型"]
+        },{
+            "head-name": "start_date",
+            "head-text":["起始日期","起售日期","发售日期","开售日期","销售日期","上架日期","start date"]
+        },{
+            "head-name": "end_date",
+            "head-text":["下架日期","结束日期","停售日期","终止日期","end date"]
+        },{
+            "head-name": "is_export",
+            "head-text":["标记汇出"]
+        },{
+            "head-name": "purchase",
+            "head-text":["采购地址","购买地址","购买链接","购买网址","产品网址"]
+        },{
+            "head-name": "product_image",
+            "head-text":["本地图片地址","图片路径"]
+        },{
+            "head-name": "product_image_url1",
+            "head-text":["产品图片","图片url","图片网址","图片远程地址","图片链接","高清图地址","缩略图地址"]
+        },{
+            "head-name": "product_image_url2",
+            "head-text":["缩略图地址"]
+        },{
+            "head-name": "currency",
+            "head-text":["货币单位","货币","currency"]
+        }
+
+        
+		
+]

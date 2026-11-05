@@ -1,0 +1,14 @@
+﻿.版本 2
+
+.DLL命令 LocalAlloc, 整数型, "kernel32.dll", "LocalAlloc", 公开, _从局部堆分配内存(申请内存)
+    .参数 uFlags, 整数型
+    .参数 uBytes, 整数型
+
+.DLL命令 LocalFree, 整数型, "kernel32.dll", "LocalFree", 公开, _释放本地内存信息
+    .参数 hMem, 整数型
+
+.DLL命令 lstrcpyn_短整数型, 整数型, "kernel32.dll", "lstrcpyn", 公开
+    .参数 目标, 短整数型, 传址
+    .参数 源, 短整数型, 传址
+    .参数 长度, 整数型
+

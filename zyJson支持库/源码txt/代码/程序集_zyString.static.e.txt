@@ -1,0 +1,272 @@
+﻿.版本 2
+
+.程序集 程序集_zyString
+.子程序 zyString_InitFunctons, 整数型
+    .参数 hHeap, 整数型
+    .局部变量 pFunctions, 整数型
+
+    pFunctions ＝ _Alloc (16, hHeap)
+    _Set (pFunctions, 0, _子程序指针到整数 (&zyObject_QueryInterface))
+    _Set (pFunctions, 4, _子程序指针到整数 (&zyObject_AddRef))
+    _Set (pFunctions, 8, _子程序指针到整数 (&zyObject_Release))
+    _Set (pFunctions, 12, _子程序指针到整数 (&zyString_Destory))
+    返回 (pFunctions)
+
+.子程序 zyString_Destory
+    .参数 this, 整数型
+    .局部变量 pStr, 整数型
+
+    .如果真 (this ＝ 0)
+        返回 ()
+    .如果真结束
+    pStr ＝ _Get (this, #zystr_pStr)
+    .如果真 (pStr ＝ 0)
+        返回 ()
+    .如果真结束
+    _Free (pStr)
+    _Set (this, #zystr_pStr, 0)
+    _Set (this, #zystr_bufferLen, 0)
+    _Set (this, #zystr_strLen, 0)
+    
+
+.子程序 zyString_Create, 整数型
+    .参数 bufferLen, 整数型, 可空
+    .局部变量 this, 整数型
+    .局部变量 hHeap, 整数型
+
+    .如果真 (bufferLen ＝ 0)
+        bufferLen ＝ 1024
+    .如果真结束
+    hHeap ＝ GetProcessHeap ()
+    this ＝ zyNewObjectEmpty (hHeap, #zystr_cbSize)
+    _Set (this, #zyobj_hHeap, hHeap)
+    _Set (this, #zyobj_refCount, 1)
+    _Set (this, #zyobj_pFunctions, zyString_InitFunctons (hHeap))
+    _Set (this, #zystr_bufferLen, bufferLen)
+    _Set (this, #zystr_pStr, _Alloc (bufferLen, hHeap))
+    返回 (this)
+    
+
+.子程序 zyString_ReBuffer, 逻辑型
+    .参数 this, 整数型
+    .参数 lpStrLen, 整数型
+    .局部变量 newStr, 整数型
+    .局部变量 newLen, 整数型
+    .局部变量 pStr, 整数型
+    .局部变量 hHeap, 整数型
+    .局部变量 bufferLen, 整数型
+
+    hHeap ＝ _Get (this, #zyobj_hHeap)
+    pStr ＝ _Get (this, #zystr_pStr)
+    .如果 (pStr ＝ 0)
+        bufferLen ＝ lpStrLen × 2 ＋ 2
+        pStr ＝ _Alloc (bufferLen, hHeap)
+        _Set (this, #zystr_bufferLen, bufferLen)
+        _Set (this, #zystr_pStr, pStr)
+        .如果真 (pStr ＝ 0)
+            返回 (假)
+        .如果真结束
+        
+    .否则
+        
+        bufferLen ＝ _Get (this, #zystr_bufferLen)
+        newLen ＝ bufferLen × 2 ＋ lpStrLen × 2 ＋ 2
+        newStr ＝ _Alloc (newLen, hHeap)
+        .如果真 (newStr ＝ 0)
+            返回 (假)
+        .如果真结束
+        RtlMoveMemory_int (newStr, pStr, bufferLen)
+        _Free (pStr)
+        _Set (this, #zystr_pStr, newStr)
+        _Set (this, #zystr_bufferLen, newLen)
+    .如果结束
+    
+    返回 (真)
+
+.子程序 zyString_AddPtrW, 逻辑型, , 添加 Unicode文本指针
+    .参数 this, 整数型
+    .参数 lpcwstr, 整数型, , Unicode文本指针
+    .参数 strLen, 整数型, 可空
+    .局部变量 sbBufferLen, 整数型
+    .局部变量 sbStrLen, 整数型
+
+    .如果真 (this ＝ 0)
+        返回 (假)
+    .如果真结束
+    .如果真 (lpcwstr ＝ 0)
+        返回 (假)
+    .如果真结束
+    .如果真 (是否为空 (strLen))
+        strLen ＝ lstrlenW_Ptr (lpcwstr)
+    .如果真结束
+    sbBufferLen ＝ _Get (this, #zystr_bufferLen)
+    sbStrLen ＝ _Get (this, #zystr_strLen)
+    .如果真 (sbBufferLen ＜ (sbStrLen ＋ strLen) × 2 ＋ 2)
+        .如果真 (zyString_ReBuffer (this, strLen) ＝ 假)
+            返回 (假)
+        .如果真结束
+        
+    .如果真结束
+    RtlMoveMemory_int (_Get (this, #zystr_pStr) ＋ sbStrLen × 2, lpcwstr, strLen × 2)
+    _Set (this, #zystr_strLen, sbStrLen ＋ strLen)
+    返回 (真)
+    
+
+.子程序 zyString_AddPtr, 逻辑型, , 添加 Ansi文本指针
+    .参数 this, 整数型
+    .参数 lpcstr, 整数型, , Ansi文本指针
+    .参数 strLen, 整数型, 可空
+    .参数 codePage, 整数型, 可空, 默认为：CP_936(简体中文)
+    .局部变量 str, 字节集
+    .局部变量 len, 整数型
+    .局部变量 sbBufferLen, 整数型
+    .局部变量 sbStrLen, 整数型
+
+    .如果真 (this ＝ 0)
+        返回 (假)
+    .如果真结束
+    .如果真 (是否为空 (strLen))
+        strLen ＝ lstrlenA (lpcstr)
+    .如果真结束
+    .如果真 (是否为空 (codePage))
+        codePage ＝ #CP_936
+    .如果真结束
+    len ＝ MultiByteToWideChar_ptr (codePage, 0, lpcstr, strLen, str, 0)
+    str ＝ 取空白字节集 (len × 2)
+    .如果真 (MultiByteToWideChar_ptr (codePage, 0, lpcstr, strLen, str, len) ＝ 0)
+        返回 (假)
+    .如果真结束
+    
+    sbBufferLen ＝ _Get (this, #zystr_bufferLen)
+    sbStrLen ＝ _Get (this, #zystr_strLen)
+    .如果真 (sbBufferLen ＜ (sbStrLen ＋ len) × 2 ＋ 2)
+        .如果真 (zyString_ReBuffer (this, len) ＝ 假)
+            返回 (假)
+        .如果真结束
+        
+    .如果真结束
+    RtlMoveMemory_int (_Get (this, #zystr_pStr) ＋ sbStrLen × 2, _取指针字节集 (str), len × 2)
+    _Set (this, #zystr_strLen, sbStrLen ＋ len)
+    返回 (真)
+
+.子程序 zyString_Add, 逻辑型
+    .参数 this, 整数型
+    .参数 lpstr, 文本型
+    .参数 codePage, 整数型, 可空, 默认为：CP_936(简体中文)
+    .局部变量 str, 字节集
+    .局部变量 len, 整数型
+    .局部变量 sbBufferLen, 整数型
+    .局部变量 sbStrLen, 整数型
+
+    .如果真 (this ＝ 0)
+        返回 (假)
+    .如果真结束
+    .如果真 (是否为空 (codePage))
+        codePage ＝ #CP_936
+    .如果真结束
+    str ＝ zyA2W (lpstr, codePage)
+    len ＝ lstrlenW (str)
+    sbBufferLen ＝ _Get (this, #zystr_bufferLen)
+    sbStrLen ＝ _Get (this, #zystr_strLen)
+    .如果真 (sbBufferLen ＜ (sbStrLen ＋ len) × 2 ＋ 2)
+        .如果真 (zyString_ReBuffer (this, len) ＝ 假)
+            返回 (假)
+        .如果真结束
+        
+    .如果真结束
+    RtlMoveMemory_int (_Get (this, #zystr_pStr) ＋ sbStrLen × 2, _取指针字节集 (str), len × 2)
+    _Set (this, #zystr_strLen, sbStrLen ＋ len)
+    返回 (真)
+
+.子程序 zyString_AddW, 逻辑型
+    .参数 this, 整数型
+    .参数 lpcwstr, 字节集
+    .局部变量 len, 整数型
+    .局部变量 sbBufferLen, 整数型
+    .局部变量 sbStrLen, 整数型
+
+    .如果真 (this ＝ 0)
+        返回 (假)
+    .如果真结束
+    sbBufferLen ＝ _Get (this, #zystr_bufferLen)
+    sbStrLen ＝ _Get (this, #zystr_strLen)
+    len ＝ lstrlenW (lpcwstr)
+    .如果真 (sbBufferLen ＜ (sbStrLen ＋ len) × 2 ＋ 2)
+        .如果真 (zyString_ReBuffer (this, len) ＝ 假)
+            返回 (假)
+        .如果真结束
+        
+    .如果真结束
+    RtlMoveMemory_int (_Get (this, #zystr_pStr) ＋ sbStrLen × 2, _取指针字节集 (lpcwstr), len × 2)
+    _Set (this, #zystr_strLen, sbStrLen ＋ len)
+    返回 (真)
+
+.子程序 zyString_GetStr, 文本型
+    .参数 this, 整数型
+    .参数 codePage, 整数型, 可空, 默认：CP_936
+    .局部变量 sbPStr, 整数型
+    .局部变量 sbStrLen, 整数型
+
+    .如果真 (this ＝ 0)
+        返回 (“”)
+    .如果真结束
+    sbPStr ＝ _Get (this, #zystr_pStr)
+    .如果真 (sbPStr ＝ 0)
+        返回 (“”)
+    .如果真结束
+    .如果真 (是否为空 (codePage))
+        codePage ＝ #CP_936
+    .如果真结束
+    返回 (zyW2A_Point (sbPStr, codePage))
+    
+
+.子程序 zyString_GetStrW, 字节集
+    .参数 this, 整数型
+    .局部变量 sbPStr, 整数型
+    .局部变量 sbStrLen, 整数型
+
+    .如果真 (this ＝ 0)
+        返回 ({ })
+    .如果真结束
+    sbPStr ＝ _Get (this, #zystr_pStr)
+    sbStrLen ＝ _Get (this, #zystr_strLen)
+    .如果真 (sbPStr ＝ 0)
+        返回 ({ })
+    .如果真结束
+    返回 (指针到字节集 (sbPStr, sbStrLen × 2 ＋ 2))
+    
+
+.子程序 zyString_GetCStr, 整数型, , 不要销毁这个指针
+    .参数 this, 整数型
+
+    .如果真 (this ＝ 0)
+        返回 (0)
+    .如果真结束
+    返回 (_Get (this, #zystr_pStr))
+
+.子程序 zyString_AddChar, 逻辑型
+    .参数 this, 整数型
+    .参数 wCahr, 整数型, , Unicode 字符代码
+    .局部变量 sbBufferLen, 整数型
+    .局部变量 sbStrLen, 整数型
+    .局部变量 sbPStr, 整数型
+    .局部变量 len, 整数型
+
+    .如果真 (this ＝ 0)
+        返回 (假)
+    .如果真结束
+    sbBufferLen ＝ _Get (this, #zystr_bufferLen)
+    sbStrLen ＝ _Get (this, #zystr_strLen)
+    len ＝ 2
+    .如果真 (sbBufferLen ＜ (sbStrLen ＋ len) × 2 ＋ 2)
+        .如果真 (zyString_ReBuffer (this, len) ＝ 假)
+            返回 (假)
+        .如果真结束
+        
+    .如果真结束
+    sbPStr ＝ _Get (this, #zystr_pStr)
+    RtlMoveMemory_int (sbPStr ＋ sbStrLen × 2, _取变量地址 (wCahr), 2)
+    sbStrLen ＝ sbStrLen ＋ 1
+    _Set (this, #zystr_strLen, sbStrLen)
+    返回 (真)
+

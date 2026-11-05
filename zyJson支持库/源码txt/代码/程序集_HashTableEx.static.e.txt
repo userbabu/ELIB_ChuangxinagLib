@@ -1,0 +1,712 @@
+﻿.版本 2
+
+.程序集 程序集_HashTableEx
+.子程序 HashEx_Create, 整数型, , 成功返回 hHashTable，失败返回0
+    .参数 hHeap, 整数型, 可空, 如果为空则用 HeapCreate 创建新的
+    .参数 initialCapacity, 整数型, 可空, 初始容量，默认11
+    .参数 loadFactor, 小数型, 可空, 加载因子，默认0.75
+    .局部变量 hHashTable, 整数型
+    .局部变量 isNewHeap, 整数型
+    .局部变量 table, 整数型
+    .局部变量 array, 整数型
+
+    .如果真 (是否为空 (initialCapacity))
+        initialCapacity ＝ 11
+    .如果真结束
+    .如果真 (是否为空 (loadFactor))
+        loadFactor ＝ 0.75
+    .如果真结束
+    
+    .如果真 (initialCapacity ＜ 0)
+        返回 (0)
+    .如果真结束
+    .如果真 (loadFactor ≤ 0)
+        返回 (0)
+    .如果真结束
+    
+    .如果真 (hHeap ＝ 0)
+        hHeap ＝ HeapCreate (0, 0, 0)
+        isNewHeap ＝ 1
+    .如果真结束
+    
+    hHashTable ＝ HeapAlloc (hHeap, #HEAP_ZERO_MEMORY, #htEx_cbSize)
+    _Set (hHashTable, #ht_hHeap, hHeap)
+    _Set (hHashTable, #ht_isNewHeap, isNewHeap)
+    table ＝ HeapAlloc (hHeap, #HEAP_ZERO_MEMORY, initialCapacity × 4)
+    _Set (hHashTable, #ht_table, table) ' 数组，每个成员是一个链表
+    _Set (hHashTable, #ht_tableLenth, initialCapacity)
+    _SetFloat (hHashTable, #ht_loadFactor, loadFactor)
+    _Set (hHashTable, #ht_threshold, initialCapacity × loadFactor) ' 扩容临界值
+    
+    array ＝ Array_Create (hHeap) ' 同时创建一个数组，为了能够获取加入时顺序
+    _Set (hHashTable, #htEx_eArray, array)
+    返回 (hHashTable)
+    
+
+.子程序 HashEx_Destory, , , 销毁 HashTable
+    .参数 hHashTable, 整数型
+    .局部变量 i, 整数型
+    .局部变量 jv, 整数型
+    .局部变量 hHeap, 整数型
+    .局部变量 tableLenth, 整数型
+    .局部变量 count, 整数型
+    .局部变量 table, 整数型
+    .局部变量 array, 整数型
+    .局部变量 eNext, 整数型
+    .局部变量 eKey, 整数型
+
+    .如果真 (hHashTable ＝ 0)
+        返回 ()
+    .如果真结束
+    hHeap ＝ _Get (hHashTable, #ht_hHeap)
+    tableLenth ＝ _Get (hHashTable, #ht_tableLenth)
+    table ＝ _Get (hHashTable, #ht_table)
+    count ＝ _Get (hHashTable, #ht_count)
+    array ＝ _Get (hHashTable, #htEx_eArray)
+    Array_Destroy (array)
+    .如果 (_Get (hHashTable, #ht_isNewHeap) ≠ 0)
+        HeapDestroy (hHeap)
+    .否则
+        .如果真 (count ≠ 0)
+            .计次循环首 (tableLenth, i)
+                jv ＝ _GetTableItem (table, i － 1)
+                .判断循环首 (jv ≠ 0)
+                    eNext ＝ _Get (jv, #jv_next)
+                    eKey ＝ _Get (jv, #jv_key)
+                    .如果真 (eKey ≠ 0)
+                        HeapFree (hHeap, 0, eKey)
+                    .如果真结束
+                    jv ＝ eNext
+                .判断循环尾 ()
+            .计次循环尾 ()
+        .如果真结束
+        HeapFree (hHeap, 0, table)
+        HeapFree (hHeap, 0, hHashTable)
+    .如果结束
+    
+
+.子程序 HashEx_GetHeap, 整数型, , 返回hHeap
+    .参数 hHashTable, 整数型
+
+    .如果真 (hHashTable ＝ 0)
+        返回 (0)
+    .如果真结束
+    返回 (_Get (hHashTable, #ht_hHeap))
+    
+
+.子程序 HashEx_GetSize, 整数型, , 返回 HashTable 储存的总数
+    .参数 hHashTable, 整数型
+
+    .如果真 (hHashTable ＝ 0)
+        返回 (0)
+    .如果真结束
+    返回 (_Get (hHashTable, #ht_count))
+    
+
+.子程序 _Hash_Rehash, , , 重定义表
+    .参数 hHashTable, 整数型
+    .局部变量 oldCapacity, 整数型
+    .局部变量 oldTable, 整数型
+    .局部变量 newCapacity, 整数型
+    .局部变量 newTable, 整数型
+    .局部变量 i, 整数型
+    .局部变量 oldNext, 整数型
+    .局部变量 index, 整数型
+    .局部变量 hHeap, 整数型
+    .局部变量 pe, 整数型
+
+    hHeap ＝ _Get (hHashTable, #ht_hHeap)
+    oldCapacity ＝ _Get (hHashTable, #ht_tableLenth) ' ht.tableLenth
+    oldTable ＝ _Get (hHashTable, #ht_table) ' ht.table
+    
+    newCapacity ＝ oldCapacity × 2 ＋ 1
+    newTable ＝ HeapAlloc (hHeap, #HEAP_ZERO_MEMORY, newCapacity × 4)
+    
+    _Set (hHashTable, #ht_threshold, newCapacity × _GetFloat (hHashTable, #ht_loadFactor)) ' ht.threshold ＝ newCapacity × ht.loadFactor
+    _Set (hHashTable, #ht_table, newTable) ' ht.table ＝ newTable
+    _Set (hHashTable, #ht_tableLenth, newCapacity) ' ht.tableLenth ＝ newCapacity
+    
+    .判断循环首 (i ＜ oldCapacity)
+        pe ＝ _GetTableItem (oldTable, i)
+        .判断循环首 (pe ≠ 0)
+            oldNext ＝ _Get (pe, #jv_next) ' 获取原来的next
+            index ＝ 位与 (_Get (pe, #jv_hashCode), 2147483647) ％ newCapacity ' 计算新的索引
+            ' 插入到新的链表中
+            _Set (pe, #jv_next, _GetTableItem (newTable, index)) ' e.next = newtable[index]
+            _SetTableItem (newTable, index, pe) ' newtable[index] = e
+            pe ＝ oldNext
+        .判断循环尾 ()
+        i ＝ i ＋ 1
+    .判断循环尾 ()
+    HeapFree (hHeap, 0, oldTable)
+
+.子程序 HashEx_PutPtr, 整数型, , 添加，返回0：成功且没有被覆盖；返回1：成功但被覆盖；返回-1：失败
+    .参数 hHashTable, 整数型
+    .参数 key, 整数型
+    .参数 value, 整数型, , jsonValue
+    .局部变量 pKey, 整数型
+    .局部变量 pVal, 整数型
+    .局部变量 hash, 整数型
+    .局部变量 index, 整数型
+    .局部变量 pe, 整数型
+    .局部变量 hHeap, 整数型
+    .局部变量 array, 整数型
+    .局部变量 table, 整数型
+    .局部变量 prev, 整数型
+    .局部变量 i, 整数型
+
+    .如果真 (hHashTable ＝ 0)
+        返回 (-1)
+    .如果真结束
+    hHeap ＝ _Get (hHashTable, #ht_hHeap)
+    array ＝ _Get (hHashTable, #htEx_eArray)
+    table ＝ _Get (hHashTable, #ht_table)
+    hash ＝ HashEx_GetHashCode (key, lstrlenW_Ptr (key) × 2)
+    index ＝ 位与 (hash, 2147483647) ％ _Get (hHashTable, #ht_tableLenth)
+    ' 根据索引遍历对应的Entry链表
+    pe ＝ _GetTableItem (table, index)
+    .判断循环首 (pe ≠ 0)
+        .如果真 (_Get (pe, #jv_hashCode) ＝ hash 且 lstrcmpW (_Get (pe, #jv_key), key) ＝ 0) ' 存在相同键，则替换旧值
+            .如果 (prev ≠ 0) ' 有上一个节点
+                _Set (prev, #jv_next, value) ' 则将上一个节点的next指向当前节点
+            .否则
+                _SetTableItem (table, index, value) ' 替换到头节点
+            .如果结束
+            _Set (value, #jv_key, _Get (pe, #jv_key)) ' 将被替换节点的key保存下来
+            _Set (value, #jv_next, _Get (pe, #jv_next)) ' 将next保存下来
+            _Set (value, #jv_hashCode, hash)
+            ' 同时改变数组的值
+            Array_ReplaceValue (array, pe, value)
+            
+            返回 (1)
+        .如果真结束
+        prev ＝ pe
+        pe ＝ _Get (pe, #jv_next)
+    .判断循环尾 ()
+    
+    ' 如果HashTable实际容量 > 扩容临界值 (扩容临界值=总容量*加载因子)
+    ' 则调整HashTable的大小
+    .如果真 (_Get (hHashTable, #ht_count) ≥ _Get (hHashTable, #ht_threshold))
+        _Hash_Rehash (hHashTable)
+        ' 更具新容量计算索引
+        table ＝ _Get (hHashTable, #ht_table)
+        index ＝ 位与 (hash, 2147483647) ％ _Get (hHashTable, #ht_tableLenth)
+    .如果真结束
+    
+    ' 插入链表
+    _Set (value, #jv_hashCode, hash)
+    _Set (value, #jv_key, _CloneStringPtr (key, lstrlenW_Ptr (key), hHeap))
+    _Set (value, #jv_next, _GetTableItem (table, index))
+    _SetTableItem (table, index, value)
+    Array_Add (array, value) ' 同时加入到数组中
+    _incPtr (hHashTable, #ht_count) ' ht.count ＝ ht.count ＋ 1
+    返回 (0)
+    
+
+.子程序 HashEx_Put, 整数型, , 添加，返回0：成功且没有被覆盖；返回1：成功但被覆盖；返回-1：失败
+    .参数 hHashTable, 整数型
+    .参数 key, 字节集
+    .参数 value, 整数型, , jsonValue
+    .局部变量 pKey, 整数型
+    .局部变量 pVal, 整数型
+    .局部变量 hash, 整数型
+    .局部变量 index, 整数型
+    .局部变量 pe, 整数型
+    .局部变量 hHeap, 整数型
+    .局部变量 array, 整数型
+    .局部变量 table, 整数型
+    .局部变量 prev, 整数型
+    .局部变量 i, 整数型
+
+    .如果真 (hHashTable ＝ 0)
+        返回 (-1)
+    .如果真结束
+    pKey ＝ _取指针字节集 (key)
+    hHeap ＝ _Get (hHashTable, #ht_hHeap)
+    array ＝ _Get (hHashTable, #htEx_eArray)
+    table ＝ _Get (hHashTable, #ht_table)
+    hash ＝ HashEx_GetHashCode (pKey, lstrlenW (key) × 2)
+    index ＝ 位与 (hash, 2147483647) ％ _Get (hHashTable, #ht_tableLenth)
+    ' 根据索引遍历对应的Entry链表
+    pe ＝ _GetTableItem (table, index)
+    .判断循环首 (pe ≠ 0)
+        .如果真 (_Get (pe, #jv_hashCode) ＝ hash 且 lstrcmpW (_Get (pe, #jv_key), pKey) ＝ 0) ' 存在相同键，则替换旧值
+            .如果 (prev ≠ 0) ' 有上一个节点
+                _Set (prev, #jv_next, value) ' 则将上一个节点的next指向当前节点
+            .否则
+                _SetTableItem (table, index, value) ' 替换到头节点
+            .如果结束
+            _Set (value, #jv_key, _Get (pe, #jv_key)) ' 将被替换节点的key保存下来
+            _Set (value, #jv_next, _Get (pe, #jv_next)) ' 将next保存下来
+            _Set (value, #jv_hashCode, hash) ' 将hashcode 保存下来
+            ' 同时改变数组的值
+            Array_ReplaceValue (array, pe, value)
+            返回 (1)
+        .如果真结束
+        prev ＝ pe
+        pe ＝ _Get (pe, #jv_next)
+    .判断循环尾 ()
+    
+    ' 如果HashTable实际容量 > 扩容临界值 (扩容临界值=总容量*加载因子)
+    ' 则调整HashTable的大小
+    .如果真 (_Get (hHashTable, #ht_count) ≥ _Get (hHashTable, #ht_threshold))
+        _Hash_Rehash (hHashTable)
+        ' 更具新容量计算索引
+        table ＝ _Get (hHashTable, #ht_table)
+        index ＝ 位与 (hash, 2147483647) ％ _Get (hHashTable, #ht_tableLenth)
+    .如果真结束
+    
+    ' 插入链表
+    _Set (value, #jv_hashCode, hash)
+    _Set (value, #jv_key, _CloneString (key, hHeap))
+    _Set (value, #jv_next, _GetTableItem (table, index))
+    _SetTableItem (table, index, value)
+    Array_Add (array, value) ' 同时加入到数组中
+    _incPtr (hHashTable, #ht_count) ' ht.count ＝ ht.count ＋ 1
+    返回 (0)
+    
+
+.子程序 HashEx_Insert, 整数型, , 插入，返回0：成功且没有被覆盖；返回1：成功但被覆盖；返回-1：失败
+    .参数 hHashTable, 整数型
+    .参数 idx, 整数型
+    .参数 key, 字节集
+    .参数 value, 整数型, , jsonValue
+    .局部变量 pKey, 整数型
+    .局部变量 pVal, 整数型
+    .局部变量 hash, 整数型
+    .局部变量 index, 整数型
+    .局部变量 pe, 整数型
+    .局部变量 hHeap, 整数型
+    .局部变量 array, 整数型
+    .局部变量 table, 整数型
+    .局部变量 prev, 整数型
+    .局部变量 i, 整数型
+
+    .如果真 (hHashTable ＝ 0)
+        返回 (-1)
+    .如果真结束
+    pKey ＝ _取指针字节集 (key)
+    hHeap ＝ _Get (hHashTable, #ht_hHeap)
+    array ＝ _Get (hHashTable, #htEx_eArray)
+    table ＝ _Get (hHashTable, #ht_table)
+    hash ＝ HashEx_GetHashCode (pKey, lstrlenW (key) × 2)
+    index ＝ 位与 (hash, 2147483647) ％ _Get (hHashTable, #ht_tableLenth)
+    ' 根据索引遍历对应的Entry链表
+    pe ＝ _GetTableItem (table, index)
+    .判断循环首 (pe ≠ 0)
+        .如果真 (_Get (pe, #jv_hashCode) ＝ hash 且 lstrcmpW (_Get (pe, #jv_key), pKey) ＝ 0) ' 存在相同键，则替换旧值
+            .如果 (prev ≠ 0) ' 有上一个节点
+                _Set (prev, #jv_next, value) ' 则将上一个节点的next指向当前节点
+            .否则
+                _SetTableItem (table, index, value) ' 替换到头节点
+            .如果结束
+            _Set (value, #jv_key, _Get (pe, #jv_key)) ' 将被替换节点的key保存下来
+            _Set (value, #jv_next, _Get (pe, #jv_next)) ' 将next保存下来
+            _Set (value, #jv_hashCode, hash) ' 将hashcode 保存下来
+            ' 同时改变数组的值
+            Array_ReplaceValue (array, pe, value)
+            返回 (1)
+        .如果真结束
+        prev ＝ pe
+        pe ＝ _Get (pe, #jv_next)
+    .判断循环尾 ()
+    
+    ' 如果HashTable实际容量 > 扩容临界值 (扩容临界值=总容量*加载因子)
+    ' 则调整HashTable的大小
+    .如果真 (_Get (hHashTable, #ht_count) ≥ _Get (hHashTable, #ht_threshold))
+        _Hash_Rehash (hHashTable)
+        ' 更具新容量计算索引
+        table ＝ _Get (hHashTable, #ht_table)
+        index ＝ 位与 (hash, 2147483647) ％ _Get (hHashTable, #ht_tableLenth)
+    .如果真结束
+    
+    .如果真 (Array_Insert (array, idx, value) ＝ -1) ' 插入到数组中
+        返回 (-1)
+    .如果真结束
+    ' 插入链表
+    _Set (value, #jv_hashCode, hash)
+    _Set (value, #jv_key, _CloneString (key, hHeap))
+    _Set (value, #jv_next, _GetTableItem (table, index))
+    _SetTableItem (table, index, value)
+    
+    _incPtr (hHashTable, #ht_count) ' ht.count ＝ ht.count ＋ 1
+    返回 (0)
+    
+
+.子程序 HashEx_GetHashCode, 整数型
+    .参数 key, 整数型
+    .参数 len, 整数型
+
+    置入代码 ({ 86, 81, 49, 192, 139, 117, 8, 129, 254, 0, 0, 0, 0, 116, 20, 139, 77, 12, 227, 15, 105, 192, 31, 0, 0, 0, 15, 182, 92, 14, 255, 1, 216, 226, 241, 89, 94, 201, 194, 8, 0 })
+    ' push esi
+    ' push ecx
+    ' xor eax,eax
+    ' mov esi,[ebp+08]
+    ' cmp esi,0
+    ' jz goback
+    ' mov ecx,[ebp+12]
+    ' jecxz goback
+    ' lp:
+    ' imul eax,31
+    ' movzx ebx,byte [esi+ecx-1]
+    ' add eax,ebx
+    ' loop lp
+    ' goback:
+    ' pop ecx
+    ' pop esi
+    ' leave
+    ' retn 08
+    返回 (0)
+    
+
+.子程序 HashEx_Get, 整数型, , 获取值
+    .参数 hHashTable, 整数型
+    .参数 key, 字节集
+    .局部变量 pKey, 整数型
+    .局部变量 hash, 整数型
+    .局部变量 index, 整数型
+    .局部变量 jv, 整数型
+    .局部变量 HashTable_table, 整数型, , , 表
+    .局部变量 HashTable_tableLenth, 整数型, , , 表大小
+
+    .如果真 (hHashTable ＝ 0)
+        返回 (0)
+    .如果真结束
+    HashTable_table ＝ _Get (hHashTable, #ht_table)
+    HashTable_tableLenth ＝ _Get (hHashTable, #ht_tableLenth)
+    pKey ＝ _取指针字节集 (key)
+    hash ＝ HashEx_GetHashCode (pKey, lstrlenW (key) × 2)
+    index ＝ 位与 (hash, 2147483647) ％ HashTable_tableLenth
+    jv ＝ _GetTableItem (HashTable_table, index)
+    .判断循环首 (jv ≠ 0)
+        .如果真 (_Get (jv, #jv_hashCode) ＝ hash 且 lstrcmpW (_Get (jv, #jv_key), pKey) ＝ 0)
+            返回 (jv)
+        .如果真结束
+        jv ＝ _Get (jv, #jv_next)
+    .判断循环尾 ()
+    返回 (0)
+    
+
+.子程序 HashEx_GetAt, 整数型
+    .参数 hHashTable, 整数型
+    .参数 index, 整数型
+    .局部变量 count, 整数型
+    .局部变量 array, 整数型
+
+    .如果真 (hHashTable ＝ 0)
+        返回 (0)
+    .如果真结束
+    array ＝ _Get (hHashTable, #htEx_eArray)
+    返回 (Array_Get (array, index))
+    
+
+.子程序 HashEx_GetPtr, 整数型, , 获取值
+    .参数 hHashTable, 整数型
+    .参数 key, 整数型
+    .局部变量 hash, 整数型
+    .局部变量 index, 整数型
+    .局部变量 jv, 整数型
+    .局部变量 HashTable_table, 整数型, , , 表
+    .局部变量 HashTable_tableLenth, 整数型, , , 表大小
+
+    .如果真 (hHashTable ＝ 0)
+        返回 (0)
+    .如果真结束
+    HashTable_table ＝ _Get (hHashTable, #ht_table)
+    HashTable_tableLenth ＝ _Get (hHashTable, #ht_tableLenth)
+    hash ＝ HashEx_GetHashCode (key, lstrlenW_Ptr (key) × 2)
+    index ＝ 位与 (hash, 2147483647) ％ HashTable_tableLenth
+    jv ＝ _GetTableItem (HashTable_table, index)
+    .判断循环首 (jv ≠ 0)
+        .如果真 (_Get (jv, #jv_hashCode) ＝ hash 且 lstrcmpW (_Get (jv, #jv_key), key) ＝ 0)
+            返回 (jv)
+        .如果真结束
+        jv ＝ _Get (jv, #jv_next)
+    .判断循环尾 ()
+    返回 (0)
+
+.子程序 HashEx_Contains, 逻辑型, , 是否存在指定值
+    .参数 hHashTable, 整数型
+    .参数 value, 整数型
+    .局部变量 pVal, 整数型
+    .局部变量 i, 整数型
+    .局部变量 pe, 整数型
+    .局部变量 tableLenth, 整数型
+    .局部变量 table, 整数型
+
+    .如果真 (hHashTable ＝ 0)
+        返回 (假)
+    .如果真结束
+    table ＝ _Get (hHashTable, #ht_table)
+    tableLenth ＝ _Get (hHashTable, #ht_tableLenth)
+    .计次循环首 (tableLenth, i)
+        pe ＝ _GetTableItem (table, i － 1)
+        .判断循环首 (pe ≠ 0)
+            .如果真 (pe ＝ value)
+                返回 (真)
+            .如果真结束
+            pe ＝ _Get (pe, #jv_next)
+        .判断循环尾 ()
+    .计次循环尾 ()
+    返回 (假)
+    
+
+.子程序 HashEx_ContainsKey, 逻辑型, , 是否存在指定键
+    .参数 hHashTable, 整数型
+    .参数 key, 字节集
+    .局部变量 pKey, 整数型
+    .局部变量 pe, 整数型
+    .局部变量 hash, 整数型
+    .局部变量 index, 整数型
+    .局部变量 keyType, 整数型
+
+    .如果真 (hHashTable ＝ 0)
+        返回 (假)
+    .如果真结束
+    pKey ＝ _取指针字节集 (key)
+    hash ＝ HashEx_GetHashCode (pKey, lstrlenW_Ptr (pKey) × 2)
+    index ＝ 位与 (hash, 2147483647) ％ _Get (hHashTable, #ht_tableLenth)
+    
+    pe ＝ _GetTableItem (_Get (hHashTable, #ht_table), index)
+    .判断循环首 (pe ≠ 0)
+        .如果真 (_Get (pe, #jv_hashCode) ＝ hash 且 lstrcmpW (_Get (pe, #jv_key), pKey) ＝ 0)
+            返回 (真)
+        .如果真结束
+        pe ＝ _Get (pe, #jv_next)
+    .判断循环尾 ()
+    返回 (假)
+    
+
+.子程序 HashEx_ContainsKeyPtr, 逻辑型, , 是否存在指定键
+    .参数 hHashTable, 整数型
+    .参数 key, 整数型
+    .局部变量 pe, 整数型
+    .局部变量 hash, 整数型
+    .局部变量 index, 整数型
+    .局部变量 keyType, 整数型
+
+    .如果真 (hHashTable ＝ 0)
+        返回 (假)
+    .如果真结束
+    hash ＝ HashEx_GetHashCode (key, lstrlenW_Ptr (key) × 2)
+    index ＝ 位与 (hash, 2147483647) ％ _Get (hHashTable, #ht_tableLenth)
+    pe ＝ _GetTableItem (_Get (hHashTable, #ht_table), index)
+    .判断循环首 (pe ≠ 0)
+        .如果真 (_Get (pe, #jv_hashCode) ＝ hash 且 lstrcmpW (_Get (pe, #jv_key), key) ＝ 0)
+            返回 (真)
+        .如果真结束
+        pe ＝ _Get (pe, #jv_next)
+    .判断循环尾 ()
+    返回 (假)
+
+.子程序 HashEx_Remove, 逻辑型, , 移除，存在key返回真，否则返回假
+    .参数 hHashTable, 整数型
+    .参数 key, 字节集
+    .局部变量 pKey, 整数型
+    .局部变量 pe, 整数型
+    .局部变量 hash, 整数型
+    .局部变量 index, 整数型
+    .局部变量 prev, 整数型
+    .局部变量 keyType, 整数型
+    .局部变量 hHeap, 整数型
+    .局部变量 table, 整数型
+    .局部变量 valType, 整数型
+    .局部变量 eKey, 整数型
+    .局部变量 eValue, 整数型
+    .局部变量 array, 整数型
+
+    .如果真 (hHashTable ＝ 0)
+        返回 (假)
+    .如果真结束
+    pKey ＝ _取指针字节集 (key)
+    hHeap ＝ _Get (hHashTable, #ht_hHeap)
+    table ＝ _Get (hHashTable, #ht_table)
+    array ＝ _Get (hHashTable, #htEx_eArray)
+    hash ＝ HashEx_GetHashCode (pKey, lstrlenW_Ptr (pKey) × 2)
+    
+    index ＝ 位与 (hash, 2147483647) ％ _Get (hHashTable, #ht_tableLenth)
+    
+    pe ＝ _GetTableItem (table, index)
+    .判断循环首 (pe ≠ 0)
+        eKey ＝ _Get (pe, #jv_key)
+        .如果真 (_Get (pe, #jv_hashCode) ＝ hash 且 lstrcmpW (eKey, pKey) ＝ 0)
+            .如果 (prev ≠ 0)
+                _Set (prev, #jv_next, _Get (pe, #jv_next)) ' prevEntry.next ＝ e.next
+            .否则
+                _SetTableItem (table, index, _Get (pe, #jv_next)) ' talbe[index] = e.next
+            .如果结束
+            _decPtr (hHashTable, #ht_count) ' ht.count ＝ ht.count － 1
+            Array_RemoveFromValue (array, pe) ' 同时在数组中移除
+            HeapFree (hHeap, 0, eKey)
+            返回 (真)
+        .如果真结束
+        prev ＝ pe
+        pe ＝ _Get (pe, #jv_next)
+    .判断循环尾 ()
+    
+    返回 (假)
+
+.子程序 HashEx_RemoveFromValue, 逻辑型, , 移除返回真，否则返回假
+    .参数 hHashTable, 整数型
+    .参数 value, 整数型
+    .局部变量 pVal, 整数型
+    .局部变量 pe, 整数型
+    .局部变量 hash, 整数型
+    .局部变量 index, 整数型
+    .局部变量 prev, 整数型
+    .局部变量 keyType, 整数型
+    .局部变量 hHeap, 整数型
+    .局部变量 table, 整数型
+    .局部变量 valType, 整数型
+    .局部变量 tableLenth, 整数型
+    .局部变量 i, 整数型
+    .局部变量 eKey, 整数型
+    .局部变量 array, 整数型
+
+    .如果真 (hHashTable ＝ 0)
+        返回 (假)
+    .如果真结束
+    
+    hHeap ＝ _Get (hHashTable, #ht_hHeap)
+    table ＝ _Get (hHashTable, #ht_table)
+    tableLenth ＝ _Get (hHashTable, #ht_tableLenth)
+    array ＝ _Get (hHashTable, #htEx_eArray)
+    
+    .计次循环首 (tableLenth, i)
+        pe ＝ _GetTableItem (table, i － 1)
+        prev ＝ 0
+        .判断循环首 (pe ≠ 0)
+            .如果真 (pe ＝ value)
+                eKey ＝ _Get (pe, #jv_key)
+                .如果 (prev ≠ 0)
+                    _Set (prev, #jv_next, _Get (pe, #jv_next)) ' prevEntry.next ＝ e.next
+                .否则
+                    _SetTableItem (table, i － 1, _Get (pe, #jv_next)) ' talbe[index] = e.next
+                .如果结束
+                _decPtr (hHashTable, #ht_count) ' ht.count ＝ ht.count － 1
+                Array_RemoveFromValue (array, pe)
+                HeapFree (hHeap, 0, eKey)
+                返回 (真)
+            .如果真结束
+            prev ＝ pe
+            pe ＝ _Get (pe, #jv_next)
+        .判断循环尾 ()
+    .计次循环尾 ()
+    返回 (假)
+
+.子程序 HashEx_GetKeys, 整数型, , 取所以键，返回数量
+    .参数 hHashTable, 整数型
+    .参数 keys, 字节集, 参考 数组
+    .局部变量 key, 整数型
+    .局部变量 i, 整数型
+    .局部变量 pe, 整数型
+    .局部变量 j, 整数型
+    .局部变量 count, 整数型
+    .局部变量 table, 整数型
+    .局部变量 tableLenth, 整数型
+    .局部变量 keyType, 整数型
+    .局部变量 array, 整数型
+
+    .如果真 (hHashTable ＝ 0)
+        返回 (0)
+    .如果真结束
+    count ＝ _Get (hHashTable, #ht_count)
+    table ＝ _Get (hHashTable, #ht_table)
+    tableLenth ＝ _Get (hHashTable, #ht_tableLenth)
+    array ＝ _Get (hHashTable, #htEx_eArray)
+    重定义数组 (keys, 假, count)
+    .计次循环首 (count, i)
+        pe ＝ Array_Get (array, i － 1)
+        key ＝ _Get (pe, #jv_key)
+        keys [i] ＝ 指针到字节集 (key, lstrlenW_Ptr (key) × 2 ＋ 2)
+    .计次循环尾 ()
+    返回 (count)
+    
+
+.子程序 HashEx_GetValues, 整数型, , 取所以值，返回数量
+    .参数 hHashTable, 整数型
+    .参数 values, 整数型, 参考 数组
+    .局部变量 pValues, 整数型
+    .局部变量 value, 整数型
+    .局部变量 i, 整数型
+    .局部变量 pe, 整数型
+    .局部变量 j, 整数型
+    .局部变量 count, 整数型
+    .局部变量 table, 整数型
+    .局部变量 tableLenth, 整数型
+    .局部变量 valType, 整数型
+
+    .局部变量 array, 整数型
+
+    .如果真 (hHashTable ＝ 0)
+        返回 (0)
+    .如果真结束
+    count ＝ _Get (hHashTable, #ht_count)
+    table ＝ _Get (hHashTable, #ht_table)
+    tableLenth ＝ _Get (hHashTable, #ht_tableLenth)
+    array ＝ _Get (hHashTable, #htEx_eArray)
+    重定义数组 (values, 假, count)
+    pValues ＝ _取指针数组 (values)
+    RtlMoveMemory (pValues, _Get (array, #arr_table), count × 4)
+    返回 (count)
+    
+
+.子程序 HashEx_Enum
+    .参数 hHashTable, 整数型
+    .参数 callBack, 子程序指针, , 返回值：逻辑型【真：停止枚举，假：继续枚举】（参数1：key[整数型]，参数2：value[整数型]，参数3：param[整数型]）
+    .参数 param, 整数型
+    .局部变量 pe, 整数型
+    .局部变量 key, 整数型
+    .局部变量 value, 整数型
+    .局部变量 i, 整数型
+    .局部变量 tableLenth, 整数型
+    .局部变量 table, 整数型
+
+    .如果真 (hHashTable ＝ 0)
+        返回 ()
+    .如果真结束
+    tableLenth ＝ _Get (hHashTable, #ht_tableLenth)
+    table ＝ _Get (hHashTable, #ht_table)
+    .计次循环首 (tableLenth, i)
+        pe ＝ _GetTableItem (table, i － 1)
+        .判断循环首 (pe ≠ 0)
+            key ＝ _Get (pe, #jv_key)
+            .如果真 (zyCall3 (_子程序指针到整数 (callBack), key, pe, param) ≠ 0)
+                返回 ()
+            .如果真结束
+            pe ＝ _Get (pe, #jv_next)
+        .判断循环尾 ()
+        
+    .计次循环尾 ()
+    
+
+.子程序 HashEx_Clear, , , 清除所有数据
+    .参数 hHashTable, 整数型
+    .局部变量 i, 整数型
+    .局部变量 pe, 整数型
+    .局部变量 tableLenth, 整数型
+    .局部变量 table, 整数型
+    .局部变量 eNext, 整数型
+    .局部变量 hHeap, 整数型
+    .局部变量 array, 整数型
+
+    .如果真 (hHashTable ＝ 0)
+        返回 ()
+    .如果真结束
+    hHeap ＝ _Get (hHashTable, #ht_hHeap)
+    tableLenth ＝ _Get (hHashTable, #ht_tableLenth)
+    table ＝ _Get (hHashTable, #ht_table)
+    array ＝ _Get (hHashTable, #htEx_eArray)
+    .判断循环首 (i ＜ tableLenth)
+        pe ＝ _GetTableItem (table, i)
+        .判断循环首 (pe ≠ 0)
+            eNext ＝ _Get (pe, #jv_next)
+            HeapFree (hHeap, 0, _Get (pe, #jv_key))
+            pe ＝ eNext
+        .判断循环尾 ()
+        i ＝ i ＋ 1
+    .判断循环尾 ()
+    Array_Clear (array)
+    ZeroMemory (table, tableLenth × 4)
+    _Set (hHashTable, #ht_count, 0)
+

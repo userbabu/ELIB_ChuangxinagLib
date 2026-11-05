@@ -1,0 +1,75 @@
+# 支持库工程仓库：只入源码、规格与工具脚本，编译产物与第三方包靠构建重新获取。
+
+# ============ 产物目录 ============
+out/
+obj/
+bin/
+build/
+dist/
+Debug/
+Release/
+x64/
+Win32/
+ipch/
+static_lib/
+node_modules/
+.vs/
+.idea/
+edge_cache/
+EBWebView/
+.cache/
+tmp/
+temp/
+Temp/
+scratch/
+
+# ============ 第三方依赖包（按各自 README 的取包方式重新下载）============
+*/third_party/
+
+# ============ 编译产物文件 ============
+*.obj
+*.ilk
+*.pdb
+*.iobj
+*.ipdb
+*.exp
+*.lib
+*.lnt
+*.tlog
+*.lastbuildstate
+*.map
+*.exe
+*.dll
+*.res
+*.msi
+*.tsbuildinfo
+
+# ============ 易语言工程与模块二进制（源码一律看导出的 txt）============
+*.e
+*.ec
+*.ecode
+*.fnr
+# 例外：工程验收用的测试工程要留档
+!测试/测试.e
+
+# ============ 压缩包与日志 ============
+*.7z
+*.rar
+*.zip
+*.gz
+*.xz
+*.log
+*.bak
+*.old
+*.tmp
+*.temp
+*.~*
+*.browser_data
+__pycache__/
+*.pyc
+
+# ============ 系统文件 ============
+.DS_Store
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/

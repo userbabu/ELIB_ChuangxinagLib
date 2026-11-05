@@ -1,0 +1,32 @@
+// 由 线程锁/gen_lock_table.mjs 生成，勿手改。
+enum
+{
+    LOP_LK_CxLock_Create,
+    LOP_LK_CxLock_Destroy,
+    LOP_LK_CxLock_Enter,
+    LOP_LK_CxLock_Leave,
+    LOP_LK_CxLock_TryEnter,
+    LOP_LK_CxLock_Wait,
+    LOP_LK_CxLock_Signal,
+    LOP_LK_CxLock_Broadcast,
+    LOP_LK_CxLock_IsLocked,
+    LOP_LK_CxLock_Owner,
+    LOP_LK_CxLock_Recursion,
+    LOP_LK_CxLock_Waiters,
+    LOP_LK_CxLock_Named,
+    LOP_LK_CxLock_SetHandle,
+    LOP_LK_CxLock_GetHandle,
+    LOP_LK_CxSem_Create,
+    LOP_LK_CxSem_Destroy,
+    LOP_LK_CxSem_Wait,
+    LOP_LK_CxSem_Release,
+    LOP_LK_CxSem_TryWait,
+    LOP_LK_CxSem_Value,
+    LOP_LK_CxCond_Create,
+    LOP_LK_CxCond_Destroy,
+    LOP_LK_CxCond_Wait,
+    LOP_LK_CxCond_Signal,
+    LOP_LK_CxCond_Broadcast,
+    LOP_LK_CxCond_Waiters,
+    LOP_COUNT
+};

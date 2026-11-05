@@ -1,0 +1,186 @@
+﻿.版本 2
+
+.程序集 程序集_Stack
+.子程序 Stack_Create, 整数型
+    .参数 hHeap, 整数型, 可空, 如果为空则用 HeapCreate 创建新的
+    .参数 initCount, 整数型, 可空, 默认1024
+    .局部变量 hStack, 整数型
+    .局部变量 table, 整数型
+    .局部变量 isNewHeap, 整数型
+
+    .如果真 (是否为空 (initCount))
+        initCount ＝ 1024
+    .如果真结束
+    
+    .如果真 (initCount ＜ 0)
+        返回 (0)
+    .如果真结束
+    
+    .如果真 (hHeap ＝ 0)
+        hHeap ＝ HeapCreate (0, 0, 0)
+        isNewHeap ＝ 1
+    .如果真结束
+    .如果真 (hHeap ＝ 0)
+        返回 (0)
+    .如果真结束
+    table ＝ HeapAlloc (hHeap, #HEAP_ZERO_MEMORY, initCount × #zyStackValue_Size)
+    .如果真 (table ＝ 0)
+        返回 (0)
+    .如果真结束
+    
+    hStack ＝ HeapAlloc (hHeap, #HEAP_ZERO_MEMORY, #zyStack_cbSize)
+    .如果真 (hStack ＝ 0)
+        HeapFree (hHeap, 0, table)
+        返回 (0)
+    .如果真结束
+    _Set (hStack, #zyStack_hHeap, hHeap)
+    _Set (hStack, #zyStack_table, table)
+    _Set (hStack, #zyStack_tableLength, initCount)
+    _Set (hStack, #zyStack_isNewHeap, isNewHeap)
+    _Set (hStack, #zyStack_top, 0)
+    返回 (hStack)
+    
+
+.子程序 Stack_Destroy
+    .参数 hStack, 整数型
+    .局部变量 hHeap, 整数型
+    .局部变量 table, 整数型
+
+    .如果真 (hStack ＝ 0)
+        返回 ()
+    .如果真结束
+    hHeap ＝ _Get (hStack, #zyStack_hHeap)
+    .如果 (_Get (hStack, #zyStack_isNewHeap) ≠ 0)
+        HeapDestroy (hHeap)
+    .否则
+        table ＝ _Get (hStack, #zyStack_table)
+        HeapFree (hHeap, 0, table)
+        HeapFree (hHeap, 0, hStack)
+    .如果结束
+    
+
+.子程序 Stack_GetHeap, 整数型
+    .参数 hStack, 整数型
+
+    .如果真 (hStack ＝ 0)
+        返回 (0)
+    .如果真结束
+    返回 (_Get (hStack, #zyStack_hHeap))
+    
+
+.子程序 Stack_GetTopPos, 整数型
+    .参数 hStack, 整数型
+
+    .如果真 (hStack ＝ 0)
+        返回 (0)
+    .如果真结束
+    返回 (_Get (hStack, #zyStack_top))
+    
+
+.子程序 Stack_Push, 逻辑型
+    .参数 hStack, 整数型
+    .参数 value, 整数型
+    .参数 status, 整数型, 可空
+    .局部变量 table, 整数型
+    .局部变量 top, 整数型
+    .局部变量 length, 整数型
+    .局部变量 newTable, 整数型
+    .局部变量 newLength, 整数型
+    .局部变量 hHeap, 整数型
+
+    .如果真 (hStack ＝ 0)
+        返回 (假)
+    .如果真结束
+    hHeap ＝ _Get (hStack, #zyStack_hHeap)
+    table ＝ _Get (hStack, #zyStack_table)
+    top ＝ _Get (hStack, #zyStack_top)
+    length ＝ _Get (hStack, #zyStack_tableLength)
+    .如果真 (top ≥ length)
+        newLength ＝ length × 2
+        newTable ＝ HeapAlloc (hHeap, #HEAP_ZERO_MEMORY, newLength × #zyStackValue_Size)
+        .如果真 (newTable ＝ 0)
+            返回 (假)
+        .如果真结束
+        RtlMoveMemory_int (newTable, table, length × #zyStackValue_Size)
+        _Set (hStack, #zyStack_table, newTable)
+        _Set (hStack, #zyStack_tableLength, newLength × #zyStackValue_Size)
+        table ＝ newTable
+    .如果真结束
+    
+    _Set (table, top × #zyStackValue_Size, value)
+    _Set (table, top × #zyStackValue_Size ＋ 4, status)
+    top ＝ top ＋ 1
+    _Set (hStack, #zyStack_top, top)
+    返回 (真)
+
+.子程序 Stack_Pop, 逻辑型
+    .参数 hStack, 整数型
+    .参数 value, 整数型, 参考, 返回弹出的数据
+    .参数 status, 整数型, 参考 可空
+    .局部变量 table, 整数型
+    .局部变量 top, 整数型
+
+    .如果真 (hStack ＝ 0)
+        返回 (假)
+    .如果真结束
+    top ＝ _Get (hStack, #zyStack_top)
+    .如果真 (top ＝ 0)
+        返回 (假)
+    .如果真结束
+    table ＝ _Get (hStack, #zyStack_table)
+    value ＝ _Get (table, (top － 1) × #zyStackValue_Size)
+    status ＝ _Get (table, (top － 1) × #zyStackValue_Size ＋ 4)
+    top ＝ top － 1
+    _Set (hStack, #zyStack_top, top)
+    返回 (真)
+
+.子程序 Stack_Clear
+    .参数 hStack, 整数型
+
+    .如果真 (hStack ＝ 0)
+        返回 ()
+    .如果真结束
+    _Set (hStack, #zyStack_top, 0)
+    
+
+.子程序 Stack_Get, 整数型, , 获取栈顶
+    .参数 hStack, 整数型
+    .参数 status, 整数型, 参考 可空
+    .局部变量 top, 整数型
+    .局部变量 table, 整数型
+    .局部变量 value, 整数型
+
+    .如果真 (hStack ＝ 0)
+        返回 (0)
+    .如果真结束
+    top ＝ _Get (hStack, #zyStack_top)
+    .如果真 (top ＝ 0)
+        status ＝ 0
+        返回 (0)
+    .如果真结束
+    table ＝ _Get (hStack, #zyStack_table)
+    value ＝ _Get (table, (top － 1) × #zyStackValue_Size)
+    status ＝ _Get (table, (top － 1) × #zyStackValue_Size ＋ 4)
+    返回 (value)
+    
+
+.子程序 Stack_Set, 逻辑型
+    .参数 hStack, 整数型
+    .参数 value, 整数型
+    .参数 status, 整数型, 可空
+    .局部变量 table, 整数型
+    .局部变量 top, 整数型
+
+    .如果真 (hStack ＝ 0)
+        返回 (假)
+    .如果真结束
+    top ＝ _Get (hStack, #zyStack_top)
+    .如果真 (top ＝ 0)
+        返回 (假)
+    .如果真结束
+    table ＝ _Get (hStack, #zyStack_table)
+    _Set (table, (top － 1) × #zyStackValue_Size, value)
+    _Set (table, (top － 1) × #zyStackValue_Size ＋ 4, status)
+    返回 (真)
+    
+

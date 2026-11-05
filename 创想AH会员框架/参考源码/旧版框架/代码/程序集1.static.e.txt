@@ -1,0 +1,96 @@
+﻿.版本 2
+.支持库 iext
+.支持库 spec
+
+.程序集 程序集1
+.子程序 _启动子程序, 整数型, , 请在本子程序中放置易模块初始化代码
+    
+    _临时子程序 () ' 在初始化代码执行完毕后调用测试代码
+    返回 (0) ' 可以根据您的需要返回任意数值
+
+.子程序 _临时子程序
+    .局部变量 局IP, IP地址类型
+    .局部变量 返回, 文本型
+    .局部变量 a, 文本型, , "0"
+    .局部变量 规则, 规则数据, , "0"
+    .局部变量 透明标签, 透明标签
+
+
+    ' 全局_程序信息.注册接口地址 ＝ “http://server.cxsup.com/”
+    ' 调试输出 (到文本 (网页访问 (“http://server.cxsup.com/soft/amazonhelper/Managment_system/appSet/appset.php?tp=3&v=20240008&m=d849a1d3b71a2ce39aa9cf793f0e0523&t=1710475070000&token=df402bd252f9dc1ecfe2b24485573cdb0839fc07f926dc1ee2e1f241f6de507c”)))
+    ' 调试输出 (编码_utf8到gb2312 (全局_协议类.注册_登录检查 (“customer@cxsup.com”, “MTgtMTYtMTc4QkZCRkYwMEE1MEYwMC0xOC0zLTI0LUY0NEE1QzA1LU1BQ1ZFUjI=”)))
+    调试输出 (内部_获取IP地址 ().IP区域)
+    返回 ()
+    
+    ' 全局_OEM.产品类型 ＝ “3”
+    ' 局IP.IP地址 ＝ “ssssss”
+    ' 全局_程序信息.注册接口地址 ＝ “http://server.cxsup.com/soft/AmazonHelper/Managment_system”
+    ' 调试输出 (注册_登录 (“cxruanjian@163.com”, 获取本机机器码 (), 局IP))
+    
+    ' 网页访问 (“http://server.super-helper.com/soft/amazonhelper/Managment_system_sad//function/GetVerCode.php”)
+    
+    ' 调试输出 (内部_获取IP地址 ().IP区域)
+    ' 本名称子程序用作测试程序用，仅在开发及调试环境中有效，编译发布程序前将被系统自动清空，请将所有用作测试的临时代码放在本子程序中。 ***注意不要修改本子程序的名称、参数及返回值类型。
+    ' 局IP.IP地址 ＝ “0.0.0.0”
+    ' 局IP.IP区域 ＝ “本地”
+    ' 载入 (窗口_网络错误提示, 选择 (是否已创建 (全局_启动封面), 全局_启动封面, 全局_启动窗口), 真)
+    ' 调试输出 (注册_登录 (“947562580@qq.com”, “MjktMTEwNTI0NzA3MTIxNi1CRkVCRkJGRjAwMDMwNkE5LTJDMzcxMEQ5LTEtNDE=”, 局IP))
+    
+    
+    ' 初始化_初始化调用 (“a999”, 全局_启动窗口, 窗口_启动封面_备用, “创想亚马逊采集器”, “20173154”, “3”, 真, 真, 60, , , , , , 真)
+    ' 初始化_远程读取程序配置_新版本 (“http://localhost”, “http://localhost”)
+    ' 结束 ()
+    ' 初始化_远程读取程序配置 (“http://server.cxsup.com/soft/amazonhelper/management.txt”, “http://server2.cxsup.com/soft/amazonhelper/management.txt”, “创想AMAZON HELPER程序统一配置文件”, , 真, 真)
+    ' 调试输出 (获取本机机器码 ())
+    
+    ' .如果真 (授权检查 (真, , , ) ＝ 假)
+        ' 结束 ()
+    ' .如果真结束
+    
+    ' 注册_写取本地邮箱 (“sdfsdfsd”)
+    
+    ' 弹出提示框 (“新消息”, “halo”, , )
+    
+    
+    ' 调试输出 (编码_utf8到gb2312 (到文本 (网页访问 (“http://server.cxsup.com/soft/AmazonHelper/Managment_system/time.php”))))
+    
+    ' 设置OEM属性 (“”, “http://server.cx90.net/soft/amazonhelper/Managment_system/”, “3”, “2019001”, , , “cxangsoft”)
+    载入 (窗口_启动封面_备用, , 假)
+    初始化_初始化调用 (“%7777333”, 窗口_启动封面_备用, 窗口_启动封面_备用, 真, “commproyx”, { }, “创想亚马逊采集器”, “20180135”, “3”, 真, , , , , 窗口_启动封面_备用.标签EX1)
+    全局_内部_是否允许使用本模块 ＝ 真
+    ' .如果 (初始化_远程读取程序配置 (“http://server.cxsup.com” ＋ “/soft/amazonhelper/” ＋ “caag_management.txt”, “http://server.cx90.net” ＋ “/soft/amazonhelper/” ＋ “caag_management.txt”, “创想亚马逊ASIN采集器” ＋ “专用配置文件”, , 真, 真))
+        ' 添加程序日志 (“初始化程序运行配置完成1”)
+    ' .否则
+        ' 添加程序日志 (“初始化程序运行配置失败1”)
+        ' 内部_结束程序 ()
+    ' .如果结束
+    
+    ' “http://server.cxsup.com” ＋ “/soft/amazonhelper/Managment_system/appSet/” ＋ “appset.php”
+    .如果 (初始化_远程读取程序配置 (“创想亚马逊数据采集软件程序采集规则文件”, 真, 真))
+        添加程序日志 (“初始化程序运行配置完成1”)
+    .否则
+        添加程序日志 (“初始化程序运行配置失败1”)
+        内部_结束程序 ()
+    .如果结束
+    
+    
+    全局_测试_计算机名 ＝ “FB5C8668”
+    ' 全局_程序信息.注册接口地址 ＝ “http://localhost/cx_server”
+    ' 全局_程序信息.备用注册接口地址 ＝ “http://localhost/cx_server”
+    调试输出 (授权检查 (真, 真))
+    调试输出 (全局_授权信息.软件功能权限)
+    全局_远程数据.初始化 ()
+    全局_远程数据.请求数据 ()
+    全局_远程数据.解析当前服务器规则信息 (规则)
+    全局_防破解_内部版_代码 ＝ 全局_远程数据.取规则数据 (规则 [全局_远程数据.取正确规则数组序号 ()].系统信息, “R00052”) ' 读取内部版本授权码
+    调试输出 (全局_防破解_内部版_代码)
+    窗口_启动封面_备用.<?未知名称:支持库不存在?> ＝ 真
+    
+    调试输出 (获取本机机器码 ())
+    调试输出 (获取本机机器码 (真))
+    
+    
+    全局_测试_计算机名 ＝ “FB5C86681”
+    全局_授权信息.机器码 ＝ 获取本机机器码 ()
+    调试输出 (授权检查 (假, 假))
+

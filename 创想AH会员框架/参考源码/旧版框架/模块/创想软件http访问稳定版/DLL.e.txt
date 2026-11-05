@@ -1,0 +1,274 @@
+﻿.版本 2
+
+.DLL命令 curl_easy_init, 整数型, "libcurl.dll", "curl_easy_init", 公开, 成功返回 CURL 失败返回0
+
+.DLL命令 curl_easy_setopt, 整数型, "libcurl.dll", "curl_easy_setopt", 公开, CURLcode
+    .参数 curl, 整数型, , CURL
+    .参数 option, 整数型, , CURLoption
+    .参数 value, 整数型, , 此值根据 第二个参数定义的常数
+
+.DLL命令 curl_easy_perform, 整数型, "libcurl.dll", "curl_easy_perform", 公开, 执行 curl
+    .参数 curl, 整数型
+
+.DLL命令 curl_easy_cleanup, 整数型, "libcurl.dll", "curl_easy_cleanup", 公开, 销毁
+    .参数 curl, 整数型
+
+.DLL命令 curl_share_setopt, 整数型, "libcurl.dll", "curl_share_setopt", 公开, 共享对象
+    .参数 ShareHandle, 整数型
+    .参数 a, 整数型
+    .参数 b, 整数型
+
+.DLL命令 curl_share_init, 整数型, "libcurl.dll", "curl_share_init", 公开, 初始化共享对象
+
+.DLL命令 curl_easy_getinfo, 整数型, "libcurl.dll", "curl_easy_getinfo", 公开
+    .参数 curl, 整数型
+    .参数 CURLINFO, 整数型, , 看常数
+    .参数 value, 整数型, , 根据第二个值返回 不同的数据
+
+.DLL命令 curl_easy_duphandle, 整数型, "libcurl.dll", "curl_easy_duphandle", 公开, 重新创建一个新的 CURL 和 curl_easy_init 不同 他会 克隆一个 CURL  暂时未知
+    .参数 curl, 整数型
+
+.DLL命令 curl_easy_reset, , "libcurl.dll", "curl_easy_reset", 公开, 重置 CURL
+    .参数 curl, 整数型
+
+.DLL命令 curl_easy_recv, 整数型, "libcurl.dll", "curl_easy_recv", 公开, 接收CURL的数据 ，需要设置 CURLOPT_CONNECT_ONLY 数据
+    .参数 curl, 整数型
+    .参数 buff, 整数型, , 缓存区   请传入数据指针   
+    .参数 buflen, 整数型, , 缓存区长度
+    .参数 n, 整数型, 传址, 剩余数据
+
+.DLL命令 curl_multi_init, 整数型, "libcurl.dll", "curl_multi_init", 公开, 多并发处理，需要的可以自己研究一下！这个目前还没用过
+
+.DLL命令 curl_multi_add_handle, 整数型, "libcurl.dll", "curl_multi_add_handle", 公开, 添加 CURL 到批处理中
+    .参数 CURLM, 整数型, , 通过 curl_multi_init 获取的
+    .参数 curl, 整数型, , CURL 句柄
+
+.DLL命令 curl_multi_remove_handle, 整数型, "libcurl.dll", "curl_multi_remove_handle", 公开, 移除Curl
+    .参数 CURLM, 整数型
+    .参数 curl, 整数型
+
+.DLL命令 curl_multi_fdset, 整数型, "libcurl.dll", "curl_multi_fdset", 公开
+    .参数 CURLM, 整数型
+    .参数 read_fd_set, fd_set
+    .参数 write_fd_set, fd_set
+    .参数 exc_fd_set, fd_set
+    .参数 max_fd, 整数型, 传址
+
+.DLL命令 curl_multi_perform, 整数型, "libcurl.dll", "curl_multi_perform", 公开
+    .参数 CURLM, 整数型
+    .参数 running_handles, 整数型, 传址
+
+.DLL命令 curl_multi_info_read, 整数型, "libcurl.dll", "curl_multi_info_read", 公开, 返回 CURLMsg 指针
+    .参数 CURLM, 整数型
+    .参数 msgs_in_queue, 整数型, 传址
+
+.DLL命令 curl_multi_strerror, 文本型, "libcurl.dll", "curl_multi_strerror", 公开, 返回错误信息
+    .参数 CURLMcode, 整数型
+
+.DLL命令 curl_multi_setopt, 整数型, "libcurl.dll", "curl_multi_setopt", 公开
+    .参数 CURLM, 整数型
+    .参数 CURLMoption, 整数型
+    .参数 param, 整数型
+
+.DLL命令 curl_multi_assign, 整数型, "libcurl.dll", "curl_multi_assign", 公开
+    .参数 CURLM, 整数型
+    .参数 curl_socket_t, 整数型
+    .参数 sockp, 整数型
+
+.DLL命令 curl_strequal, 整数型, "libcurl.dll", "curl_strequal", 公开
+    .参数 s1, 文本型, 传址
+    .参数 s2, 文本型, 传址
+
+.DLL命令 curl_strnequal, 整数型, "libcurl.dll", "curl_strnequal", 公开
+    .参数 s1, 文本型, 传址
+    .参数 s2, 文本型, 传址
+    .参数 size, 整数型
+
+.DLL命令 curl_version, 文本型, "libcurl.dll", "curl_version", 公开
+
+.DLL命令 curl_easy_escape, 整数型, "libcurl.dll", "curl_easy_escape", 公开
+    .参数 CURL, 整数型
+    .参数 string, 文本型, 传址
+    .参数 length, 整数型
+
+.DLL命令 curl_escape, 整数型, "libcurl.dll", "curl_escape", 公开
+    .参数 string, 文本型, 传址
+    .参数 length, 整数型
+
+.DLL命令 curl_easy_unescape, 整数型, "libcurl.dll", "curl_easy_unescape", 公开
+    .参数 CURL, 整数型
+    .参数 string, 文本型, 传址
+    .参数 length, 整数型
+    .参数 outlength, 整数型, 传址
+
+.DLL命令 curl_unescape, 整数型, "libcurl.dll", "curl_unescape", 公开, 需要用指针到文本
+    .参数 string, 文本型, 传址
+    .参数 length, 整数型
+
+.DLL命令 curl_global_init, 整数型, "libcurl.dll", "curl_global_init", 公开
+    .参数 flags, 整数型
+
+.DLL命令 curl_global_init_mem, 整数型, "libcurl.dll", "curl_global_init_mem", 公开
+    .参数 flags, 长整数型
+    .参数 curl_malloc_callback, 子程序指针, , 申请内存时的回调函数
+    .参数 curl_free_callback, 子程序指针, , 释放内存时的回调函数
+    .参数 curl_realloc_callback, 子程序指针
+    .参数 curl_strdup_callback, 子程序指针
+    .参数 curl_calloc_callback, 子程序指针
+
+.DLL命令 curl_global_cleanup, 整数型, "libcurl.dll", "curl_global_cleanup", 公开, 程序结束时用
+
+.DLL命令 curl_slist_append, 整数型, "libcurl.dll", "curl_slist_append", 公开, 返回 curl_slist 指针
+    .参数 list, 整数型
+    .参数 data, 整数型
+
+.DLL命令 curl_slist_free_all, , "libcurl.dll", "curl_slist_free_all", 公开
+    .参数 curl_slist, 整数型
+
+.DLL命令 curl_version_info, 整数型, "libcurl.dll", "curl_version_info", 公开, 返回 curl_version_info_data 指针
+    .参数 CURLversion, 整数型, , 版本类型 ，CURLVERSION_FIRST=0，CURLVERSION_SECOND=1，CURLVERSION_THIRD=2，CURLVERSION_FOURTH=3，CURLVERSION_LAST=4
+
+.DLL命令 curl_easy_strerror, 文本型, "libcurl.dll", "curl_easy_strerror", 公开
+    .参数 CURLcode, 整数型
+
+.DLL命令 curl_easy_pause, 整数型, "libcurl.dll", "curl_easy_pause", 公开
+    .参数 CURL, 整数型
+    .参数 bitmask, 整数型
+
+.DLL命令 fopen, 整数型, "libcurl.dll", "__fopen", 公开
+    .参数 file, 文本型, 传址
+    .参数 mode, 文本型, 传址
+
+.DLL命令 fclose, 整数型, "libcurl.dll", "__fclose", 公开
+    .参数 file, 整数型
+
+.DLL命令 feof, 整数型, "libcurl.dll", "__feof", 公开
+    .参数 file, 整数型
+
+.DLL命令 ferror, 整数型, "libcurl.dll", "__ferror", 公开
+    .参数 file, 整数型
+
+.DLL命令 fflush, 整数型, "libcurl.dll", "__fflush", 公开
+    .参数 file, 整数型
+
+.DLL命令 fgetpos, 整数型, "libcurl.dll", "__fgetpos", 公开
+    .参数 file, 整数型
+    .参数 pos, 长整数型
+
+.DLL命令 fgets, 文本型, "libcurl.dll", "__fgets", 公开
+    .参数 w, 文本型
+    .参数 l, 整数型
+    .参数 file, 整数型
+
+.DLL命令 fcloseall, 整数型, "libcurl.dll", "___fcloseall", 公开
+
+.DLL命令 fseek, 整数型, "libcurl.dll", "__fseek", 公开
+    .参数 file, 整数型
+    .参数 long, 长整数型
+    .参数 mode, 整数型
+
+.DLL命令 ftell, 长整数型, "libcurl.dll", "__ftell", 公开
+    .参数 file, 整数型
+
+.DLL命令 fread, 整数型, "libcurl.dll", "__fread", 公开
+    .参数 buffer, 文本型
+    .参数 size_1, 长整数型
+    .参数 size_2, 长整数型
+    .参数 file, 整数型
+
+.DLL命令 fwrite, , "libcurl.dll", "__fwrite", 公开
+    .参数 buffer, 文本型
+    .参数 size_1, 长整数型
+    .参数 size_2, 长整数型
+    .参数 file, 整数型
+
+.DLL命令 InitDecompression, 整数型, "gzip.dll", "InitDecompression", 公开, gzip.dll 请自行到这里来下载http://pan.baidu.com/share/link?shareid=222122&uk=2013335237
+
+.DLL命令 CreateDecompression, 整数型, "gzip.dll", "CreateDecompression", 公开
+    .参数 context, 整数型, 传址
+    .参数 flags, 整数型
+
+.DLL命令 InternetGetCookieA, 逻辑型, "wininet.dll", "InternetGetCookieA", 公开, 读取COOKIE
+    .参数 域名, 文本型
+    .参数 名称, 文本型
+    .参数 内容, 文本型, 传址
+    .参数 尺寸, 整数型, 传址
+
+.DLL命令 InternetGetCookieExA, 整数型, "wininet.dll", "InternetGetCookieExA", 公开
+    .参数 lpszURL, 文本型
+    .参数 lpszCookieName, 文本型
+    .参数 lpszCookieData, 文本型
+    .参数 lpdwSize, 整数型, 传址
+    .参数 dwFlags, 整数型
+    .参数 lpReserved, 整数型
+
+.DLL命令 InternetOpenA, 整数型, "wininet.dll", "InternetOpenA", 公开, Internet激活
+    .参数 句柄名称, 文本型, 传址
+    .参数 连接类型, 整数型, , 1直接连接;3代理连接
+    .参数 代理地址, 文本型, 传址
+    .参数 代理掩码, 文本型, 传址
+    .参数 dwFlags, 整数型, , 0
+
+.DLL命令 InternetConnectA, 整数型, "wininet.dll", "InternetConnectA", 公开, Internet建立连接
+    .参数 Internet句柄, 整数型
+    .参数 域名, 文本型, 传址
+    .参数 服务器端口, 整数型, , 80HTTP;21FTP;
+    .参数 用户名, 文本型, 传址, 空
+    .参数 用户口令, 文本型, 传址, 空
+    .参数 服务类型, 整数型, , 1FTP;3HTTP
+    .参数 dwFlags, 整数型, , 0http;134217728被动FTP模式
+    .参数 dwContext, 整数型, , 0
+
+.DLL命令 InternetCloseHandle, 逻辑型, "wininet.dll", "InternetCloseHandle", 公开, Internet关闭句柄
+    .参数 句柄, 整数型
+
+.DLL命令 HttpOpenRequestA, 整数型, "wininet.dll", "HttpOpenRequestA", 公开, Http创建请求
+    .参数 Internet连接句柄, 整数型, , 由Internet建立连接返回
+    .参数 访问方式, 文本型, 传址, "GET" or "POST"为空默认GET
+    .参数 页面路径, 文本型, 传址, 简短路径,不带域名
+    .参数 协议版本, 文本型, 传址, 为空默认HTTP/1.1
+    .参数 引用页, 文本型, 传址, 可为空
+    .参数 识别类型, 文本型, 传址, 可为空
+    .参数 dwFlags, 整数型, , 2147483648更新下载
+    .参数 dwContext, 整数型, , 0
+
+.DLL命令 HttpSendRequestA, 逻辑型, "wininet.dll", "HttpSendRequestA", 公开, Http发送请求
+    .参数 HTTP请求句柄, 整数型
+    .参数 附加协议头, 文本型, 传址
+    .参数 附加协议头长度, 整数型
+    .参数 提交信息, 文本型, 传址
+    .参数 提交信息长度, 整数型
+
+.DLL命令 HttpSendRequestA_字节集, 逻辑型, "wininet.dll", "HttpSendRequestA", 公开, Http发送请求
+    .参数 HTTP请求句柄, 整数型
+    .参数 附加协议头, 文本型, 传址
+    .参数 附加协议头长度, 整数型
+    .参数 提交信息, 字节集, 传址
+    .参数 提交信息长度, 整数型
+
+.DLL命令 HttpQueryInfoA, 逻辑型, "wininet.dll", "HttpQueryInfoA", 公开, HTTP查询信息
+    .参数 Internet请求句柄, 整数型
+    .参数 待查信息, 整数型, , 22返回所有信息;43SET_COOKIE;+2147483648返回文本
+    .参数 返回容器, 文本型, 传址
+    .参数 返回容器长度, 整数型, 传址
+    .参数 lpdwIndex, 整数型
+
+.DLL命令 InternetReadFile, 逻辑型, "wininet.dll", "InternetReadFile", 公开, Internet读文件
+    .参数 HTTP请求句柄, 整数型
+    .参数 sBuffer, 字节集, 传址
+    .参数 lNumBytesToRead, 整数型
+    .参数 lNumberOfBytesRead, 整数型, 传址
+
+.DLL命令 lstrcpyn_字节集, 整数型, "kernel32.dll", "lstrcpyn", 公开, 字节集
+    .参数 欲取其指针, 字节集, 传址
+    .参数 欲取其指针, 字节集, 传址
+    .参数 保留, 整数型, , 0
+
+.DLL命令 DestroyDecompression, , "gzip.dll", "DestroyDecompression", 公开
+    .参数 context, 整数型
+
+.DLL命令 lstrcpyn_文本型, 整数型, "kernel32.dll", "lstrcpyn", 公开, 取指针地址
+    .参数 目标, 文本型, 传址
+    .参数 源, 文本型, 传址
+    .参数 长度, 整数型
+

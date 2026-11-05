@@ -1,0 +1,23 @@
+﻿{
+    "Address": "",
+    "Author": "kyozy",
+    "BuilderVersion": {
+        "Major": 1,
+        "Minor": 0
+    },
+    "CompilePlugins": "",
+    "Copyright": "",
+    "Description": "创想软件改进版  仅使用核心库，纯算法实现\r\n@备注:\r\n创想软件改进版",
+    "Email": "",
+    "ExportPublicClassMethod": false,
+    "FaxNumber": "",
+    "Homepage": "",
+    "Name": "zyJsonValue",
+    "ReleaseVersion": {
+        "Major": 2,
+        "Minor": 5
+    },
+    "TelephoneNumber": "",
+    "WriteVersion": true,
+    "ZipCode": ""
+}
